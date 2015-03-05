@@ -6,11 +6,18 @@
 	green 		#43C487
 
 */
-.body{
+
+.navbar-collapse, .collapse{
+   	font-weight:900;
+   	font-size:120%;
+
+}
+.navbar-brand {
+   	font-weight:900;
+	font-size:200%;
 
 
 }
-
 .jumbo-box {
 /*
   background: -webkit-linear-gradient(left,#E87352,#DCB543, #43C487,#3BBEC0);
@@ -42,21 +49,14 @@
     padding: 5px;
     position: relative;
 
+
 }
 
 .icon-grid{
     width: 100px;
     height: 100px;
 }
-.navbar {
 
-}
-.navbar-brand {
-   	font-weight:900;
-	font-size:200%;
-
-
-}
 .icon-grid-1 {
     background: url("../icons/index-icon.png");
     position: absolute;
