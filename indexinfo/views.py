@@ -1,10 +1,22 @@
+from django.shortcuts import render_to_response, redirect
 from django.shortcuts import render
 from django.shortcuts import render_to_response
-from django.http import HttpResponse
-from index.models import indexdata,graphdata,queryfilenametable
-from index.forms import IndexConstructionForm
 from django.template import RequestContext
+from django.http import HttpResponse, HttpResponseRedirect
+from django import forms
+from datetime import datetime
+from os import remove
+import ConfigParser
+from pexpect import pxssh
+import subprocess
+import locale
+import csv
+import sys
+import requests
+import json
 
+from indexinfo.models import indexdata,graphdata,queryfilenametable
+from indexinfo.forms import IndexConstructionForm
 
 
 def land(request):
@@ -29,8 +41,7 @@ def land(request):
 			else:
 				indexdataobject.TotalGraphs = 20
 
-			print index
-			indexdataobject.save()
+			#indexdataobject.save()
 			config = ConfigParser.RawConfigParser()
 			config.optionxform=str
 			config.read('textfile.txt')
@@ -62,11 +73,11 @@ def land(request):
 			# remove riqtemp.conf
 			remove('riqtemp.conf.py')
 
-			return render_to_response('IndexConstruction.html', {'form': form, 'NavMenu' : 'IndexConstruction','IndexName' : indexName}, context_instance=RequestContext(request))
+			return render_to_response('index.html', {'form': form, 'TITLE' : 'Index Construction','IndexName' : indexName}, context_instance=RequestContext(request))
 		else:
 			print 'form is invalid'
 			print form.errors
-			return render_to_response('IndexConstruction.html', {'form': form,'NavMenu' : 'IndexConstruction'}, context_instance=RequestContext(request))
+			return render_to_response('index.html', {'form': form,'TITLE' : 'Index Construction'}, context_instance=RequestContext(request))
 	else:
 		form = IndexConstructionForm()
 		context = {'form': form,'TITLE' : 'Index Construction'}

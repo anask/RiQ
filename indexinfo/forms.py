@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from index.models import indexdata
+from indexinfo.models import indexdata
 import datetime
 
 
