@@ -7,6 +7,7 @@
 
 */
 
+
 .navbar-collapse, .collapse{
    	font-weight:900;
    	font-size:120%;
@@ -19,12 +20,6 @@
 
 }
 .jumbo-box {
-/*
-  background: -webkit-linear-gradient(left,#E87352,#DCB543, #43C487,#3BBEC0);
-  background: -o-linear-gradient(left,#E87352,#DCB543,  #43C487,#3BBEC0);
-  background: -moz-linear-gradient(left,#E87352,#DCB543, #43C487,#3BBEC0);
-  background: linear-gradient(left,#E87352,#DCB543, #43C487,#3BBEC0);
-*/
   color: #FFF;
   background-color:#000;
   -moz-border-radius: 0px;
@@ -117,4 +112,22 @@ i {
 
 .boxed-green, a.boxed-green {
     background: none repeat scroll 0% 0% #43C487;
+}
+.index-btn{
+	background-color:#E87352;
+	border-color:#000;
+	font-size: 110%;
+	font-weight: 500;
+	border-radius:0px;
+}
+.index-btn:hover {
+
+	background-color:#000;
+	border-color:#E87352;
+
+}
+.form-control{
+border-radius: 0px;
+  border-color:#E87352;
+
 }

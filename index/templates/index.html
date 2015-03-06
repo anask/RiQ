@@ -1,18 +1,152 @@
 {% extends "baseindex.html" %}
-
 {% block scripts %}
+<script type = "text/javascript">
+	function showtotalgraphs()
+	 {
+		var x = document.getElementById("dataset").value;
+
+		document.getElementById("datasetBTC").style.display = 'none';
+		document.getElementById("datasetLOGD").style.display = 'none';
 
 
+		if (x == "BTC") {
+			document.getElementById("datasetBTC").style.display = 'block';
+		}
+		else
+		if (x =="LOGD")
+		{
+			document.getElementById("datasetLOGD").style.display = 'block';
+		}
+	}
+</script>
 {% endblock %}
-
-
-
 {% block content_title %}
-
 <title>{{ TITLE }}</title>
-
 {% endblock %}
-
 {% block content %}
-
+<div class="row" style="display: flex;">
+	<div class="col-md-3" style="color:#E87352; border-color:#E87352; 	border: 2px solid;padding:25px;">
+		<p class="text-center" style="font-size: 110%;font-weight: 800;">
+			CONFIGURATION
+		</p>
+		<form action="" method="post">
+			{% csrf_token %}
+			{% if form.dataset.errors %}
+			<div style="color:red;">
+				<p class="error">{{form.dataset.errors}}</p>
+			</div>
+			{% endif %}
+			<div class="row"  style="margin-bottom:10px;">
+				<div class="form-group">
+					<label for = "dataset" {% if form.dataset.errors %} class="error"{% endif %}>Dataset</label>
+					<div class="col-sm-12">
+						<select id="dataset" onchange = "showtotalgraphs();" NAME="dataset" class="form-control">
+							{% for value, text in form.dataset.field.choices %}
+							<option value="{{ value}}">{{ text}}</option>
+							{% endfor %}
+						</select>
+						<div id = "datasetBTC" style="color:red;display:none">The total numbers of graphs available is 10</div>
+						<div id = "datasetLOGD" style="color:red;display:none">The total numbers of graphs available is 20</div>
+					</div>
+				</div>
+			</div>
+			<div class="row" style="margin-bottom:10px;">
+				<div class="form-group">
+					<label for = "LSHparameters">LSH Parameters</label><br />
+					<div class="col-sm-6">
+						{% if form.lhskparameter.errors %}
+						<div style="color:red;">
+							<p class="error">{{form.lhskparameter.errors}}</p>
+						</div>
+						{% endif %}
+						<label for = "lhskparameter" {% if form.lhskparameter.errors %} class="error"{% endif %}>K</label><br/>
+						<select id="lhskparameter" NAME="lhskparameter"class="form-control" >
+							{% for value, text in form.lhskparameter.field.choices %}
+							<option value="{{ value}}">{{ text}}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div class="col-sm-6">
+						{% if form.lhslparameter.errors %}
+						<div style="color:red;">
+							<p class="error">{{form.lhslparameter.errors}}	</p>
+						</div>
+						{% endif %}
+						<label for = "lhslparameter" {% if form.lhslparameter.errors %} class="error"{% endif %}>L</label>
+						<select id="lhslparameter" NAME="lhslparameter"class="form-control">
+							{% for value, text in form.lhslparameter.field.choices %}
+							<option value="{{ value }}">{{ text}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="row" style="margin-bottom:10px;">
+				<div class="form-group">
+					{% if form.maximumgraphs.errors %}
+					<div style="color:red;">
+						<p class="error">{{form.maximumgraphs.errors}}</p>
+					</div>
+					{% endif %}
+					<label for = "maximumgraphs"  {% if form.maximumgraphs.errors %} class="error"{% endif %}>Maximum number of graphs per group</label>
+					<div class="col-sm-12">
+						<input class="form-control" id = {{ form.maximumgraphs}}
+					</div>
+				</div>
+			</div>
+			<div class="row" style="margin-bottom:10px;">
+				<div class="form-group">
+					<label for = "capacityanderrorrate"  >Bloom/CBF</label><br/>
+					{% if form.bloomcapacity.errors %}
+					<div style="color:red;">
+						<p class="error">{{form.bloomcapacity.errors}}	</p>
+					</div>
+					{% endif %}
+					<div class="col-sm-6">
+						<label for = "bloomcapacity" {% if form.bloomcapacity.errors %} class="error"{% endif %}>Capacity</label>
+						<select id="bloomcapacity" NAME="bloomcapacity"class="form-control" >
+							{% for value, text in form.bloomcapacity.field.choices %}
+							<option value="{{ value}}">{{ text}}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div class="col-sm-6">
+						<label for = "bloomerror" {% if form.bloomerror.errors %} class="error"{% endif %}>Error in %</label>
+						<select id="bloomerror" NAME="bloomerror"class="form-control" >
+							{% for value, text in form.bloomerror.field.choices %}
+							<option value="{{ value}}">{{ text}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="row" style="margin-bottom:20px;">
+				{% if form.graphindex.errors %}
+				<div class="error">
+					<p style="color:red;">{{form.graphindex.errors}}</p>
+				</div>
+				{% endif %}
+				<div class="form-group">
+					<label for = "graphindex" {% if form.graphindex.errors %} class="error"{% endif %}>Number of Graphs to Index</label>
+					<!--<p>{{ form.username}}</p>-->
+					<div class="col-sm-12">
+						<input class="form-control" id = {{ form.graphindex}}
+					</div>
+				</div>
+			</div>
+			<div class="row" >
+				<div class="form-group">
+					<div class="col-sm-12">
+						<button type="submit" class="btn btn-primary index-btn" alt="submitData" style="width:100%;">SUBMIT</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="col-md-9" style="color:#E87352; border-color:#E87352; 	border: 2px solid; margin-left:5px;">
+	</div>
+</div>
+{% if IndexName %}
+<div style="color:red;">The name of the new Index created is {{IndexName}}</div>
+{% endif %}
 {% endblock %}
