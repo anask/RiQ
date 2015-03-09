@@ -14,9 +14,11 @@ import csv
 import sys
 import requests
 import json
+import os
 
 from indexinfo.models import indexdata,graphdata,queryfilenametable
 from indexinfo.forms import IndexConstructionForm
+
 
 
 def land(request):
@@ -72,13 +74,22 @@ def land(request):
 
 			# remove riqtemp.conf
 			remove('riqtemp.conf.py')
-
 			return render_to_response('index.html', {'form': form, 'TITLE' : 'Index Construction','IndexName' : indexName}, context_instance=RequestContext(request))
 		else:
 			print 'form is invalid'
 			print form.errors
 			return render_to_response('index.html', {'form': form,'TITLE' : 'Index Construction'}, context_instance=RequestContext(request))
 	else:
+		constructPVs()
 		form = IndexConstructionForm()
 		context = {'form': form,'TITLE' : 'Index Construction'}
 		return render_to_response('index.html', context, context_instance=RequestContext(request))
+
+# Assuming RIQ's code is in the same main directory as the demo
+def constructPVs():
+	RIQ_DIR = shellquote( os.path.join(os.path.abspath(os.pardir),'RIQ'))
+	os.system(RIQ_DIR+"/run_PVConstruction.py")
+
+#escape spaces in a string
+def shellquote(s):
+    return "'" + s.replace("'", "'\\''") + "'"
