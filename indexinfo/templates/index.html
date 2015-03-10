@@ -143,7 +143,19 @@
 			</div>
 		</form>
 	</div>
-	<div class="col-md-9" style="color:#E87352; border-color:#E87352; 	border: 2px solid; margin-left:5px;">
+	<div class="col-md-9" style="margin-left:5px;">
+		<div class="row">
+			<div class="col-md-12" style="color:#E87352; border-color:#E87352;border: 2px solid;">
+			</div>
+		</div>
+		<div class="row">		
+			<div class="col-md-12" style="color:#E87352; border-color:#E87352;border: 2px solid;margin-top:5px;">
+			{% if PVStatus  %}		
+				{{ PVStatus }}
+			{% endif %}
+
+			</div>
+		</div>
 	</div>
 </div>
 {% if IndexName %}

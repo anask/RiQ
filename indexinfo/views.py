@@ -16,7 +16,7 @@ import requests
 import json
 import os
 import getpass
-
+import time
 from indexinfo.models import indexdata,graphdata,queryfilenametable
 from indexinfo.forms import IndexConstructionForm
 
@@ -60,18 +60,21 @@ def land(request):
 
 
 			# Write prefix for the dataset and set its conf name
-			DATASET_PREFIX_F =  os.path.join(os.path.abspath(os.pardir),'RIS/indexing/RIS.RUN/data/prefix')
-			fPrefix = open(DATASET_PREFIX_F, 'w')
+			DATASET_PREFIX_DIR =  os.path.join(os.path.abspath(os.pardir),'RIS/indexing/RIS.RUN/data/')
+			OUTFILE = ''
+			INFILE = ''
 
 			if form.cleaned_data['dataset']=='BTC':
-				config.set('Dataset', 'NAME','btc-2012-split-clean')
-				fPrefix.write('btc-2012')
+				INFILE = 'btc-2012-split-clean'
+				OUTFILE = 'btc-2012'
 			elif form.cleaned_data['dataset']=='LOGD':
-				config.set('Dataset', 'NAME','logd-dataset')
-				fPrefix.write('logd')
+				INFILE = 'logd-dataset'
+				OUTFILE = 'logd'
 			elif form.cleaned_data['dataset']=='D10':
-				config.set('Dataset', 'NAME','d10-small-sample')
-				fPrefix.write('d10')
+				INFILE = 'd10-small-sample'
+				OUTFILE = 'd10'
+
+			config.set('Dataset', 'NAME',INFILE)
 
 			#Write new configuration
 
@@ -94,8 +97,8 @@ def land(request):
 
 			# remove riqtemp.conf
 			remove('riqtemp.conf.py')
-			constructPVs()
-			return render_to_response('index.html', {'form': form, 'TITLE' : 'Index Construction','IndexName' : indexName}, context_instance=RequestContext(request))
+			pvstatus = constructPVs(DATASET_PREFIX_DIR+INFILE ,DATASET_PREFIX_DIR+OUTFILE)
+			return render_to_response('index.html', {'form': form, 'TITLE' : 'Index Construction','IndexName' : indexName, 'PVStatus':pvstatus}, context_instance=RequestContext(request))
 		else:
 			print 'form is invalid'
 			print form.errors
@@ -106,6 +109,21 @@ def land(request):
 		return render_to_response('index.html', context, context_instance=RequestContext(request))
 
 # Assuming RIQ's code is in the same main directory as the demo
-def constructPVs():
+def constructPVs(infile, outfile):
 	RIQ_DIR  = os.path.join(os.path.abspath(os.pardir),'RIS')
-	os.system(RIQ_DIR+"/indexing/code/rdf2spovec/rdf2spovec -h")
+	cmd = [ RIQ_DIR+"/indexing/code/rdf2spovec/rdf2spovec", '-f','nquads', '-i', infile, '-o', outfile]
+	start = time.time()
+	p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	p_stdout = p.stdout.read()
+	p_stderr = p.stderr.read()
+        end = time.time()
+        dur = end - start
+	outstr=''
+	p_stdout = p_stdout.splitlines()
+	for s in p_stdout:
+		if s.startswith(('Written graphs','Avg graph', 'Max graph', 'Total size','Total URIs','uri2id')):
+			outstr = outstr + s +'\n'
+	end = time.time()
+	dur = end - start
+	outstr = outstr + 'Duration: '+str(round(dur,4))
+	return outstr
