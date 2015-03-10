@@ -8,11 +8,14 @@ class IndexConstructionForm(ModelForm):
 
 	BTC = 'BTC'
 	LOGD = 'LOGD'
+	D10 = 'D10'
+
 
 
 	MY_CHOICESDATASET = (
 		(BTC, 'BTC'),
 		(LOGD, 'LOGD'),
+		(D10,'D10-SML'),
 
 
 	)
