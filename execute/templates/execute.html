@@ -1,21 +1,74 @@
-{% extends "baseindex.html" %}
-
+{% extends "base.html" %}
 {% block scripts %}
-
-
-{% endblock %}
-
-
-
-{% block content_title %}
-
-<title>{{ TITLE }}</title>
-
+	{% block content_title %}
+	<title>{{ TITLE }}</title>
+	{% endblock %}
 {% endblock %}
 
 {% block content %}
+<div class="row">
+	<div style="display: flex; flex-flow: row;">
+	<div id="config" class="col-md-3" style="color:#DCB543; border-color:#DCB543; 	border: 2px solid;padding:25px;">
+		<p class="text-center" style="font-size: 110%;font-weight: 800;">
+			EXECUTION PARAMETERS
+		</p>
+		<form action="" method="post">
+			{% csrf_token %}
+			{% if form.dataset.errors %}
+			<div style="color:red;">
+				<p class="error">{{form.dataset.errors}}</p>
+			</div>
+			{% endif %}
+			<div class="row"  style="margin-bottom:10px;">
+					<div class="form-group">
+					<label for = "dataset">Select the index:</label>
+					<div class="col-sm-12">
+						<select onchange = "myFunction();" id="indexname" NAME="indexname"class="form-control execute">
+							{% for indexdata in indexdataobject %}
+								<option value="{{indexdata.IndexName}}"{%if IndexName1 == indexdata.IndexName %} selected="selected" {% endif %} >{{indexdata.IndexName}}</option>
+							{% endfor %}
+						</select>
+						<div id = "datasetBTC" style="color:red;display:none">The total numbers of graphs available is 10</div>
+						{% if form.dataset.errors %}
+						<div style="color:red;">
+							<p class="error">
+							{{form.dataset.errors}}
+							</p>
+						</div>
+						{% endif %}
+					</div>
+				</div>
 
-<div>Welcome to Execute</div>
+			</div>
 
+			<div class="row"  style="margin-bottom:10px;">
+				<div class="form-group">
+					<label for = "dataset" {% if form.dataset.errors %} class="error"{% endif %}>Dataset:</label>
+					<div class="col-sm-12">
+						<input type="text"  id="dataset1" NAME="dataset"class="form-control execute" value="{%if Dataset == "LOGD" %} LOGD {%elif Dataset == "BTC"%} BTC {% endif %}" readonly >
+					</div>
+				</div>
+			</div>
+
+		</form>
+	</div>
+	<div class="col-md-9" style="margin-left:5px; height:100%;">
+		<div class="row">
+			<div id="exp" class="col-md-12" style="color:#DCB543; border-color:#DCB543;border: 2px solid; height:450px; ">
+
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12" style="color:#DCB543; border-color:#DCB543;border: 2px solid;margin-top:5px; height:100px;">
+				<p class="text-center" style="font-size: 110%;font-weight: 800; padding-top:10px;">
+						PV STATS
+				</p>
+
+			<div id="stats"> </div>
+
+			</div>
+		</div>
+	</div>
+</div>
+</div>
 {% endblock %}
-

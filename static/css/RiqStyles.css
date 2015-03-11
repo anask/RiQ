@@ -128,6 +128,20 @@ i {
 }
 .form-control{
 border-radius: 0px;
-  border-color:#E87352;
+}
 
+.index {
+  border-color:#E87352;
+}
+
+
+.execute {
+  border-color:#DCB543;
+}
+
+.linked {
+  border-color:#43C487;
+}
+.visualize {
+  border-color:#3BBEC0;
 }
