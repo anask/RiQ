@@ -48,7 +48,7 @@ def land(request):
 			config = ConfigParser.RawConfigParser()
 			config.optionxform=str
 			config.read(RIQ_CONF)
-			config.set('DEFAULT', 'USER', getpass.getuser())
+			config.set('DEFAULT', 'USER', 'anask') # getpass.getuser()
 			config.set('LSH','LSHK',form.cleaned_data['lhskparameter'])
 			config.set('LSH','LSHL',form.cleaned_data['lhslparameter'])
 			config.set('Limits', 'MAXCCSIZE',form.cleaned_data['maximumgraphs'])
@@ -59,20 +59,16 @@ def land(request):
 
 			# Write prefix for the dataset and set its conf name
 			DATASET_PREFIX_DIR =  os.path.join(os.path.abspath(os.pardir),'RIS/indexing/RIS.RUN/data/')
-			OUTFILE = ''
-			INFILE = ''
+			FILE = ''
 
 			if form.cleaned_data['dataset']=='BTC':
-				INFILE = 'btc-2012-split-clean'
-				OUTFILE = 'btc-2012'
+				FILE = 'btc-2012-split-clean'
 			elif form.cleaned_data['dataset']=='LOGD':
-				INFILE = 'logd-dataset'
-				OUTFILE = 'logd'
+				FILE = 'logd-dataset'
 			elif form.cleaned_data['dataset']=='D10':
-				INFILE = 'd10-small-sample'
-				OUTFILE = 'd10'
+				FILE = 'd10-small-sample'
 
-			config.set('Dataset', 'NAME',INFILE)
+			config.set('Dataset', 'NAME',FILE)
 
 			#Write new configuration
 
@@ -95,7 +91,7 @@ def land(request):
 
 			# remove riqtemp.conf
 			remove('riqtemp.conf.py')
-			pvstatus = constructPVs(DATASET_PREFIX_DIR+INFILE ,DATASET_PREFIX_DIR+OUTFILE)
+			pvstatus = constructPVs(DATASET_PREFIX_DIR+FILE)
 			return render_to_response('index.html', {'form': form, 'TITLE' : 'Index Construction','IndexName' : indexName, 'PVStatus':pvstatus}, context_instance=RequestContext(request))
 		else:
 			print 'form is invalid'
@@ -107,11 +103,11 @@ def land(request):
 		return render_to_response('index.html', context, context_instance=RequestContext(request))
 
 # Assuming RIQ's code is in the same main directory as the demo
-def constructPVs(infile, outfile):
+def constructPVs(infile):
 	#if (True):
 	#	return "Written graphs: 1 % Avg graph size: 58 triples % Max graph size: 58 triples % Total size: 58 triples % Total URIs/literals: 0 % Duration: 0.0115s ".upper()
 	RIQ_DIR  = os.path.join(os.path.abspath(os.pardir),'RIS')
-	cmd = [ RIQ_DIR+"/indexing/code/rdf2spovec/rdf2spovec", '-f','nquads', '-i', infile, '-o', outfile]
+	cmd = [ RIQ_DIR+"/indexing/code/rdf2spovec/rdf2spovec", '-f','nquads', '-i', infile+".nq", '-o', infile+".sigv2"]
 	start = time.time()
 	p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	p_stdout = p.stdout.read()
@@ -125,5 +121,5 @@ def constructPVs(infile, outfile):
 			outstr = outstr + s +'%'
 	end = time.time()
 	dur = end - start
-	outstr = outstr + 'Duration: '+str(round(dur,4)+'s')
+	outstr = outstr + 'Duration: '+str(round(dur,4))+'s'
 	return outstr.upper()
