@@ -20,8 +20,6 @@ import time
 from indexinfo.models import indexdata,graphdata,queryfilenametable
 from indexinfo.forms import IndexConstructionForm
 
-
-
 def land(request):
 	if request.method == 'POST':
 		form = IndexConstructionForm(request.POST)
@@ -110,6 +108,8 @@ def land(request):
 
 # Assuming RIQ's code is in the same main directory as the demo
 def constructPVs(infile, outfile):
+	#if (True):
+	#	return "Written graphs: 1 % Avg graph size: 58 triples % Max graph size: 58 triples % Total size: 58 triples % Total URIs/literals: 0 % Duration: 0.0115s ".upper()
 	RIQ_DIR  = os.path.join(os.path.abspath(os.pardir),'RIS')
 	cmd = [ RIQ_DIR+"/indexing/code/rdf2spovec/rdf2spovec", '-f','nquads', '-i', infile, '-o', outfile]
 	start = time.time()
@@ -121,9 +121,9 @@ def constructPVs(infile, outfile):
 	outstr=''
 	p_stdout = p_stdout.splitlines()
 	for s in p_stdout:
-		if s.startswith(('Written graphs','Avg graph', 'Max graph', 'Total size','Total URIs','uri2id')):
-			outstr = outstr + s +'\n'
+		if s.startswith(('Written graphs','Avg graph', 'Max graph', 'Total size','Total URIs')):
+			outstr = outstr + s +'%'
 	end = time.time()
 	dur = end - start
-	outstr = outstr + 'Duration: '+str(round(dur,4))
-	return outstr
+	outstr = outstr + 'Duration: '+str(round(dur,4)+'s')
+	return outstr.upper()

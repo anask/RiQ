@@ -3,12 +3,10 @@
 <script type = "text/javascript">
 	function showtotalgraphs()
 	 {
+	 	/*
 		var x = document.getElementById("dataset").value;
-
 		document.getElementById("datasetBTC").style.display = 'none';
 		document.getElementById("datasetLOGD").style.display = 'none';
-
-
 		if (x == "BTC") {
 			document.getElementById("datasetBTC").style.display = 'block';
 		}
@@ -17,15 +15,44 @@
 		{
 			document.getElementById("datasetLOGD").style.display = 'block';
 		}
+		*/
+
+
 	}
 </script>
+{% if PVStatus %}
+	<script type="text/javascript" >
+		var stats = '{{ PVStatus }}'
+		stats = stats.split("%");
+		var content = "<table style='width:100%' > "
+		var p=0;
+		for(i=0; i<2; i++){
+				content += '<tr>'
+			for(k=0; k<3; k++){
+				line = stats[p].split(":");
+				content += "<td style='font-weight:500;'>" + line[0] +'</td>'+"<td style='font-weight:400;color:#000;'>" +  line[1] + '</td>';
+				++p;
+			}
+				content += 	'</tr>'
+		}
+
+		content += "</table>"
+		$(document).ready(function ()
+		{
+			$("#stats").html(content);
+
+		});
+	</script>
+{% endif %}
+
 {% endblock %}
 {% block content_title %}
 <title>{{ TITLE }}</title>
 {% endblock %}
 {% block content %}
-<div class="row" style="display: flex;">
-	<div class="col-md-3" style="color:#E87352; border-color:#E87352; 	border: 2px solid;padding:25px;">
+<div class="row">
+	<div style="display: flex; flex-flow: row;">
+	<div id="config" class="col-md-3" style="color:#E87352; border-color:#E87352; 	border: 2px solid;padding:25px;">
 		<p class="text-center" style="font-size: 110%;font-weight: 800;">
 			CONFIGURATION
 		</p>
@@ -143,20 +170,25 @@
 			</div>
 		</form>
 	</div>
-	<div class="col-md-9" style="margin-left:5px;">
+	<div class="col-md-9" style="margin-left:5px; height:100%;">
 		<div class="row">
-			<div class="col-md-12" style="color:#E87352; border-color:#E87352;border: 2px solid;">
+			<div id="exp" class="col-md-12" style="color:#E87352; border-color:#E87352;border: 2px solid; height:450px; ">
+
 			</div>
 		</div>
-		<div class="row">		
-			<div class="col-md-12" style="color:#E87352; border-color:#E87352;border: 2px solid;margin-top:5px;">
-			{% if PVStatus  %}		
-				{{ PVStatus }}
-			{% endif %}
+		<div class="row">
+			<div class="col-md-12" style="color:#E87352; border-color:#E87352;border: 2px solid;margin-top:5px; height:100px;">
+				<p class="text-center" style="font-size: 110%;font-weight: 800; padding-top:10px;">
+						PV STATS
+				</p>
+
+			<div id="stats"> </div>
+
 
 			</div>
 		</div>
 	</div>
+</div>
 </div>
 {% if IndexName %}
 <div style="color:red;">The name of the new Index created is {{IndexName}}</div>
