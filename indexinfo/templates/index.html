@@ -1,4 +1,4 @@
-{% extends "baseindex.html" %}
+{% extends "base.html" %}
 {% block scripts %}
 <script type = "text/javascript">
 	function showtotalgraphs()
@@ -67,7 +67,7 @@
 				<div class="form-group">
 					<label for = "dataset" {% if form.dataset.errors %} class="error"{% endif %}>Dataset</label>
 					<div class="col-sm-12">
-						<select id="dataset" onchange = "showtotalgraphs();" NAME="dataset" class="form-control">
+						<select id="dataset" onchange = "showtotalgraphs();" NAME="dataset" class="form-control index">
 							{% for value, text in form.dataset.field.choices %}
 							<option value="{{ value}}">{{ text}}</option>
 							{% endfor %}
@@ -87,7 +87,7 @@
 						</div>
 						{% endif %}
 						<label for = "lhskparameter" {% if form.lhskparameter.errors %} class="error"{% endif %}>K</label><br/>
-						<select id="lhskparameter" NAME="lhskparameter"class="form-control" >
+						<select id="lhskparameter" NAME="lhskparameter"class="form-control index" >
 							{% for value, text in form.lhskparameter.field.choices %}
 							<option value="{{ value}}">{{ text}}</option>
 							{% endfor %}
@@ -100,7 +100,7 @@
 						</div>
 						{% endif %}
 						<label for = "lhslparameter" {% if form.lhslparameter.errors %} class="error"{% endif %}>L</label>
-						<select id="lhslparameter" NAME="lhslparameter"class="form-control">
+						<select id="lhslparameter" NAME="lhslparameter"class="form-control index">
 							{% for value, text in form.lhslparameter.field.choices %}
 							<option value="{{ value }}">{{ text}}</option>
 							{% endfor %}
@@ -117,7 +117,7 @@
 					{% endif %}
 					<label for = "maximumgraphs"  {% if form.maximumgraphs.errors %} class="error"{% endif %}>Maximum number of graphs per group</label>
 					<div class="col-sm-12">
-						<input class="form-control" id = {{ form.maximumgraphs}}
+						<input class="form-control index" id = {{ form.maximumgraphs}}
 					</div>
 				</div>
 			</div>
@@ -131,7 +131,7 @@
 					{% endif %}
 					<div class="col-sm-6">
 						<label for = "bloomcapacity" {% if form.bloomcapacity.errors %} class="error"{% endif %}>Capacity</label>
-						<select id="bloomcapacity" NAME="bloomcapacity"class="form-control" >
+						<select id="bloomcapacity" NAME="bloomcapacity"class="form-control index" >
 							{% for value, text in form.bloomcapacity.field.choices %}
 							<option value="{{ value}}">{{ text}}</option>
 							{% endfor %}
@@ -139,7 +139,7 @@
 					</div>
 					<div class="col-sm-6">
 						<label for = "bloomerror" {% if form.bloomerror.errors %} class="error"{% endif %}>Error in %</label>
-						<select id="bloomerror" NAME="bloomerror"class="form-control" >
+						<select id="bloomerror" NAME="bloomerror"class="form-control index" >
 							{% for value, text in form.bloomerror.field.choices %}
 							<option value="{{ value}}">{{ text}}</option>
 							{% endfor %}
@@ -157,7 +157,7 @@
 					<label for = "graphindex" {% if form.graphindex.errors %} class="error"{% endif %}>Number of Graphs to Index</label>
 					<!--<p>{{ form.username}}</p>-->
 					<div class="col-sm-12">
-						<input class="form-control" id = {{ form.graphindex}}
+						<input class="form-control index" id = {{ form.graphindex}}
 					</div>
 				</div>
 			</div>
