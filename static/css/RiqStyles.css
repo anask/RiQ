@@ -126,6 +126,19 @@ i {
 	border-color:#E87352;
 
 }
+.execute-btn{
+	background-color:#DCB543;
+	border-color:#000;
+	font-size: 110%;
+	font-weight: 500;
+	border-radius:0px;
+}
+.execute-btn:hover {
+
+	background-color:#000;
+	border-color:#DCB543;
+
+}
 .form-control{
 border-radius: 0px;
 }
@@ -133,7 +146,6 @@ border-radius: 0px;
 .index {
   border-color:#E87352;
 }
-
 
 .execute {
   border-color:#DCB543;
@@ -145,3 +157,93 @@ border-radius: 0px;
 .visualize {
   border-color:#3BBEC0;
 }
+div.thrds {
+	 width:32.9%;
+
+}
+div.widen{
+	background:#FFF;
+		height:100%;
+ }
+div.sliding-content-r{
+    z-index:0;
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	overflow:hidden;
+	-webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    transition: all 1s ease;
+	outline: 2px solid #DCB543;
+
+}
+div.sliding-content-r:hover{
+    z-index:100;
+    width:306.8%;
+ }
+
+div.sliding-content-lr{
+    z-index:0;
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	overflow:hidden;
+	-webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    transition: all 1s ease;
+	outline: 2px solid #DCB543;
+}
+div.sliding-content-lr:hover{
+    z-index:100;
+    width:306.8%;
+	margin-left:-103.5%;
+	margin-right:-103.4%;
+ }
+ div.sliding-content-l{
+    z-index:0;
+	width:100%;
+	height:100%;
+	overflow:hidden;
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	-webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    transition: all 1s ease;
+	outline: 2px solid #DCB543;
+
+}
+div.sliding-content-l:hover{
+    z-index:100;
+    width:306.8%;
+	margin-left:-206.8%;
+ }
+ div.sliding-content-t{
+    z-index:0;
+	width:100%;
+	height:100%;
+	overflow:hidden;
+	position:absolute;
+	width:100%;
+	-webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    transition: all 1s ease;
+	outline: 2px solid #DCB543;
+
+}
+div.sliding-content-t:hover{
+    z-index:100;
+margin-top:-455px;
+height:551px;
+ }

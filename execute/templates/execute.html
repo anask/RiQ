@@ -6,7 +6,8 @@
 {% endblock %}
 
 {% block content %}
-<div class="row">
+
+
 	<div style="display: flex; flex-flow: row;">
 	<div id="config" class="col-md-3" style="color:#DCB543; border-color:#DCB543; 	border: 2px solid;padding:25px;">
 		<p class="text-center" style="font-size: 110%;font-weight: 800;">
@@ -50,25 +51,101 @@
 				</div>
 			</div>
 
+
+			<div class="row"  style="margin-bottom:10px;">
+				<div class="form-group">
+					<label for = "cache">Select the Cache:</label>
+					<div class="col-sm-12">
+						<select id="typecache" NAME="typecache"class="form-control execute" >
+							<option value="cold" {%if TypeCache == "cold" %} selected="selected" {% endif %} >Cold Cache</option>
+							<option value="warm" {%if TypeCache == "warm" %} selected="selected" {% endif %} >Warm Cache</option>
+						</select>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="row"  style="margin-bottom:10px;">
+				<div class="form-group">
+					<label for = "optimizationtype">Optimization Type:</label>
+					<div class="col-sm-12">
+						<select id="optimizationtype" NAME="optimizationtype"class="form-control execute" >
+							<option value="nopt" {%if optimizeType == "nopt" %} selected="selected" {% endif %} >No Optimize</option>
+							<option value="opt" {%if optimizeType == "opt" %} selected="selected" {% endif %} >Optimize </option>
+						</select>
+					</div>
+				</div>
+			</div>
+
+			<div class="row"  style="margin-bottom:20px;">
+				<div class="form-group">
+					<label for = "queries">Queries:</label>
+					<div class="col-sm-12">
+						<select id="queryDisplay"  NAME="queries"class="form-control execute" onchange="showQueries(event);">
+							{% for queryfilename in querynamedataobject %}
+								<option value="{{queryfilename.queryname}}"{%if QueriesForm == queryfilename.queryname %} 	selected="selected" {% endif %} >{{queryfilename.queryname}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+			</div>
+
+			<div class="row" >
+				<div class="form-group">
+					<div class="col-sm-12">
+						<button id="runquery" type="button" class="btn btn-primary execute-btn" alt="submitData" style="width:100%;" onClick="runRIQ(event);" value="Run RIQ">SUBMIT</button>
+					</div>
+				</div>
+			</div>
+
+
+
+
 		</form>
 	</div>
-	<div class="col-md-9" style="margin-left:5px; height:100%;">
-		<div class="row">
-			<div id="exp" class="col-md-12" style="color:#DCB543; border-color:#DCB543;border: 2px solid; height:450px; ">
-
+	<div class="col-md-9" style="margin-left:5px;">
+		<div class="row" style="position: relative;">
+			<div style="padding:0;">
+				<div class="thrds" style="color:#DCB543; border-color:#DCB543;border: 2px solid; height:450px; position:relative;float:left; display: block;">
+					<div class="sliding-content-r">
+						<div class="text-center widen" style="font-size: 110%;font-weight: 800; padding-top:10px;">
+							QUERY
+							<div id="query" class="text-left"> the sparql query</div>
+						</div>
+					</div>
+				</div>
+				<div class="thrds"  style="color:#DCB543; border-color:#DCB543;border: 2px solid; height:450px;margin-left:6px;position:relative;float:left; display: block;">
+					<div class="sliding-content-lr">
+						<div class="text-center widen" style="font-size: 110%;font-weight: 800; padding-top:10px;">
+							QUERY GRAPH
+							<div id="query-graph" class="text-left"> X ---> Y </div>
+						</div>
+					</div>
+				</div>
+				<div class="thrds" style="color:#DCB543; border-color:#DCB543;border: 2px solid; height:450px;margin-left:5px;position:relative;float:right; display: block;">
+					<div class="sliding-content-l">
+						<div class="text-center widen" style="font-size: 110%;font-weight: 800; padding-top:10px;">
+							TIME COMPARISON
+							<div id="time" class="text-left"> 12.2 + 4.3 s </div>
+						</div>
+					</div>
+				</div>
 			</div>
+
 		</div>
-		<div class="row">
-			<div class="col-md-12" style="color:#DCB543; border-color:#DCB543;border: 2px solid;margin-top:5px; height:100px;">
-				<p class="text-center" style="font-size: 110%;font-weight: 800; padding-top:10px;">
-						PV STATS
-				</p>
-
-			<div id="stats"> </div>
-
+		<div class="row" style="position: relative;">
+			<div style="padding:0;">
+				<div style="color:#DCB543; border-color:#DCB543;border: 2px solid; height:100px; position:relative;float:left; display: block;width:100%; margin-top:5px;">
+					<div class="sliding-content-t">
+						<div class="text-center widen" style="font-size: 110%;font-weight: 800; padding-top:10px;">
+							RESULTS
+							<div id="results" class="text-left"> the results</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
-</div>
+
 {% endblock %}
