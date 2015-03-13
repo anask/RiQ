@@ -46,7 +46,22 @@
 
 
 }
+.blink{
+	-webkit-animation: blink 3s;
+	-moz-animation: blink 3s;
+	animation: blink 3s;
+	animation-duration: 1s;
+	color: #999;
+	animation-iteration-count: 5;
+}
+.r-blink{
+animation-direction: reverse;
 
+}
+@keyframes blink {
+	0% {color: #999}
+	50% {color: #FFF}
+}
 .icon-grid{
     width: 100px;
     height: 100px;
