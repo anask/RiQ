@@ -91,7 +91,7 @@ def land(request):
 
 			# remove riqtemp.conf
 			remove('riqtemp.conf.py')
-			pvstatus = constructPVs(DATASET_PREFIX_DIR+FILE)
+			pvstatus = constructPVs(DATASET_PREFIX_DIR,FILE)
 			return render_to_response('index.html', {'form': form, 'TITLE' : 'Index Construction','IndexName' : indexName, 'PVStatus':pvstatus}, context_instance=RequestContext(request))
 		else:
 			print 'form is invalid'
@@ -103,23 +103,31 @@ def land(request):
 		return render_to_response('index.html', context, context_instance=RequestContext(request))
 
 # Assuming RIQ's code is in the same main directory as the demo
-def constructPVs(infile):
+def constructPVs(prefix, infile):
 	#if (True):
 	#	return "Written graphs: 1 % Avg graph size: 58 triples % Max graph size: 58 triples % Total size: 58 triples % Total URIs/literals: 0 % Duration: 0.0115s ".upper()
 	RIQ_DIR  = os.path.join(os.path.abspath(os.pardir),'RIS')
-	cmd = [ RIQ_DIR+"/indexing/code/rdf2spovec/rdf2spovec", '-f','nquads', '-i', infile+".nq", '-o', infile+".sigv2"]
+	cmd = [ RIQ_DIR+"/indexing/code/rdf2spovec/rdf2spovec", '-f','nquads', '-i', prefix+infile+".nq", '-o', prefix+infile+".sigv2"]
 	start = time.time()
 	p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	p_stdout = p.stdout.read()
 	p_stderr = p.stderr.read()
         end = time.time()
-        dur = end - start
-	outstr=''
-	p_stdout = p_stdout.splitlines()
-	for s in p_stdout:
-		if s.startswith(('Written graphs','Avg graph', 'Max graph', 'Total size','Total URIs')):
-			outstr = outstr + s +'%'
-	end = time.time()
-	dur = end - start
-	outstr = outstr + 'Duration: '+str(round(dur,4))+'s'
-	return outstr.upper()
+        pvdur = {u'pv_t' : str(end - start)}
+	json_data = {u'content':'none'}
+	#if no errors parse timings
+	if (len(p_stderr)==0):
+		with open(RIQ_DIR+"/indexing/RIS.RUN/log/index."+infile+".all.json") as json_file:
+			json_data = json.load(json_file)
+			json_data.update(pvdur)
+		p_stdout = p_stdout.splitlines()
+		for s in p_stdout:
+			if s.startswith(('Written graphs','Avg graph', 'Max graph', 'Total size','Total URIs')):
+				s=s.split(":")
+				j =  {s[0]:s[1]}
+				json_data.update(j)
+
+	else:
+		return "ERRORs: FOUND % DURATION: "+str(dur)
+	
+	return json.dumps(json_data)

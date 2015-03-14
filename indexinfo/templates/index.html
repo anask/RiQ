@@ -22,26 +22,31 @@
 </script>
 {% if PVStatus %}
 	<script type="text/javascript" >
-		var stats = '{{ PVStatus }}'
-		stats = stats.split("%");
+		var stats = '{{ PVStatus|safe }}';
+		stats = JSON.parse(stats);
+		alert(JSON.stringify(stats));
+		var total = Number(stats.group.build_graph_t)+Number(stats.group.pv_lsh_t)+Number(stats.group.union_t)+Number(stats.group.total_t)+Number(stats.cbf.cbf_t)+Number(stats.split.split_t )+Number(stats.pv_t);	
+		
 		var content = "<table style='width:100%' > "
-		var p=0;
-		for(i=0; i<2; i++){
-				content += '<tr>'
-			for(k=0; k<3; k++){
-				line = stats[p].split(":");
-				content += "<td style='font-weight:500;'>" + line[0] +'</td>'+"<td style='font-weight:400;color:#000;'>" +  line[1] + '</td>';
-				++p;
-			}
-				content += 	'</tr>'
-		}
-
+			content += '<tr>'
+					content += "<td style='font-weight:500;'> G BUILD GRAPH</td>"+"<td style='font-weight:400;color:#000;'>" + stats.group.build_graph_t  + '</td>';	
+                                        content += "<td style='font-weight:500;'> G PV LSH</td>"+"<td style='font-weight:400;color:#000;'>" + stats.group.pv_lsh_t  + '</td>';
+                                        content += "<td style='font-weight:500;'> G UNION</td>"+"<td style='font-weight:400;color:#000;'>" + stats.group.union_t  + '</td>';
+                                        content += "<td style='font-weight:500;'> G TOTAL</td>"+"<td style='font-weight:400;color:#000;'>" + stats.group.total_t  + '</td>';
+                        content += '</tr>'
+                        content += '<tr>'
+                                        content += "<td style='font-weight:500;'> CBF</td>"+"<td style='font-weight:400;color:#000;'>" + stats.cbf.cbf_t  + '</td>';
+                                        content += "<td style='font-weight:500;'> SPLIT</td>"+"<td style='font-weight:400;color:#000;'>" + stats.split.split_t  + '</td>';
+                                        content += "<td style='font-weight:500;'> PV CONSTRUCTION</td>"+"<td style='font-weight:400;color:#000;'>" + stats.pv_t  + '</td>';
+                                      	content += "<td style='font-weight:500;'> TOTAL</td>"+"<td style='font-weight:400;color:#000;'>" + total.toFixed(2)  + '</td>';
+                        content += '</tr>'
 		content += "</table>"
 		$(document).ready(function ()
 		{
 			$("#stats").html(content);
 
 		});
+		
 	</script>
 {% endif %}
 
