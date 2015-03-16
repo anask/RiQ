@@ -105,6 +105,8 @@ def land(request):
 # Assuming RIQ's code is in the same main directory as the demo
 def constructPVs(prefix, infile):
 	#Construct PVs
+	print ('Pre: '+prefix)
+	print ('in: '+infile)
 	RIQ_DIR  = os.path.join(os.path.abspath(os.pardir),'RIS')
 	cmd = [ RIQ_DIR+"/indexing/code/rdf2spovec/rdf2spovec", '-f','nquads', '-i', prefix+infile+".nq", '-o', prefix+infile+".sigv2"]
 	start = time.time()
@@ -116,7 +118,7 @@ def constructPVs(prefix, infile):
 	json_data = {u'content':'none'}
 
 	#Run indexing
-	cmdi = [ RIQ_DIR+"/indexing/RIS/scripts/run_riq_index_anas.py", "-v" ,"-C", "../RiQ/config-files/riq.conf"]
+	cmdi = [ RIQ_DIR+"/indexing/RIS/scripts/run_riq_index.py", "-v" ,"-C", "../RiQ/config-files/riq.conf"]
 	pi = subprocess.Popen(cmdi, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	pi_stdout = pi.stdout.read()
 	pi_stderr = pi.stderr.read()
