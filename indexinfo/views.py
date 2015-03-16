@@ -105,8 +105,6 @@ def land(request):
 # Assuming RIQ's code is in the same main directory as the demo
 def constructPVs(prefix, infile):
 	#Construct PVs
-	print ('Pre: '+prefix)
-	print ('in: '+infile)
 	RIQ_DIR  = os.path.join(os.path.abspath(os.pardir),'RIS')
 	cmd = [ RIQ_DIR+"/indexing/code/rdf2spovec/rdf2spovec", '-f','nquads', '-i', prefix+infile+".nq", '-o', prefix+infile+".sigv2"]
 	start = time.time()
