@@ -104,18 +104,25 @@ def land(request):
 
 # Assuming RIQ's code is in the same main directory as the demo
 def constructPVs(prefix, infile):
-	#if (True):
-	#	return "Written graphs: 1 % Avg graph size: 58 triples % Max graph size: 58 triples % Total size: 58 triples % Total URIs/literals: 0 % Duration: 0.0115s ".upper()
+	#Construct PVs
 	RIQ_DIR  = os.path.join(os.path.abspath(os.pardir),'RIS')
 	cmd = [ RIQ_DIR+"/indexing/code/rdf2spovec/rdf2spovec", '-f','nquads', '-i', prefix+infile+".nq", '-o', prefix+infile+".sigv2"]
 	start = time.time()
 	p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	p_stdout = p.stdout.read()
 	p_stderr = p.stderr.read()
-        end = time.time()
-        pvdur = {u'pv_t' : str(end - start)}
+	end = time.time()
+	pvdur = {u'pv_t' : str(end - start)}
 	json_data = {u'content':'none'}
-	#if no errors parse timings
+
+	#Run indexing
+	cmdi = [ RIQ_DIR+"/indexing/RIS/scripts/run_riq_index_anas.py", "-v" ,"-C", "../RiQ/config-files/riq.conf"]
+	pi = subprocess.Popen(cmdi, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	pi_stdout = pi.stdout.read()
+	pi_stderr = pi.stderr.read()
+	print(pi_stdout)
+
+	#Get results
 	if (len(p_stderr)==0):
 		with open(RIQ_DIR+"/indexing/RIS.RUN/log/index."+infile+".all.json") as json_file:
 			json_data = json.load(json_file)
@@ -129,5 +136,5 @@ def constructPVs(prefix, infile):
 
 	else:
 		return "ERRORs: FOUND % DURATION: "+str(dur)
-	
+
 	return json.dumps(json_data)
