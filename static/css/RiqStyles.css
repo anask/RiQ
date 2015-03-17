@@ -195,6 +195,7 @@ div.sliding-content-r{
     transition: all 1s ease;
 	outline: 2px solid #DCB543;
     background:#FFF;
+    padding:15px;
 }
 div.sliding-content-r:hover{
     z-index:100;
@@ -218,6 +219,7 @@ div.sliding-content-lr{
     transition: all 1s ease;
 	outline: 2px solid #DCB543;
 	background:#FFF;
+	padding:15px;
 }
 div.sliding-content-lr:hover{
     z-index:100;
@@ -241,6 +243,7 @@ div.sliding-content-lr:hover{
     transition: all 1s ease;
 	outline: 2px solid #DCB543;
     background:#FFF;
+        padding:15px;
 
 }
 div.sliding-content-l:hover{
@@ -263,6 +266,7 @@ div.sliding-content-l:hover{
     transition: all 1s ease;
 	outline: 2px solid #DCB543;
     background:#FFF;
+        padding:15px;
 }
 div.sliding-content-t:hover{
     z-index:100;
