@@ -4,5 +4,6 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-	url(r'', 'execute.views.land'),
+	url(r'^$', 'execute.views.land'),
+	url(r'^getquery/$', 'execute.views.getQueryList'),
 )

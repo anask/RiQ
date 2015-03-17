@@ -194,11 +194,13 @@ div.sliding-content-r{
     -o-transition: all 1s ease;
     transition: all 1s ease;
 	outline: 2px solid #DCB543;
-
+    background:#FFF;
 }
 div.sliding-content-r:hover{
     z-index:100;
-    width:306.8%;
+    width:307%;
+    overflow-y:auto;
+
  }
 
 div.sliding-content-lr{
@@ -215,12 +217,14 @@ div.sliding-content-lr{
     -o-transition: all 1s ease;
     transition: all 1s ease;
 	outline: 2px solid #DCB543;
+	background:#FFF;
 }
 div.sliding-content-lr:hover{
     z-index:100;
-    width:306.8%;
-	margin-left:-103.5%;
-	margin-right:-103.4%;
+    width:307.2%;
+	margin-left:-103.6%;
+	margin-right:-103.7%;
+	overflow-y:auto;
  }
  div.sliding-content-l{
     z-index:0;
@@ -229,19 +233,22 @@ div.sliding-content-lr:hover{
 	overflow:hidden;
 	position:absolute;
 	top:0;
-	left:0;
+	right:0;
 	width:100%;
 	-webkit-transition: all 1s ease;
     -moz-transition: all 1s ease;
     -o-transition: all 1s ease;
     transition: all 1s ease;
 	outline: 2px solid #DCB543;
+    background:#FFF;
 
 }
 div.sliding-content-l:hover{
     z-index:100;
-    width:306.8%;
-	margin-left:-206.8%;
+    width:307.3%;
+	margin-left:-207%;
+	overflow-y:auto;
+
  }
  div.sliding-content-t{
     z-index:0;
@@ -255,10 +262,11 @@ div.sliding-content-l:hover{
     -o-transition: all 1s ease;
     transition: all 1s ease;
 	outline: 2px solid #DCB543;
-
+    background:#FFF;
 }
 div.sliding-content-t:hover{
     z-index:100;
 margin-top:-455px;
 height:551px;
+    overflow-y:auto;
  }

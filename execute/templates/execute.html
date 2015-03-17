@@ -1,8 +1,71 @@
 {% extends "base.html" %}
-{% block scripts %}
-	{% block content_title %}
+{% block content_title %}
 	<title>{{ TITLE }}</title>
-	{% endblock %}
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+
+function myFunction()
+	 {
+		var x = document.getElementById("indexname").value;
+		if (x.indexOf("BTC")>=0)
+			document.getElementById("dataset1").value = "BTC";
+		else if (x.indexOf("LOGD")>=0)
+			document.getElementById("dataset1").value = "LOGD";
+		else
+			document.getElementById("dataset1").value = "BTC";
+	}
+</script>
+<script type="text/javascript">
+	function showQuery(e)
+	{
+
+		var d= "name=" + e.value;
+
+	    $.ajax({
+		url: "/execute/getquery/",
+		type: "GET",
+		dataType: "text",
+		data: d,
+		success: function(m) {
+			var obj = $('#query').text(m);
+			obj.html(obj.html().replace(/\n/g,'<br/>'));
+			obj.html(obj.html().replace(/\t/g,'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'));
+
+		}
+	    });
+
+	}
+</script>
+<script type="text/javascript">
+
+	//Javascript to run RIQ
+	function runRIQ(e)
+	{
+	    var form = document.getElementById("frmRIQ");
+		var formURL = form.action;
+	    var postData = $('#frmRIQ').serialize();
+
+
+	    $.ajax({
+		url: '/execute/',
+		type: "POST",
+		dataType: "text",
+		data: postData,
+		timeout: 9000000000,
+		success: function(m) {
+			alert('OK');
+
+		},
+		error: function(n, textStatus, exception) {
+			alert('Error from ajax call: ' + n);
+
+		}
+	    });
+	}
+</script>
+
+
 {% endblock %}
 
 {% block content %}
@@ -13,7 +76,7 @@
 		<p class="text-center" style="font-size: 110%;font-weight: 800;">
 			EXECUTION PARAMETERS
 		</p>
-		<form action="" method="post">
+		<form id="frmRIQ" name="frmRIQ" action="" method="POST" >
 			{% csrf_token %}
 			{% if form.dataset.errors %}
 			<div style="color:red;">
@@ -25,18 +88,11 @@
 					<label for = "dataset">Select the index:</label>
 					<div class="col-sm-12">
 						<select onchange = "myFunction();" id="indexname" NAME="indexname"class="form-control execute">
-							{% for indexdata in indexdataobject %}
-								<option value="{{indexdata.IndexName}}"{%if IndexName1 == indexdata.IndexName %} selected="selected" {% endif %} >{{indexdata.IndexName}}</option>
+							{% for value, text in form.dataset.field.choices %}
+								<option value="{{ value}}">{{ text}}</option>
 							{% endfor %}
 						</select>
 						<div id = "datasetBTC" style="color:red;display:none">The total numbers of graphs available is 10</div>
-						{% if form.dataset.errors %}
-						<div style="color:red;">
-							<p class="error">
-							{{form.dataset.errors}}
-							</p>
-						</div>
-						{% endif %}
 					</div>
 				</div>
 
@@ -44,7 +100,7 @@
 
 			<div class="row"  style="margin-bottom:10px;">
 				<div class="form-group">
-					<label for = "dataset" {% if form.dataset.errors %} class="error"{% endif %}>Dataset:</label>
+					<label for = "dataset">Dataset:</label>
 					<div class="col-sm-12">
 						<input type="text"  id="dataset1" NAME="dataset"class="form-control execute" value="{%if Dataset == "LOGD" %} LOGD {%elif Dataset == "BTC"%} BTC {% endif %}" readonly >
 					</div>
@@ -57,8 +113,9 @@
 					<label for = "cache">Select the Cache:</label>
 					<div class="col-sm-12">
 						<select id="typecache" NAME="typecache"class="form-control execute" >
-							<option value="cold" {%if TypeCache == "cold" %} selected="selected" {% endif %} >Cold Cache</option>
-							<option value="warm" {%if TypeCache == "warm" %} selected="selected" {% endif %} >Warm Cache</option>
+							{% for value, text in form.cache.field.choices %}
+								<option value="{{ value}}">{{ text}}</option>
+							{% endfor %}
 						</select>
 					</div>
 				</div>
@@ -67,11 +124,12 @@
 
 			<div class="row"  style="margin-bottom:10px;">
 				<div class="form-group">
-					<label for = "optimizationtype">Optimization Type:</label>
+					<label for = "optimizationtype">Optimization:</label>
 					<div class="col-sm-12">
 						<select id="optimizationtype" NAME="optimizationtype"class="form-control execute" >
-							<option value="nopt" {%if optimizeType == "nopt" %} selected="selected" {% endif %} >No Optimize</option>
-							<option value="opt" {%if optimizeType == "opt" %} selected="selected" {% endif %} >Optimize </option>
+							{% for value, text in form.optimize.field.choices %}
+								<option value="{{ value}}">{{ text}}</option>
+							{% endfor %}
 						</select>
 					</div>
 				</div>
@@ -81,9 +139,9 @@
 				<div class="form-group">
 					<label for = "queries">Queries:</label>
 					<div class="col-sm-12">
-						<select id="queryDisplay"  NAME="queries"class="form-control execute" onchange="showQueries(event);">
-							{% for queryfilename in querynamedataobject %}
-								<option value="{{queryfilename.queryname}}"{%if QueriesForm == queryfilename.queryname %} 	selected="selected" {% endif %} >{{queryfilename.queryname}}</option>
+						<select id="queryDisplay"  NAME="queries"class="form-control execute" onchange="showQuery(this);">
+							{% for value, text in form.query.field.choices %}
+								<option value="{{ value}}">{{ text}}</option>
 							{% endfor %}
 						</select>
 					</div>
@@ -98,9 +156,6 @@
 				</div>
 			</div>
 
-
-
-
 		</form>
 	</div>
 	<div class="col-md-9" style="margin-left:5px;">
@@ -110,7 +165,7 @@
 					<div class="sliding-content-r">
 						<div class="text-center widen" style="font-size: 110%;font-weight: 800; padding-top:10px;">
 							QUERY
-							<div id="query" class="text-left"> the sparql query</div>
+							<div id="query" class="text-left" contenteditable="true" spellcheck='false'> </div>
 						</div>
 					</div>
 				</div>
@@ -147,5 +202,11 @@
 		</div>
 	</div>
 </div>
-
+<script type="text/javascript">
+document.getElementById("indexname").selectedIndex = -1;
+document.getElementById("typecache").selectedIndex = -1;
+document.getElementById("optimizationtype").selectedIndex = -1;
+document.getElementById("queryDisplay").selectedIndex = -1;
+document.getElementById("dataset1").value = "";
+</script>
 {% endblock %}
