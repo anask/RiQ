@@ -72,14 +72,14 @@ def land(request):
 
 			#Write new configuration
 
-			f = open('riqtemp.conf.py','w')
+			f = open('riqtemp.conf','w')
 			config.write(f)
 			f.close()
 
 			#print 'locale encoding: ' + locale.getpreferredencoding()
 			# read the riqtemp.conf
 			# create riq.conf
-			q = open('riqtemp.conf.py')
+			q = open('riqtemp.conf')
 			r = open('config-files/riq.conf', 'w')
 			for line in q:
 				if line.find(' = ') != -1:

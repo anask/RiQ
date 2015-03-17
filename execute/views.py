@@ -5,6 +5,9 @@ from indexinfo.models import indexdata,graphdata,queryfilenametable
 from django.template import RequestContext
 from execute.forms import ExecuteForm
 import json
+from os import remove
+import ConfigParser
+import os
 
 def land(request):
 	indexdataobject = indexdata.objects.all()
@@ -24,13 +27,51 @@ def land(request):
 			TypeCache 	= request.POST.__getitem__('typecache')
 			optimizeType = request.POST.__getitem__('optimizationtype')
 			query = request.POST.__getitem__('qtext')
-			print (IndexName ,QueriesForm,TypeCache,optimizeType)
-			print(query)
+
+			#*************** WRITE NEW DATASET NAME ***************
+			RIQ_CONF =  ('config-files/riq.conf')
+
+			config = ConfigParser.RawConfigParser()
+			config.optionxform=str
+			config.read(RIQ_CONF)
+
+			# Write prefix for the dataset and set its conf name
+			DATASET_PREFIX_DIR =  os.path.join(os.path.abspath(os.pardir),'RIS/indexing/RIS.RUN/data/')
+			FILE = ''
+
+			if   IndexName == 'BTC':
+				FILE = 'btc-2012-split-clean'
+			elif IndexName == 'LOGD':
+				FILE = 'logd-dataset'
+			elif IndexName == 'D10':
+				FILE = 'd10-small-sample'
+
+			config.set('Dataset', 'NAME',FILE)
+
+			#Write new configuration
 
 
+			f = open('riqtemp.conf','w')
+			config.write(f)
+			f.close()
+
+			# read the riqtemp.conf
+			# create riq.conf
+			q = open('riqtemp.conf')
+			r = open('config-files/riq.conf', 'w')
+			for line in q:
+				if line.find(' = ') != -1:
+					r.write(line.replace(' = ', '='))
+				else:
+					r.write(line)
+			q.close()
+			r.close()
+
+			# remove riqtemp.conf
+			remove('riqtemp.conf')
+			#******************************************************
 			return HttpResponse("Received Form", status=200,content_type='plain/text')
 		except:
-			print 'form error'
 			return HttpResponse("Form Not Valid!", status=500,content_type='plain/text')
 
 def getQueryList(request):
