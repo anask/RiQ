@@ -20,8 +20,8 @@ class ExecuteForm(forms.Form):
 	WARMC = 'warm'
 
 	MY_CHOICESCACHE = (
-		(COLDC, 'Cold Cache'),
-		(WARMC , 'Warm Cache'),
+		(COLDC, 'Cold'),
+		(WARMC , 'Warm'),
 	)
 
 	OPTENABLED  = 'opt'
@@ -49,8 +49,8 @@ class ExecuteForm(forms.Form):
 	)
 
 	dataset = forms.ChoiceField(choices=MY_CHOICESDATASET, widget = forms.Select)
-	cache = forms.ChoiceField(choices=MY_CHOICESCACHE, widget = forms.Select)
+	cache = forms.ChoiceField(choices=MY_CHOICESCACHE, widget = forms.RadioSelect())
 
-	optimize = forms.ChoiceField(choices=MY_CHOICESOPTIMIZATION, widget = forms.Select)
+	optimize = forms.ChoiceField(choices=MY_CHOICESOPTIMIZATION, widget = forms.RadioSelect())
 
-	query = forms.ChoiceField(choices=MY_CHOICESQUERY, widget = forms.Select)
+	query = forms.ChoiceField(choices=MY_CHOICESQUERY, widget = forms.RadioSelect())

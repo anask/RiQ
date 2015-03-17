@@ -90,9 +90,9 @@ function myFunction()
 			{% endif %}
 			<div class="row"  style="margin-bottom:10px;">
 					<div class="form-group">
-					<label for = "dataset">Select the index:</label>
+					<label for = "dataset">Select index:</label>
 					<div class="col-sm-12">
-						<select onchange = "myFunction();" id="indexname" NAME="indexname"class="form-control execute">
+						<select id="indexname" NAME="indexname"class="form-control execute">
 							{% for value, text in form.dataset.field.choices %}
 								<option value="{{ value}}">{{ text}}</option>
 							{% endfor %}
@@ -102,47 +102,9 @@ function myFunction()
 				</div>
 
 			</div>
-
-			<div class="row"  style="margin-bottom:10px;">
-				<div class="form-group">
-					<label for = "dataset">Dataset:</label>
-					<div class="col-sm-12">
-						<input type="text"  id="dataset1" NAME="dataset"class="form-control execute" value="{%if Dataset == "LOGD" %} LOGD {%elif Dataset == "BTC"%} BTC {% endif %}" readonly >
-					</div>
-				</div>
-			</div>
-
-
-			<div class="row"  style="margin-bottom:10px;">
-				<div class="form-group">
-					<label for = "cache">Select the Cache:</label>
-					<div class="col-sm-12">
-						<select id="typecache" NAME="typecache"class="form-control execute" >
-							{% for value, text in form.cache.field.choices %}
-								<option value="{{ value}}">{{ text}}</option>
-							{% endfor %}
-						</select>
-					</div>
-				</div>
-			</div>
-
-
-			<div class="row"  style="margin-bottom:10px;">
-				<div class="form-group">
-					<label for = "optimizationtype">Optimization:</label>
-					<div class="col-sm-12">
-						<select id="optimizationtype" NAME="optimizationtype"class="form-control execute" >
-							{% for value, text in form.optimize.field.choices %}
-								<option value="{{ value}}">{{ text}}</option>
-							{% endfor %}
-						</select>
-					</div>
-				</div>
-			</div>
-
 			<div class="row"  style="margin-bottom:20px;">
 				<div class="form-group">
-					<label for = "queries">Queries:</label>
+					<label for = "queries">Query:</label>
 					<div class="col-sm-12">
 						<select id="queryDisplay"  NAME="queries"class="form-control execute" onchange="showQuery(this);">
 							{% for value, text in form.query.field.choices %}
@@ -153,6 +115,34 @@ function myFunction()
 				</div>
 			</div>
 
+			<div class="row"  style="margin-bottom:10px;">
+				<div class="form-group">
+					<label for = "cache">Cache:</label>
+					<div class="col-sm-12">
+
+							{% for value, text in form.cache.field.choices %}
+							<input id="typecache" type="radio"  name="typecache" value="{{ value}}"><label for="typecache" style="color:#000;font-weight:400;"><span><span></span></span>{{ text }}</label><br />
+
+							{% endfor %}
+
+					</div>
+				</div>
+			</div>
+
+
+			<div class="row"  style="margin-bottom:10px;">
+				<div class="form-group">
+					<label for = "optimizationtype">Optimization:</label>
+					<div class="col-sm-12">
+							{% for value, text in form.optimize.field.choices %}
+							<input id="optimizationtype" type="radio"  name="optimizationtype" value="{{ value}}"><label for="optimizationtype" style="color:#000;font-weight:400;"><span><span></span></span>{{ text }}</label><br />
+
+							{% endfor %}
+					</div>
+				</div>
+			</div>
+
+
 			<div class="row" >
 				<div class="form-group">
 					<div class="col-sm-12">
@@ -161,6 +151,13 @@ function myFunction()
 				</div>
 			</div>
 			<input type="text" id='query-text' name='qtext' style="display:none"></input>
+
+			<div class="row" style="margin-top:10px;" >
+					<div class="col-sm-12" style="color:#DCB543;margin-top:5px;">
+					<h5>Note:</h5>
+					The query will be executed using the configuration set in the index construction page.
+					</div>
+			</div>
 		</form>
 	</div>
 	<div class="col-md-9" style="margin-left:5px;">
@@ -209,10 +206,9 @@ function myFunction()
 </div>
 <script type="text/javascript">
 document.getElementById("indexname").selectedIndex = -1;
-document.getElementById("typecache").selectedIndex = -1;
 document.getElementById("optimizationtype").selectedIndex = -1;
 document.getElementById("queryDisplay").selectedIndex = -1;
-document.getElementById("dataset1").value = "";
 document.getElementById("query-text").value="";
+$('input:radio').each(function () { $(this).prop('checked', false); });
 </script>
 {% endblock %}

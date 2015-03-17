@@ -20,12 +20,11 @@ def land(request):
 
 		try:
 			IndexName 	= request.POST.__getitem__('indexname')
-			Dataset 		= request.POST.__getitem__('dataset')
 			QueriesForm	= request.POST.__getitem__('queries')
 			TypeCache 	= request.POST.__getitem__('typecache')
 			optimizeType = request.POST.__getitem__('optimizationtype')
 			query = request.POST.__getitem__('qtext')
-			print (IndexName ,Dataset ,QueriesForm,TypeCache,optimizeType)
+			print (IndexName ,QueriesForm,TypeCache,optimizeType)
 			print(query)
 
 
