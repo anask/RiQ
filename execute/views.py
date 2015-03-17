@@ -16,18 +16,23 @@ def land(request):
 		return render_to_response('execute.html', context,context_instance=RequestContext(request))
 
 	elif request.method == 'POST':
-		form = ExecuteForm()
-		IndexName 	= request.POST.__getitem__('indexname')
-		Dataset 		= request.POST.__getitem__('dataset')
-		QueriesForm	= request.POST.__getitem__('queries')
-		TypeCache 	= request.POST.__getitem__('typecache')
-		optimizeType = request.POST.__getitem__('optimizationtype')
+		print request.POST
 
-		print (IndexName ,Dataset ,QueriesForm,TypeCache,optimizeType)
+		try:
+			IndexName 	= request.POST.__getitem__('indexname')
+			Dataset 		= request.POST.__getitem__('dataset')
+			QueriesForm	= request.POST.__getitem__('queries')
+			TypeCache 	= request.POST.__getitem__('typecache')
+			optimizeType = request.POST.__getitem__('optimizationtype')
+			query = request.POST.__getitem__('qtext')
+			print (IndexName ,Dataset ,QueriesForm,TypeCache,optimizeType)
+			print(query)
 
-		context = {'form': form,'TITLE' : 'Index Construction'}
-		return render_to_response('execute.html', context,context_instance=RequestContext(request))
 
+			return HttpResponse("Received Form", status=200,content_type='plain/text')
+		except:
+			print 'form error'
+			return HttpResponse("Form Not Valid!", status=500,content_type='plain/text')
 
 def getQueryList(request):
 	queryname = request.GET['name'].lower()

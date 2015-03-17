@@ -44,10 +44,11 @@ function myFunction()
 	//Javascript to run RIQ
 	function runRIQ(e)
 	{
+		document.getElementById("query-text").value= $('#query').text();
+
 	    var form = document.getElementById("frmRIQ");
 		var formURL = form.action;
 	    var postData = $('#frmRIQ').serialize();
-
 
 	    $.ajax({
 		url: '/execute/',
@@ -56,11 +57,13 @@ function myFunction()
 		data: postData,
 		timeout: 9000000000,
 		success: function(m) {
-			alert('OK');
+			console.log("Execute Form Submitted Successfully");
 
 		},
-		error: function(n, textStatus, exception) {
-			alert('Error from ajax call: ' + n);
+		error: function(response,n, textStatus, exception) {
+			alert('Form Error: ' + response.responseText);
+			console.log(n);
+			console.log(textStatus);
 
 		}
 	    });
@@ -157,7 +160,7 @@ function myFunction()
 					</div>
 				</div>
 			</div>
-
+			<input type="text" id='query-text' name='qtext' style="display:none"></input>
 		</form>
 	</div>
 	<div class="col-md-9" style="margin-left:5px;">
@@ -210,5 +213,6 @@ document.getElementById("typecache").selectedIndex = -1;
 document.getElementById("optimizationtype").selectedIndex = -1;
 document.getElementById("queryDisplay").selectedIndex = -1;
 document.getElementById("dataset1").value = "";
+document.getElementById("query-text").value="";
 </script>
 {% endblock %}
