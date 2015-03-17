@@ -128,18 +128,18 @@
 
 				var crLink = window.location.href.split("/");
 				crLink='/'+crLink[3];
-				if(crLink=="/" || crLink=="/home/")
+				if(crLink=="/" || crLink=="/home")
 					$('#brand').css("color", "#FFF");
 				else{
 				$('#navigation ul li a').each(function(){
 					if(crLink==$(this).attr('href')){
-						if(crLink=='/index/')
+						if(crLink=='/index')
 							$(this).css("color", "#E87352");
-						else if(crLink=='/execute/')
+						else if(crLink=='/execute')
 							$(this).css("color", "#DCB543");
-						else if(crLink=='/linked/')
+						else if(crLink=='/linked')
 							$(this).css("color", "#43C487");
-						else if(crLink=='/visualize/')
+						else if(crLink=='/visualize')
 							$(this).css("color", "#3BBEC0");
 					}
 				});
