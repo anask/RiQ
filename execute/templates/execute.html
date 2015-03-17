@@ -19,8 +19,8 @@ function myFunction()
 <script type="text/javascript">
 	function showQuery(e)
 	{
-
 		var d= "name=" + e.value;
+		var obj = $('#query').unbind();
 
 	    $.ajax({
 		url: "/execute/getquery/",
@@ -28,10 +28,12 @@ function myFunction()
 		dataType: "text",
 		data: d,
 		success: function(m) {
-			var obj = $('#query').text(m);
+			obj.text(m);
 			obj.html(obj.html().replace(/\n/g,'<br/>'));
 			obj.html(obj.html().replace(/\t/g,'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'));
-
+			obj.bind('DOMNodeInserted DOMSubtreeModified DOMNodeRemoved', function(event) {
+			document.getElementById("queryDisplay").selectedIndex = 4;
+			});
 		}
 	    });
 
