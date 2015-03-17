@@ -201,6 +201,7 @@ div.sliding-content-r:hover{
     z-index:100;
     width:307%;
     overflow-y:auto;
+    transition-delay:1s;
 
  }
 
@@ -227,6 +228,7 @@ div.sliding-content-lr:hover{
 	margin-left:-103.6%;
 	margin-right:-103.7%;
 	overflow-y:auto;
+	transition-delay:1s;
  }
  div.sliding-content-l{
     z-index:0;
@@ -251,6 +253,7 @@ div.sliding-content-l:hover{
     width:307.3%;
 	margin-left:-207%;
 	overflow-y:auto;
+    transition-delay:1s;
 
  }
  div.sliding-content-t{
@@ -273,6 +276,7 @@ div.sliding-content-t:hover{
 margin-top:-455px;
 height:551px;
     overflow-y:auto;
+        transition-delay:1s;
  }
 input[type=checkbox]:not(old),
 input[type=radio   ]:not(old){
