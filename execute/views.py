@@ -8,6 +8,7 @@ import json
 from os import remove
 import ConfigParser
 import os
+import sys
 
 def land(request):
 	indexdataobject = indexdata.objects.all()
@@ -20,12 +21,9 @@ def land(request):
 
 	elif request.method == 'POST':
 		print request.POST
-
 		try:
 			IndexName 	= request.POST.__getitem__('indexname')
 			QueriesForm	= request.POST.__getitem__('queries')
-			TypeCache 	= request.POST.__getitem__('typecache')
-			optimizeType = request.POST.__getitem__('optimizationtype')
 			query = request.POST.__getitem__('qtext')
 
 			#*************** WRITE NEW DATASET NAME ***************
@@ -70,9 +68,41 @@ def land(request):
 			# remove riqtemp.conf
 			remove('riqtemp.conf')
 			#******************************************************
-			return HttpResponse("Received Form", status=200,content_type='plain/text')
 		except:
 			return HttpResponse("Form Not Valid!", status=500,content_type='plain/text')
+
+		#WRITE QUERY TO FILE
+		try:
+			qf = open('queries/temp.q', 'w')
+			print ('the query:')
+			print (query)
+			qf.write(query.encode('utf-8'));
+			qf.close()
+		except:
+			print "Unexpected File Error:", sys.exc_info()[0]
+			return HttpResponse("File Error!", status=500,content_type='plain/text')
+
+		#DETERMINE CACHE/OPT PARAMETERS
+		try:
+			TypeCache 	= request.POST.__getitem__('typecache')
+		except:
+			TypeCache = 'warm'
+		try:
+			optimizeType = request.POST.__getitem__('optimizationtype')
+		except:
+			optimizeType = 'opt'
+
+		if(TypeCache=='warm'):
+			TypeCache = '-c warm'
+		else:
+			TypeCache = '-c cold'
+
+		if(optimizeType=='opt'):
+			optimizeType = '-O'
+		else:
+			optimizeType = ''
+
+		return HttpResponse("Received Form", status=200,content_type='plain/text')
 
 def getQueryList(request):
 	queryname = request.GET['name'].lower()
@@ -143,9 +173,6 @@ WHERE
 	elif(queryname == 'dbpd1'):
 		query = """PREFIX resource: <http://dbpedia.org/resource/>
 PREFIX ontology: <http://dbpedia.org/ontology/>
-
-#SELECT *
-#SELECT ?g
 SELECT ?city ?area ?code ?zone ?abstract ?postal ?water ?popu ?offset ?g
 WHERE {
   GRAPH ?g {
@@ -165,8 +192,6 @@ WHERE {
 	elif(queryname == 'dbpd2'):
 		query = """PREFIX res: <http://dbpedia.org/resource/>
 PREFIX onto: <http://dbpedia.org/ontology/>
-
-#SELECT *
 SELECT ?city ?area ?code ?zone ?abstract ?postal ?offset ?popu ?g
 WHERE {
 GRAPH ?g {
