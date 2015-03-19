@@ -1,6 +1,23 @@
-*.pyc
-
+config-files/riq.conf
 
 config-files/riq.conf
 
-*.pyc
+execute/forms.pyc
+
+execute/models.pyc
+
+execute/urls.pyc
+
+execute/views.pyc
+
+home/urls.pyc
+
+indexinfo/forms.pyc
+
+indexinfo/models.pyc
+
+indexinfo/urls.pyc
+
+indexinfo/views.pyc
+
+linked/urls.pyc
