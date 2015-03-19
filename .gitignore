@@ -2,3 +2,5 @@
 
 
 config-files/riq.conf
+
+*.pyc
