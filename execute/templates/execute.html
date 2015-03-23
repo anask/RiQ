@@ -3,73 +3,9 @@
 	<title>{{ TITLE }}</title>
 {% endblock %}
 {% block scripts %}
-<script type="text/javascript">
-
-function myFunction()
-	 {
-		var x = document.getElementById("indexname").value;
-		if (x.indexOf("BTC")>=0)
-			document.getElementById("dataset1").value = "BTC";
-		else if (x.indexOf("LOGD")>=0)
-			document.getElementById("dataset1").value = "LOGD";
-		else
-			document.getElementById("dataset1").value = "BTC";
-	}
-</script>
-<script type="text/javascript">
-	function showQuery(e)
-	{
-		var d= "name=" + e.value;
-		var obj = $('#query').unbind();
-
-	    $.ajax({
-		url: "/execute/getquery/",
-		type: "GET",
-		dataType: "text",
-		data: d,
-		success: function(m) {
-			obj.text(m);
-			obj.html(obj.html().replace(/\n/g,'<br/>'));
-			obj.html(obj.html().replace(/\t/g,'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'));
-			obj.bind('DOMNodeInserted DOMSubtreeModified DOMNodeRemoved', function(event) {
-			document.getElementById("queryDisplay").selectedIndex = 4;
-			});
-		}
-	    });
-
-	}
-</script>
-<script type="text/javascript">
-
-	//Javascript to run RIQ
-	function runRIQ(e)
-	{
-		document.getElementById("query-text").value= $('#query').text();
-
-	    var form = document.getElementById("frmRIQ");
-		var formURL = form.action;
-	    var postData = $('#frmRIQ').serialize();
-
-	    $.ajax({
-		url: '/execute/',
-		type: "POST",
-		dataType: "text",
-		data: postData,
-		timeout: 9000000000,
-		success: function(m) {
-			console.log("Execute Form Submitted Successfully");
-
-		},
-		error: function(response,n, textStatus, exception) {
-			alert('Form Error: ' + response.responseText);
-			console.log(n);
-			console.log(textStatus);
-
-		}
-	    });
-	}
-</script>
-
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+	<script src="../static/js/highcharts.js" type="text/javascript"></script>
+	<script src="../static/js/execute-scripts.js" type="text/javascript"></script>
 
 {% endblock %}
 
@@ -167,7 +103,7 @@ function myFunction()
 					<div class="sliding-content-r">
 						<div class="text-center widen" style="font-size: 110%;font-weight: 800; padding-top:10px;">
 							QUERY
-							<div id="query" class="text-left" contenteditable="true" spellcheck='false'> </div>
+							<div id="query" class="text-left" contenteditable="true" spellcheck='false' style="color:#000"> </div>
 						</div>
 					</div>
 				</div>
@@ -175,15 +111,15 @@ function myFunction()
 					<div class="sliding-content-lr">
 						<div class="text-center widen" style="font-size: 110%;font-weight: 800; padding-top:10px;">
 							QUERY GRAPH
-							<div id="query-graph" class="text-left"> X ---> Y </div>
+							<div id="query-graph" class="text-left">  </div>
 						</div>
 					</div>
 				</div>
 				<div class="thrds" style="color:#DCB543; border-color:#DCB543;border: 2px solid; height:450px;margin-left:5px;position:relative;float:right; display: block;">
-					<div class="sliding-content-l">
+					<div >
 						<div class="text-center widen" style="font-size: 110%;font-weight: 800; padding-top:10px;">
 							TIME COMPARISON
-							<div id="time" class="text-left"> 12.2 + 4.3 s </div>
+							<div id="time" class="text-left">  </div>
 						</div>
 					</div>
 				</div>
@@ -196,7 +132,7 @@ function myFunction()
 					<div class="sliding-content-t">
 						<div class="text-center widen" style="font-size: 110%;font-weight: 800; padding-top:10px;">
 							RESULTS
-							<div id="results" class="text-left"> the results</div>
+							<div id="results" class="text-left" style="color:#000"> </div>
 						</div>
 					</div>
 				</div>
@@ -205,10 +141,11 @@ function myFunction()
 	</div>
 </div>
 <script type="text/javascript">
-document.getElementById("indexname").selectedIndex = -1;
-document.getElementById("optimizationtype").selectedIndex = -1;
-document.getElementById("queryDisplay").selectedIndex = -1;
-document.getElementById("query-text").value="";
-$('input:radio').each(function () { $(this).prop('checked', false); });
+	//init form
+	document.getElementById("indexname").selectedIndex = -1;
+	document.getElementById("optimizationtype").selectedIndex = -1;
+	document.getElementById("queryDisplay").selectedIndex = -1;
+	document.getElementById("query-text").value="";
+	$('input:radio').each(function () { $(this).prop('checked', false); });
 </script>
 {% endblock %}
