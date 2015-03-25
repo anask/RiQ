@@ -64,7 +64,7 @@ def land(request):
 			if form.cleaned_data['dataset']=='BTC':
 				FILE = 'btc-2012-split-clean'
 			elif form.cleaned_data['dataset']=='LOGD':
-				FILE = 'logd-dataset'
+				FILE = 'dbpedia'
 			elif form.cleaned_data['dataset']=='D10':
 				FILE = 'd10-small-sample'
 
