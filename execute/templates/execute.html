@@ -1,13 +1,24 @@
 {% extends "base.html" %}
 {% block content_title %}
 	<title>{{ TITLE }}</title>
-{% endblock %}
-{% block scripts %}
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-	<script src="../static/js/highcharts.js" type="text/javascript"></script>
-	<script src="../static/js/execute-scripts.js" type="text/javascript"></script>
 
 {% endblock %}
+
+
+
+
+{% block scripts %}
+{% load static %}
+	<link href="{% static 'css/execute-graph.css' %}" rel="stylesheet">
+	<script type='text/javascript' src='http://d3js.org/d3.v3.min.js'></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+	<script src="../static/js/highcharts.js" type="text/javascript"></script>
+	<script src="../static/js/execute-graph.js" type="text/javascript"></script>
+	<script src="../static/js/execute-scripts.js" type="text/javascript"></script>
+
+
+{% endblock %}
+
 
 {% block content %}
 

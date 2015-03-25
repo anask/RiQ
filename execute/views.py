@@ -40,7 +40,7 @@ def land(request):
 			if   IndexName == 'BTC':
 				FILE = 'btc-2012-split-clean'
 			elif IndexName == 'LOGD':
-				FILE = 'logd-dataset'
+				FILE = 'dbpedia'
 			elif IndexName == 'D10':
 				FILE = 'd10-small-sample'
 
@@ -102,6 +102,9 @@ def land(request):
 		else:
 			optimizeType = ''
 
+		#	s.sendline('/home/vsfgd/RIS/indexing/RIS/scripts/./run_riq_query.py -C ../../RIS.RUN/riq.conf -q ' + executequeryfilename + ' -c ' + TypeCache + optoption)
+	    #   s.prompt(timeout=1000)
+
 		return HttpResponse("Received Form", status=200,content_type='plain/text')
 
 def getTimings(request):
@@ -123,6 +126,65 @@ def getResults(request):
 	outf.close()
 
 	return HttpResponse(data, content_type="plain/text")
+
+def getQueryGraph(request):
+	DIR =  os.path.join(os.path.abspath(os.pardir),'RIS/indexing/RIS.RUN/log/')
+
+	bgpfile = DIR+'query.btc-2012-split-clean.'+ 'dbpedia.q9.1.opt.cold.filter.1.log'
+
+	rlog = open(bgpfile)
+	bStartRead = 0
+	d3records = {}
+	d3record = {}
+	#graphdataobject.subject =  set the value of subject
+	i=0
+	for line in rlog:
+
+		if line.startswith('structure format:') == True & bStartRead == 0:
+				bStartRead = 1
+
+		if (line.startswith('subject') == True) & bStartRead == 1:
+				d3record['subject'] = line[line.find(': ')+1:].rstrip('\n')
+
+
+		if (line.startswith('predicate') == True) & bStartRead == 1:
+				d3record['predicate'] = line[line.find(': ')+1:].rstrip('\n')
+
+
+		if (line.startswith('object') == True) & bStartRead == 1:
+				d3record['object'] = line[line.find(': ')+1:].rstrip('\n')
+				d3records[i] = d3record
+				d3record = {}
+				i=i+1
+
+		if line.find('parse_tree size:') != -1:
+				break
+
+
+	rlog.close()
+	print d3records
+	"""
+	candidatefile = DIR+'query.btc-2012-split-clean.'+'dbpedia.q9.1.opt.cold.filter.candidates'
+	candidatelog = open(candidatefile)
+
+	demodir =  os.path.join(os.path.abspath(os.pardir),'RiQ_Demo/')
+
+	candidatelogindecimal = open(demodir+"output/candidatedataindecimal.txt", 'w')
+	for line in candidatelog:
+		binarytodecimal = str(int(line, 2))
+		#print binarytodecimal
+		print ('Candidate' + binarytodecimal)
+		candidatelogindecimal.write('Candidate' + binarytodecimal + '\n')
+
+	candidatelog.close()
+	candidatelogindecimal.close()
+	"""
+
+	#print(d3records)
+	#html = "<html><body> "+"Hello"+"</body></html>"
+
+	return HttpResponse(json.dumps(d3records), content_type="application/json")
+
 
 def getQueryList(request):
 	queryname = request.GET['name'].lower()
@@ -252,3 +314,13 @@ WHERE {
 }"""
 
 	return HttpResponse(query,  content_type="text/plain")
+
+class D3GraphData:
+  def __init__(self):
+    self.subject = None
+    self.predicate = None
+    self.object = None
+
+class Candidate:
+  def __init__(self):
+    self.name = None

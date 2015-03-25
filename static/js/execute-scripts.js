@@ -1,5 +1,5 @@
 function plotTimings(data){
-	//alert(JSON.stringify(data));
+
 	var cache = data['type'];
 	var riq_t = data['riq'];
 	var virt_t = data['virt'];
@@ -100,6 +100,50 @@ function getQueryTimimgs()
 
 }
 
+function getLable(str){
+                var objValue = str;
+
+				if (str.indexOf("http://") != -1)
+				{
+					objValue = objValue.substring(str.lastIndexOf("/")+1);
+					objValue = objValue.replace(">", "");
+				}
+                return objValue.trim();
+}
+
+function getQueryGraph()
+{
+
+	$.ajax({
+	url: "/execute/graph/",
+	type: "GET",
+	dataType: "json",
+		error: function(response,n, textStatus, exception) {
+		alert('Form Error: ' + response.responseText);
+		console.log(n);
+		console.log(textStatus);
+
+	},
+	success: function(data) {
+			var links = new Array();
+			for(var triple in data){
+				var link = {source: getLable(data[triple].subject), target: getLable(data[triple].object), label: getLable(data[triple].predicate)};
+				links.push(link);
+
+			}
+// 			var links = [
+// 			  {source: "Microsoft", target: "HTC", label: "licensing"},
+// 			  {source: "Microsoft", target: "HTC", label: "suit"},
+// 			  {source: "Microsoft", target: "HTC", label: "resolved"},
+// 			  {source: "Samsung", target: "Apple", label: "suit"},
+// 			  {source: "Motorola", target: "Apple", label: "suit"},
+// 			];
+
+			render(links);
+		}});
+
+
+}
 function getQueryResults()
 {
 
@@ -137,12 +181,11 @@ function showQuery(e)
 		obj.html(obj.html().replace(/\n/g,'<br/>'));
 		obj.html(obj.html().replace(/\t/g,'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'));
 		obj.bind('DOMNodeInserted DOMSubtreeModified DOMNodeRemoved', function(event) {
-		document.getElementById("queryDisplay").selectedIndex = 4;
+		document.getElementById("queryDisplay").selectedIndex = 5;
 
 		});
 	}
 	});
-
 }
 
 //Javascript to run RIQ
@@ -171,6 +214,7 @@ function runRIQ(e)
 
 	}
 	});
-	getQueryTimimgs();
 	getQueryResults();
+	getQueryTimimgs();
+	getQueryGraph();
 }
