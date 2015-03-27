@@ -2,7 +2,69 @@
 
 {% block scripts %}
 
+		<script type="text/javascript">
+			function getCandidateTree(s){
+				alert(s.value);
+			}
 
+			function getQueryCandidates()
+			{
+
+				$.ajax({
+				url: "/visualize/cand/",
+				type: "GET",
+				dataType: "json",
+					error: function(response,n, textStatus, exception) {
+					alert('Form Error: ' + response.responseText);
+					console.log(n);
+					console.log(textStatus);
+
+				},
+				success: function(data) {
+
+					var htmlStr="";
+					var key, i = 0;
+					for(key in data.candidates)
+						htmlStr=htmlStr + '<option value="'+data.candidates[i]+'" > Candidate '+i+++'</option>';
+					document.getElementById('cands').innerHTML=htmlStr;
+
+				}
+				});
+
+
+			}
+
+
+			function getQueryInfo()
+			{
+
+				$.ajax({
+				url: "/visualize/info/",
+				type: "GET",
+				dataType: "json",
+					error: function(response,n, textStatus, exception) {
+					alert('Form Error: ' + response.responseText);
+					console.log(n);
+					console.log(textStatus);
+
+				},
+				success: function(data) {
+					document.getElementById('qName').innerHTML=data['name'];
+					document.getElementById('qIndex').innerHTML=data['index'];
+					document.getElementById('qCache').innerHTML=data['cache'];
+					document.getElementById('qOpt').innerHTML=data['opt'];
+
+					}});
+			}
+
+		function runAntlr(){
+		getQueryCandidates();
+		}
+		$( document ).ready(function() {
+				getQueryInfo();
+			});
+
+		</script>
 {% endblock %}
 
 
@@ -14,8 +76,95 @@
 {% endblock %}
 
 {% block content %}
+<div class="row">
+	<div style="display: flex; flex-flow: row;">
 
-<div>Welcome to Visualize</div>
+	<div id="leftUnit" class="col-md-2">
+			<div class="row">
+				<div class="col-md-12" style="color:#3BBEC0; border-color:#3BBEC0;border: 2px solid; height:230px;">
 
+					<p class="text-center" style="font-size: 110%;font-weight: 800; padding-top:10px;">
+							Query Information
+					</p>
+
+				<div id="info" style="height:130px; margin-top:10px;">
+					<table style="width:100%;margin-top:10px;">
+					  <tr>
+						<td style="padding-left:22px">Query:</td>
+						<td id='qName' style="color:#000"></td>
+					  </tr>
+					  <tr>
+						<td style="padding-left:25px">Index:</td>
+						<td id='qIndex' style="color:#000"></td>
+					  </tr>
+					  <tr>
+						<td style="padding-left:20px">Cache:</td>
+						<td id='qCache' style="color:#000"></td>
+					  </tr>
+					  <tr>
+						<td>Rewriting:</td>
+						<td id='qOpt' style="color:#000"></td>
+					  </tr>
+					</table>
+
+				</div>
+				<input type="Button" class="btn btn-primary vis-btn" alt="graphData" style="width:100%;" value="RUN ANTLR" onclick="runAntlr()"></input>
+
+
+
+				</div>
+			</div>
+			<div class="row">
+			<div id="exp" class="col-md-12" style="color:#3BBEC0; border-color:#3BBEC0;border: 2px solid; height:309px; margin-top:6px">
+				<p class="text-center" style="font-size: 110%;font-weight: 800; padding-top:10px;">
+						Candidates
+				</p>
+
+
+			<div style="display:inline-block; vertical-align:top; overflow:hidden; border-top:solid #3BBEC0 1px;border-bottom:solid #3BBEC0 1px;">
+				<select id="cands" style="padding:10px; margin:-5px -20px -5px -5px; height:250px; width:182px;" size="15" onchange="getCandidateTree(this)">
+
+				</select>
+			</div>
+
+
+
+
+
+			</div>
+		</div>
+
+	</div>
+	<div class="col-md-8" style="margin-left:4px; height:100%;">
+		<div class="row">
+			<div class="col-md-12" style="color:#3BBEC0; border-color:#3BBEC0;border: 2px solid; height:280px;">
+				<p class="text-center" style="font-size: 110%;font-weight: 800; padding-top:10px;">
+						Query Tree
+				</p>
+
+			<div id="querytree"> </div>
+
+
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12" style="color:#3BBEC0; border-color:#3BBEC0;border: 2px solid;margin-top:5px; height:260px;">
+				<p class="text-center" style="font-size: 110%;font-weight: 800; padding-top:10px;">
+						Candidate Query Tree
+				</p>
+
+			<div id="candtree"> </div>
+
+
+			</div>
+		</div>
+
+	</div>
+</div>
+</div>
+{% if IndexName %}
+<!--<div style="color:red;">The name of the new Index created is {{IndexName}}</div>-->
+{% endif %}
 {% endblock %}
+
 

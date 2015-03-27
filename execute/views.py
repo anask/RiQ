@@ -13,18 +13,21 @@ import sys
 def land(request):
 	indexdataobject = indexdata.objects.all()
 	querynamedataobject = queryfilenametable.objects.all()
-
+	queryInfo = {}
 	if request.method == 'GET':
 		form = ExecuteForm()
 		context = {'form': form,'TITLE' : 'Index Construction'}
 		return render_to_response('execute.html', context,context_instance=RequestContext(request))
 
 	elif request.method == 'POST':
+
 		print request.POST
 		try:
 			IndexName 	= request.POST.__getitem__('indexname')
-			QueriesForm	= request.POST.__getitem__('queries')
+			QueryId	= request.POST.__getitem__('queries')
 			query = request.POST.__getitem__('qtext')
+			queryInfo['index']=IndexName
+			queryInfo['name']=QueryId
 
 			#*************** WRITE NEW DATASET NAME ***************
 			RIQ_CONF =  ('config-files/riq.conf')
@@ -94,13 +97,23 @@ def land(request):
 
 		if(TypeCache=='warm'):
 			TypeCache = '-c warm'
+			queryInfo['cache']='Warm'
 		else:
 			TypeCache = '-c cold'
+			queryInfo['cache']='Cold'
 
 		if(optimizeType=='opt'):
 			optimizeType = '-O'
+			queryInfo['opt']='Enabled'
 		else:
 			optimizeType = ''
+			queryInfo['opt']='Disabled'
+
+
+
+		qi = open('queries/temp.info', 'w')
+		qi.write(json.dumps(queryInfo).encode('utf-8'));
+		qi.close()
 
 		#	s.sendline('/home/vsfgd/RIS/indexing/RIS/scripts/./run_riq_query.py -C ../../RIS.RUN/riq.conf -q ' + executequeryfilename + ' -c ' + TypeCache + optoption)
 	    #   s.prompt(timeout=1000)
@@ -111,9 +124,10 @@ def getTimings(request):
 
 	 times = {}
 	 times['type'] = 'cold'
-	 times['riq'] = '122.76'
-	 times['virt'] = '142.89'
-	 times['jena'] = '648.93'
+	 times['riqf'] = '6.42'
+	 times['riq'] = '16.29'
+	 times['virt'] = '39.18'
+	 times['jena'] = '3564.44'
 
 	 return HttpResponse(json.dumps(times), content_type="application/json")
 
