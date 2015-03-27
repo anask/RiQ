@@ -58,9 +58,9 @@
 {% block content %}
 <div class="row">
 	<div style="display: flex; flex-flow: row;">
-	<div id="config" class="col-md-3" style="color:#E87352; border-color:#E87352; 	border: 2px solid;padding:25px;">
+	<div id="config" class="col-md-2" style="color:#E87352; border-color:#E87352; 	border: 2px solid;padding:25px;">
 		<p class="text-center" style="font-size: 110%;font-weight: 800;">
-			CONFIGURATION
+			Configuration
 		</p>
 		<form action="" method="post">
 			{% csrf_token %}
@@ -144,7 +144,7 @@
 						</select>
 					</div>
 					<div class="col-sm-6">
-						<label for = "bloomerror" {% if form.bloomerror.errors %} class="error"{% endif %}>Error in %</label>
+						<label for = "bloomerror" {% if form.bloomerror.errors %} class="error"{% endif %}>Error %</label>
 						<select id="bloomerror" NAME="bloomerror"class="form-control index" >
 							{% for value, text in form.bloomerror.field.choices %}
 							<option value="{{ value}}">{{ text}}</option>
@@ -176,11 +176,11 @@
 			</div>
 		</form>
 	</div>
-	<div class="col-md-9" style="margin-left:5px; height:100%;">
+	<div class="col-md-8" style="margin-left:5px; height:100%;">
 		<div class="row">
-			<div class="col-md-12" style="color:#E87352; border-color:#E87352;border: 2px solid; height:100px;">
+			<div class="col-md-12" style="color:#E87352; border-color:#E87352;border: 2px solid; height:110px;">
 				<p class="text-center" style="font-size: 110%;font-weight: 800; padding-top:10px;">
-						PV STATS
+						PV Stats
 				</p>
 
 			<div id="stats"> </div>
@@ -189,9 +189,9 @@
 			</div>
 		</div>
 		<div class="row">
-			<div id="exp" class="col-md-12" style="color:#E87352; border-color:#E87352;border: 2px solid; height:350px; margin-top:5px">
+			<div id="exp" class="col-md-12" style="color:#E87352; border-color:#E87352;border: 2px solid; height:340px; margin-top:5px">
 				<p class="text-center" style="font-size: 110%;font-weight: 800; padding-top:10px;">
-						TIME DISTRIBUTION
+						Time Distribution
 				</p>
 				<div id="donutbox" style="width: 100%; height: 270px;"></div>
 
@@ -199,9 +199,9 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-12" style="color:#E87352; border-color:#E87352;border: 2px solid;margin-top:5px; height:100px;">
+			<div class="col-md-12" style="color:#E87352; border-color:#E87352;border: 2px solid;margin-top:5px; height:110px;">
 				<p class="text-center" style="font-size: 110%;font-weight: 800; padding-top:10px;">
-						TIMINGS
+						Timings
 				</p>
 
 			<div id="timings"> </div>

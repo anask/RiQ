@@ -2,14 +2,19 @@ function plotTimings(data){
 
 	var cache = data['type'];
 	var riq_t = data['riq'];
+	var riq_tf = data['riqf'];
 	var virt_t = data['virt'];
 	var jena_t = data['jena'];
-
 
     $('#time').highcharts({
         chart: {
             type: 'bar',
 			margin: 0,
+			marginLeft: 2,
+			height: 350,
+			width: 235,
+			borderWidth:0,
+
 
         },
         title: {
@@ -27,6 +32,7 @@ function plotTimings(data){
         yAxis: {
             min: 0,
 			gridLineWidth:0,
+			max:150,
 
             title: {
                 text: '',
@@ -40,10 +46,16 @@ function plotTimings(data){
             valueSuffix: ' seconds'
         },
         plotOptions: {
-            bar: {
-				slicedOffset: 0,
-                size: '100%',
 
+            series: {
+                pointWidth: 40,
+                stacking: 'normal'
+
+            },
+            bar:
+            	{
+				stacking: 'normal',
+				slicedOffset: 0,
                 dataLabels: {
                     enabled: true
 
@@ -51,31 +63,40 @@ function plotTimings(data){
             }
         },
         legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'top',
-            x: -60,
-            y: 315,
+
             floating: true,
-            borderWidth: 1,
+            y:10,
+            borderWidth: 0,
             backgroundColor: '#FFFFFF',
-            shadow: false
+            shadow: false,
+			itemMarginBottom:5,
+			width: 190
+
         },
         credits: {
             enabled: false
         },
         series: [{
-            name: 'RIQ/JenaTDB',
+            name: 'RIQ-refinement',
             data: [Number(riq_t)],
             color: 'blue',
+            stack:0
+        }, {
+            name: 'RIQ-filtering',
+            data: [Number(riq_tf)],
+			color: 'lightblue',
+            stack:0
         }, {
             name: 'JenaTDB',
             data: [Number(jena_t)],
-			color: 'green'
+			color: 'green',
+            stack:1
         }, {
             name: 'Virtuoso',
             data: [Number(virt_t)],
             color:'red',
+			stack:2
+
         }]
     });
 

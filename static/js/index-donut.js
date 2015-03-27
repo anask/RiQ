@@ -6,19 +6,19 @@ green 		#43C487
 */
 function showdonut(timedata){
 	// Make monochrome colors and set them as default for all pies
-    Highcharts.getOptions().plotOptions.pie.colors = (function () {
-        var colors = [],
-            base = '#E87352',
-            i;
-
-        for (i = 0; i < 10; i += 1) {
-            // Start out with a darkened base color (negative brighten), and end
-            // up with a much brighter color
-            colors.push(Highcharts.Color(base).brighten((i - 3) / 7).get());
-        }
-        return colors;
-    }());
-
+//     Highcharts.getOptions().plotOptions.pie.colors = (function () {
+//         var colors = [],
+//             base = '#E87352',
+//             i;
+//
+//         for (i = 0; i < 10; i += 1) {
+//             // Start out with a darkened base color (negative brighten), and end
+//             // up with a much brighter color
+//             colors.push(Highcharts.Color(base).brighten((i - 3) / 7).get());
+//         }
+//         return colors;
+//     }());
+    var colors = Highcharts.getOptions().colors;
     $('#donutbox').highcharts({
 		credits: {
 			  enabled: false

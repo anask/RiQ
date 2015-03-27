@@ -29,8 +29,8 @@ class ExecuteForm(forms.Form):
 
 
 	MY_CHOICESOPTIMIZATION = (
-		(OPTENABLED ,'Enabled'),
-		(OPTDISABLED ,'Disabled'),
+		(OPTENABLED ,'Enable'),
+		(OPTDISABLED ,'Disable'),
 
 	)
 

@@ -24,9 +24,9 @@
 
 
 	<div style="display: flex; flex-flow: row;">
-	<div id="config" class="col-md-3" style="color:#DCB543; border-color:#DCB543; 	border: 2px solid;padding:25px;">
+	<div id="config" class="col-md-2" style="color:#DCB543; border-color:#DCB543; 	border: 2px solid;padding:25px;padding-top:28px;">
 		<p class="text-center" style="font-size: 110%;font-weight: 800;">
-			EXECUTION PARAMETERS
+			Configuration
 		</p>
 		<form id="frmRIQ" name="frmRIQ" action="" method="POST" >
 			{% csrf_token %}
@@ -37,7 +37,7 @@
 			{% endif %}
 			<div class="row"  style="margin-bottom:10px;">
 					<div class="form-group">
-					<label for = "dataset">Select index:</label>
+					<label for = "dataset">Index:</label>
 					<div class="col-sm-12">
 						<select id="indexname" NAME="indexname"class="form-control execute">
 							{% for value, text in form.dataset.field.choices %}
@@ -64,7 +64,7 @@
 
 			<div class="row"  style="margin-bottom:10px;">
 				<div class="form-group">
-					<label for = "cache">Cache:</label>
+					<label for = "cache">Cache Setting:</label>
 					<div class="col-sm-12">
 
 							{% for value, text in form.cache.field.choices %}
@@ -79,7 +79,7 @@
 
 			<div class="row"  style="margin-bottom:10px;">
 				<div class="form-group">
-					<label for = "optimizationtype">Optimization:</label>
+					<label for = "optimizationtype">Query Rewriting:</label>
 					<div class="col-sm-12">
 							{% for value, text in form.optimize.field.choices %}
 							<input id="optimizationtype" type="radio"  name="optimizationtype" value="{{ value}}"><label for="optimizationtype" style="color:#000;font-weight:400;"><span><span></span></span>{{ text }}</label><br />
@@ -99,7 +99,7 @@
 			</div>
 			<input type="text" id='query-text' name='qtext' style="display:none"></input>
 
-			<div class="row" style="margin-top:10px;" >
+			<div class="row" style="margin-top:10px;" hidden>
 					<div class="col-sm-12" style="color:#DCB543;margin-top:5px;">
 					<h5>Note:</h5>
 					The query will be executed using the configuration set in the index construction page.
@@ -107,29 +107,29 @@
 			</div>
 		</form>
 	</div>
-	<div class="col-md-9" style="margin-left:5px;">
+	<div class="col-md-8" style="margin-left:8px;">
 		<div class="row" style="position: relative;">
 			<div style="padding:0;">
-				<div class="thrds" style="color:#DCB543; border-color:#DCB543;border: 2px solid; height:450px; position:relative;float:left; display: block;">
+				<div class="thrds" style="color:#DCB543; border-color:#DCB543;border: 2px solid; height:420px; position:relative;float:left; display: block;">
 					<div class="sliding-content-r">
 						<div class="text-center widen" style="font-size: 110%;font-weight: 800; padding-top:10px;">
-							QUERY
-							<div id="query" class="text-left" contenteditable="true" spellcheck='false' style="color:#000"> </div>
+							Query
+							<div id="query" class="text-left" contenteditable="true" spellcheck='false' style=" font-weight: normal;color:#000"> </div>
 						</div>
 					</div>
 				</div>
-				<div class="thrds"  style="color:#DCB543; border-color:#DCB543;border: 2px solid; height:450px;margin-left:6px;position:relative;float:left; display: block;">
+				<div class="thrds"  style="color:#DCB543; border-color:#DCB543;border: 2px solid; height:420px;margin-left:9px;position:relative;float:left; display: block;">
 					<div class="sliding-content-lr">
 						<div class="text-center widen" style="font-size: 110%;font-weight: 800; padding-top:10px;">
-							QUERY GRAPH
+							Basic Graph Patterns
 							<div id="query-graph" class="text-left">  </div>
 						</div>
 					</div>
 				</div>
-				<div class="thrds" style="color:#DCB543; border-color:#DCB543;border: 2px solid; height:450px;margin-left:5px;position:relative;float:right; display: block;">
-					<div >
+				<div class="thrds" style="color:#DCB543; border-color:#DCB543;border: 2px solid; height:420px;margin-left:5px;position:relative;float:right; display: block;">
+					<div style="padding-top:15px;">
 						<div class="text-center widen" style="font-size: 110%;font-weight: 800; padding-top:10px;">
-							TIME COMPARISON
+							Time Comparison
 							<div id="time" class="text-left">  </div>
 						</div>
 					</div>
@@ -139,11 +139,11 @@
 		</div>
 		<div class="row" style="position: relative;">
 			<div style="padding:0;">
-				<div style="color:#DCB543; border-color:#DCB543;border: 2px solid; height:100px; position:relative;float:left; display: block;width:100%; margin-top:5px;">
+				<div style="color:#DCB543; border-color:#DCB543;border: 2px solid; height:130px; position:relative;float:left; display: block;width:100%; margin-top:8px;">
 					<div class="sliding-content-t">
 						<div class="text-center widen" style="font-size: 110%;font-weight: 800; padding-top:10px;">
-							RESULTS
-							<div id="results" class="text-left" style="color:#000"> </div>
+							Results
+							<div id="results" class="text-left" style="font-weight: normal;color:#000"  contenteditable="true" spellcheck='false' s> </div>
 						</div>
 					</div>
 				</div>

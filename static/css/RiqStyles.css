@@ -173,7 +173,7 @@ border-radius: 0px;
   border-color:#3BBEC0;
 }
 div.thrds {
-	 width:32.9%;
+	 width:32.5%;
 
 }
 div.widen{
@@ -199,7 +199,7 @@ div.sliding-content-r{
 }
 div.sliding-content-r:hover{
     z-index:100;
-    width:307%;
+    width:310%;
     overflow-y:auto;
     transition-delay:1s;
 
@@ -227,9 +227,9 @@ div.sliding-content-lr{
 }
 div.sliding-content-lr:hover{
     z-index:100;
-    width:307.2%;
-	margin-left:-103.6%;
-	margin-right:-103.7%;
+    width:309.7%;
+	margin-left:-104.5%;
+	margin-right:-104.5%;
 	overflow-y:auto;
 	transition-delay:1s;
  }
@@ -248,8 +248,8 @@ div.sliding-content-lr:hover{
     transition: all 1s ease;
 	outline: 2px solid #DCB543;
     background:#FFF;
-        padding:15px;
-
+	padding:0px;
+	padding-top:15px;
 }
 div.sliding-content-l:hover{
     z-index:100;
@@ -326,12 +326,12 @@ input[type=radio   ]:not(old):checked + label > span{
 input[type=checkbox]:not(old):checked + label > span:before{
   content     : '✓';
   display     : block;
-  width       : 1em;
-  color       : rgb(153,204,102);
+  width       : 100%;
+  color       : #000;
   font-size   : 0.875em;
   line-height : 1em;
+  margin-left : -1px;
   text-align  : center;
-  text-shadow : 0 0 0.0714em rgb(115,153,77);
   font-weight : bold;
 }
 
