@@ -16,7 +16,7 @@ def land(request):
 	queryInfo = {}
 	if request.method == 'GET':
 		form = ExecuteForm()
-		context = {'form': form,'TITLE' : 'Index Construction'}
+		context = {'form': form,'TITLE' : 'Execute Sparql'}
 		return render_to_response('execute.html', context,context_instance=RequestContext(request))
 
 	elif request.method == 'POST':
@@ -77,9 +77,7 @@ def land(request):
 		#WRITE QUERY TO FILE
 		try:
 			qf = open('queries/temp.q', 'w')
-			print ('the query:')
-			print (query)
-			qf.write(query.encode('utf-8'));
+			qf.write(query.encode(sys.stdout.encoding))
 			qf.close()
 		except:
 			print "Unexpected File Error:", sys.exc_info()[0]
@@ -176,8 +174,8 @@ def getQueryGraph(request):
 
 
 	rlog.close()
-	print d3records
-	"""
+	#print d3records
+
 	candidatefile = DIR+'query.btc-2012-split-clean.'+'dbpedia.q9.1.opt.cold.filter.candidates'
 	candidatelog = open(candidatefile)
 
@@ -187,12 +185,11 @@ def getQueryGraph(request):
 	for line in candidatelog:
 		binarytodecimal = str(int(line, 2))
 		#print binarytodecimal
-		print ('Candidate' + binarytodecimal)
+		#print ('Candidate' + binarytodecimal)
 		candidatelogindecimal.write('Candidate' + binarytodecimal + '\n')
 
 	candidatelog.close()
 	candidatelogindecimal.close()
-	"""
 
 	#print(d3records)
 	#html = "<html><body> "+"Hello"+"</body></html>"
@@ -305,27 +302,27 @@ GRAPH ?g {
 """
 	elif(queryname == 'dbpd9'):
 		query ="""PREFIX dbpedia: <http://dbpedia.org/resource/>
-PREFIX dbp-owl: <http://dbpedia.org/ontology/>
-PREFIX dbp-prop: <http://dbpedia.org/property/>
-PREFIX dbp-yago: <http://dbpedia.org/class/yago/>
-PREFIX dbp-cat: <http://dbpedia.org/resource/Category/>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX owl: <http://www.w3.org/2002/07/owl#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-PREFIX georss: <http://www.georss.org/georss/>
+	PREFIX dbp-owl: <http://dbpedia.org/ontology/>
+	PREFIX dbp-prop: <http://dbpedia.org/property/>
+	PREFIX dbp-yago: <http://dbpedia.org/class/yago/>
+	PREFIX dbp-cat: <http://dbpedia.org/resource/Category/>
+	PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+	PREFIX owl: <http://www.w3.org/2002/07/owl#>
+	PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+	PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+	PREFIX georss: <http://www.georss.org/georss/>
 
-SELECT ?var2 ?var6 ?g
-WHERE {
-	GRAPH ?g {
-        {	?var6 <http://dbpedia.org/ontology/city> ?var2 . }
-        UNION { ?var6 <http://dbpedia.org/ontology/location> ?var2 . }
-        OPTIONAL { ?var6 foaf:homepage ?var6_home . }
-        OPTIONAL { ?var6 <http://dbpedia.org/property/nativename> ?var6_name . }
-    }
-}"""
+	SELECT ?var2 ?var6 ?g
+	WHERE {
+		GRAPH ?g {
+        	{	?var6 <http://dbpedia.org/ontology/city> ?var2 . }
+        	UNION { ?var6 <http://dbpedia.org/ontology/location> ?var2 . }
+        	OPTIONAL { ?var6 foaf:homepage ?var6_home . }
+        	OPTIONAL { ?var6 <http://dbpedia.org/property/nativename> ?var6_name . }
+    	}
+	}"""
 
 	return HttpResponse(query,  content_type="text/plain")
 

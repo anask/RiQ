@@ -6,5 +6,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
 	url(r'^$', 'visualize.views.land'),
 	url(r'^info/$', 'visualize.views.getQueryInfo'),
-	url(r'^cand/$', 'visualize.views.getQueryCandidates'),
+	url(r'^candidates/$', 'visualize.views.getQueryCandidates'),
+	url(r'^querytree/$', 'visualize.views.getQueryTree'),
+	url(r'^candidatetree/$', 'visualize.views.getOptimizedQueryTree'),
 )

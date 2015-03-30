@@ -199,7 +199,7 @@ function showQuery(e)
 	data: d,
 	success: function(m) {
 		obj.text(m);
-		obj.html(obj.html().replace(/\n/g,'<br/>'));
+		obj.html(obj.html().replace(/\n/g,'&nbsp;<br/>'));
 		obj.html(obj.html().replace(/\t/g,'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'));
 		obj.bind('DOMNodeInserted DOMSubtreeModified DOMNodeRemoved', function(event) {
 		document.getElementById("queryDisplay").selectedIndex = 5;
@@ -212,7 +212,8 @@ function showQuery(e)
 //Javascript to run RIQ
 function runRIQ(e)
 {
-	document.getElementById("query-text").value= $('#query').text();
+
+	document.getElementById("query-text").value= $('#query').html().replace(/<br\s*[\/]?>|&nbsp;/gi,' ').replace(/&lt;/gi,' <').replace(/&gt;/gi,'> ');
 
 	var form = document.getElementById("frmRIQ");
 	var formURL = form.action;
@@ -238,4 +239,5 @@ function runRIQ(e)
 	getQueryResults();
 	getQueryTimimgs();
 	getQueryGraph();
+
 }
