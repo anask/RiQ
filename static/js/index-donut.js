@@ -4,7 +4,7 @@ turquoise	#3BBEC0
 yellow		#DCB543
 green 		#43C487
 */
-function showdonut(timedata){
+function showdonut(timedata,timepercentage){
 	// Make monochrome colors and set them as default for all pies
 //     Highcharts.getOptions().plotOptions.pie.colors = (function () {
 //         var colors = [],
@@ -20,6 +20,17 @@ function showdonut(timedata){
 //     }());
     var colors = Highcharts.getOptions().colors;
     $('#donutbox').highcharts({
+		labels: {
+			items : [{
+				html : 'Total: <br />'+ timedata['TOTAL']+'s',
+				style : {
+					left : '340px',
+					top : '180px',
+					fontSize : '20px',
+					color:'#000'
+				}
+			}]
+		},
 		credits: {
 			  enabled: false
 		  },
@@ -42,15 +53,28 @@ function showdonut(timedata){
         plotOptions: {
             pie: {
 				size:'200%',
-                dataLabels: {
-                    enabled: true,
-                    distance: -50,
-                    style: {
-                        fontWeight: 'bold',
-                        color: 'white',
-                        textShadow: 'none'
-                    }
+				dataLabels: {
+                    connectorWidth: 1,
+					enabled: true,
+					formatter: function() {
+						return '<b>'+ this.point.name +'</b>: <br/>'+ timedata[this.point.name]+'s';
+                    },
+
+
+
+//                                 dataLabels: {
+//
+//                     distance: -50,
+//                     connectorWidth: 1,
+//                     connectorColor:'#000',
+//                     style: {
+//                         fontWeight: 'bold',
+//                         color: 'white',
+//                         textShadow: 'none'
+//                     },
+
                 },
+
                 startAngle: -90,
                 endAngle: 90,
                 center: ['50%', '100%']
@@ -60,7 +84,7 @@ function showdonut(timedata){
             type: 'pie',
             name: 'Time Percentage',
             innerSize: '45%',
-            data: timedata,
+            data: timepercentage,
         }]
     });
 }

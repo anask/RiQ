@@ -28,7 +28,18 @@
 		<script type="text/javascript">
 			function getTimeData(stats){
 				var total = Number(stats.group.build_graph_t)+Number(stats.group.pv_lsh_t)+Number(stats.group.union_t)+Number(stats.group.total_t)+Number(stats.cbf.cbf_t)+Number(stats.split.split_t )+Number(stats.pv_t);
-				var tdata = [
+				var tdata = {
+								'PV CONSTRUCTION':stats.pv_t,
+								'CBF':stats.cbf.cbf_t,
+								'SPLIT':stats.split.split_t,
+								'GROUP BUILD GRAPH':stats.group.build_graph_t,
+								'GROUP PV LSH':stats.group.pv_lsh_t,
+								'GROUP UNION':stats.group.union_t,
+								'GROUP TOTAL':stats.group.total_t,
+								'TOTAL':total.toFixed(2),
+
+							};
+				var tpercent = [
 								['PV CONSTRUCTION',Number((Number(stats.pv_t)/total*100))],
 								['CBF',Number((Number(stats.cbf.cbf_t)/total*100 ))],
 								['SPLIT',Number((Number(stats.split.split_t)/total*100 ))],
@@ -37,14 +48,15 @@
 								['GROUP UNION',Number((Number(stats.group.union_t)/total*100) )],
 								['GROUP TOTAL',Number((Number(stats.group.total_t)/total*100 ))],
 							];
-				return tdata;
+				return [tdata,tpercent];
 			}
 		</script>
 		<script type="text/javascript">
 			$(document).ready(function() {
 					var jSData = JSON.parse('{{ PVStatus|safe }}');
 					showtables(jSData);
-					showdonut(getTimeData(jSData));
+					var dountVals = getTimeData(jSData)
+					showdonut(dountVals[0],dountVals[1]);
 
 			});
 		</script>
@@ -178,9 +190,9 @@
 	</div>
 	<div class="col-md-8" style="margin-left:5px; height:100%;">
 		<div class="row">
-			<div class="col-md-12" style="color:#E87352; border-color:#E87352;border: 2px solid; height:110px;">
-				<p class="text-center" style="font-size: 110%;font-weight: 800; padding-top:10px;">
-						PV Stats
+			<div class="col-md-12" style="color:#E87352; border-color:#E87352;border: 2px solid; height:130px;">
+				<p class="text-center" style="font-size: 110%;font-weight: 800; padding-top:30px;">
+						PV Construction
 				</p>
 
 			<div id="stats"> </div>
@@ -189,15 +201,16 @@
 			</div>
 		</div>
 		<div class="row">
-			<div id="exp" class="col-md-12" style="color:#E87352; border-color:#E87352;border: 2px solid; height:340px; margin-top:5px">
-				<p class="text-center" style="font-size: 110%;font-weight: 800; padding-top:10px;">
-						Time Distribution
+			<div id="exp" class="col-md-12" style="color:#E87352; border-color:#E87352;border: 2px solid; height:435px; margin-top:5px">
+				<p class="text-center" style="font-size: 110%;font-weight: 800; padding-top:30px;">
+						PV-Index Construction <br /> Breakup of Time Taken
 				</p>
-				<div id="donutbox" style="width: 100%; height: 270px;"></div>
+				<div id="donutbox" style="width: 100%; height: 270px;margin-top:80px"></div>
 
 
 			</div>
 		</div>
+		<!--
 		<div class="row">
 			<div class="col-md-12" style="color:#E87352; border-color:#E87352;border: 2px solid;margin-top:5px; height:110px;">
 				<p class="text-center" style="font-size: 110%;font-weight: 800; padding-top:10px;">
@@ -209,6 +222,7 @@
 
 			</div>
 		</div>
+		-->
 
 	</div>
 </div>
