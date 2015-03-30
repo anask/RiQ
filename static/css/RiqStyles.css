@@ -186,13 +186,25 @@ border-radius: 0px;
   border-color:#3BBEC0;
 }
 div.thrds {
-	 width:32.5%;
+	 width:32.7%;
+
 
 }
+div.halves{
+	color:#3BBEC0;
+	border-color:#3BBEC0;
+	border: 2px solid;
+	position:relative;
+	float:left;
+	display: block;
+}
+
+
 div.widen{
 	background:#FFF;
 		height:100%;
  }
+
 div.sliding-content-r{
     z-index:0;
 	width:100%;
@@ -214,6 +226,56 @@ div.sliding-content-r:hover{
     z-index:100;
     width:310%;
     overflow-y:auto;
+    transition-delay:1s;
+
+ }
+div.sliding-content-rv{
+    z-index:0;
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	overflow:hidden;
+	-webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    transition: all 1s ease;
+	outline: 2px solid #3BBEC0;
+    background:#FFF;
+	padding:10px;
+}
+div.sliding-content-rv:hover{
+    z-index:100;
+    width:246%;
+    overflow-y:auto;
+    transition-delay:1s;
+
+ }
+
+div.sliding-content-lv{
+    z-index:0;
+	width:100%;
+	height:100%;
+	overflow:hidden;
+	position:absolute;
+	top:0;
+	right:0;
+	width:100%;
+	-webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    transition: all 1s ease;
+	outline: 2px solid #3BBEC0;
+    background:#FFF;
+	padding:10px;
+}
+div.sliding-content-lv:hover{
+    z-index:100;
+    width:172%;
+	margin-left:-207%;
+	overflow-y:auto;
     transition-delay:1s;
 
  }

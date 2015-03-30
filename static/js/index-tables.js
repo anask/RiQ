@@ -28,7 +28,7 @@ function showtables(stats){
 									pv_content += "<td style='font-weight:400;color:#000;'>" + stats["Total size"]  + '</td>';
 									pv_content += "<td style='font-weight:400;color:#000;'>" + stats["Avg graph size"]  + '</td>';
 									pv_content += "<td style='font-weight:400;color:#000;'>" + stats["Max graph size"]  + '</td>';
-									pv_content += "<td style='font-weight:400;color:#000;'>" + stats.pv_t  + 's</td>';
+									pv_content += "<td style='font-weight:400;color:#000;'>" + Number(stats.pv_t).toFixed(2)   + 's</td>';
 // 									pv_content += "<td style='font-weight:500;'> TOTAL URIS/LITERALS</td>"+"<td style='font-weight:400;color:#000;'>" + stats["Total URIs/literals"]  + '</td>';
 // 									pv_content += "<td style='font-weight:500;'> WRITTEN GRAPHS</td>"+"<td style='font-weight:400;color:#000;'>" + stats["Written graphs"]  + '</td>';
 			pv_content += '</tr>';

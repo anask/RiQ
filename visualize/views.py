@@ -17,6 +17,29 @@ def getQueryInfo(request):
 	return HttpResponse(json.dumps(json_data), content_type="application/json")
 
 
+def getQuery(request):
+	query={}
+	with open('queries/temp.q') as f:
+		query['query']=f.read()
+
+	return HttpResponse(json.dumps(query), content_type="application/json")
+
+
+def getCandQuery(request):
+	query={}
+	candidate=request.GET['cand']
+	binaryCandidate = str(bin(int(candidate.strip("Candidate"))))[2:]
+	query['binary']=binaryCandidate
+
+	DIR  = os.path.join(os.path.abspath(os.pardir))
+	optDir = DIR+'/RIS/indexing/RIS.RUN/log/'
+	optQuery = optDir+'dbpedia.g.q4.' + '0000001000000000'+'.rqmod'
+
+	with open(optQuery) as f:
+		query['query']=f.read()
+
+	return HttpResponse(json.dumps(query), content_type="application/json")
+
 def getQueryCandidates(request):
 	q = open('output/candidatedataindecimal.txt')
 	candidates = {}

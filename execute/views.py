@@ -125,14 +125,14 @@ def getTimings(request):
 	 times['riqf'] = '6.42'
 	 times['riq'] = '16.29'
 	 times['virt'] = '39.18'
-	 times['jena'] = '3564.44'
+	 times['jena'] = '3564.4'
 
 	 return HttpResponse(json.dumps(times), content_type="application/json")
 
 
 def getResults(request):
 
-	f =  os.path.join(os.path.abspath(os.pardir),'RiQ_Demo/output/results.txt')
+	f =  os.path.join(os.path.abspath(os.pardir),'RiQ/output/results.txt')
 	outf = open(f,'r')
 	data=outf.read()
 	outf.close()
@@ -179,7 +179,7 @@ def getQueryGraph(request):
 	candidatefile = DIR+'query.btc-2012-split-clean.'+'dbpedia.q9.1.opt.cold.filter.candidates'
 	candidatelog = open(candidatefile)
 
-	demodir =  os.path.join(os.path.abspath(os.pardir),'RiQ_Demo/')
+	demodir =  os.path.join(os.path.abspath(os.pardir),'RiQ/')
 
 	candidatelogindecimal = open(demodir+"output/candidatedataindecimal.txt", 'w')
 	for line in candidatelog:

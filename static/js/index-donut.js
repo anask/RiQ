@@ -57,7 +57,7 @@ function showdonut(timedata,timepercentage){
                     connectorWidth: 1,
 					enabled: true,
 					formatter: function() {
-						return '<b>'+ this.point.name +'</b>: <br/>'+ timedata[this.point.name]+'s';
+						return '<b>'+ this.point.name +'</b>: <br/>'+ Number(timedata[this.point.name]).toFixed(3)+'s';
                     },
 
 

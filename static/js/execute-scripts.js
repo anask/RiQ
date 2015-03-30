@@ -8,66 +8,86 @@ function plotTimings(data){
 
     $('#time').highcharts({
         chart: {
-            type: 'bar',
+			type: 'column',
 			margin: 0,
-			marginLeft: 2,
-			height: 350,
-			width: 235,
+			height: 320,
+			width: 245,
 			borderWidth:0,
+			marginTop: 60,
+			marginBottom: 80,
+            backgroundColor: 'none',
+
 
 
         },
         title: {
-            text: 'Cache:'
-        },
-        subtitle: {
-            text: cache,
+            text: cache+' cache',
+			style: {
+						fontSize: "14px",
+						color:"#000"
+					},
         },
         xAxis: {
-
-            title: {
-                text: 'Time (sec)',
+			min:0,
+			gridLineWidth:0,
+			tickLength: 0,
+			lineColor:'#DCB543',
+			labels: {
+				enabled: false
             }
+
+
         },
         yAxis: {
-            min: 0,
 			gridLineWidth:0,
-			max:150,
-
-            title: {
-                text: '',
-                align: 'high'
-            },
+			min:0,
+			max:100,
             labels: {
-                overflow: 'justify'
+				enabled: false
             }
         },
         tooltip: {
-            valueSuffix: ' seconds'
+            valueSuffix: ' seconds',
+			formatter: function () {
+                return '<b>' + this.y + '</b>';
+            },
+            positioner:function(labelWidth, labelHeight, point){
+
+				return {
+					x: 25,
+					y: 28
+				};
+			}
         },
         plotOptions: {
 
             series: {
-                pointWidth: 40,
+                pointWidth: 45,
                 stacking: 'normal'
 
             },
-            bar:
+            column:
             	{
 				stacking: 'normal',
 				slicedOffset: 0,
                 dataLabels: {
-                    enabled: true
+					verticalAlign: 'top',
+					enabled: true,
+					style: {
+						fontWeight:'normal',
+						textShadow:'none',
+					},
+
 
                 }
             }
         },
         legend: {
 
-            floating: true,
+            floating: false,
             y:10,
             borderWidth: 0,
-            backgroundColor: '#FFFFFF',
+            backgroundColor: 'none',
             shadow: false,
 			itemMarginBottom:5,
 			width: 190
@@ -77,28 +97,30 @@ function plotTimings(data){
             enabled: false
         },
         series: [{
-            name: 'RIQ-refinement',
+            name: 'RIQ',
             data: [Number(riq_t)],
-            color: 'blue',
+            color: '#0101DF',
             stack:0
         }, {
-            name: 'RIQ-filtering',
+            name: 'RIQ (filtering)',
             data: [Number(riq_tf)],
-			color: 'lightblue',
+			color: '#01A9DB',
             stack:0
-        }, {
-            name: 'JenaTDB',
-            data: [Number(jena_t)],
-			color: 'green',
-            stack:1
         }, {
             name: 'Virtuoso',
             data: [Number(virt_t)],
             color:'red',
 			stack:2
 
+        },{
+            name: 'JenaTDB',
+            data: [Number(jena_t)],
+			color: 'green',
+            stack:1
         }]
     });
+	document.getElementById('note').innerHTML="Note: Query not supported by RDF-3X";
+
 
 }
 function getQueryTimimgs()

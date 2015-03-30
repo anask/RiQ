@@ -9,4 +9,6 @@ urlpatterns = patterns('',
 	url(r'^candidates/$', 'visualize.views.getQueryCandidates'),
 	url(r'^querytree/$', 'visualize.views.getQueryTree'),
 	url(r'^candidatetree/$', 'visualize.views.getOptimizedQueryTree'),
+	url(r'^query/$', 'visualize.views.getQuery'),
+	url(r'^candquery/$', 'visualize.views.getCandQuery'),
 )
