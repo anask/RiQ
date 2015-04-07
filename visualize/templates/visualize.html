@@ -1,188 +1,30 @@
 {% extends "base.html" %}
+{% block content_title %}
+	<title>{{ TITLE }}</title>
+
+{% endblock %}
+
+
 
 {% block scripts %}
-
 		{% load static %}
 		<script src="../static/js/jquery.elevatezoom.js" type="text/javascript"></script>
-
-		<script type="text/javascript">
-			function getCandidateTree(s){
-				var cTree = document.getElementById('candtree');
-				cTree .setAttribute("src", '/static/images/ajax-loader.gif');
-				cTree .style="display: block;margin: auto; margin-top:80px";
-
-				$.ajax({
-					url: "/visualize/candquery/?cand="+s.value,
-					type: "GET",
-					dataType: "json",
-						error: function(response,n, textStatus, exception) {
-						alert('Error: ' + response.responseText);
-						console.log(n);
-						console.log(textStatus);
-
-					},
-					success: function(data) {
-						var htmlStr=data['query'];
-						htmlStr.replace(/\n/g,'&nbsp;<br/>');
-						htmlStr.replace(/\t/g,'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
-						document.getElementById('candquery').innerHTML=htmlStr;
-					}
-				});
-
-				var url1= "/visualize/candidatetree/?new=yes&cand="+s.value;
-				var url2= "/visualize/candidatetree/?new=no&cand="+s.value;
-				var c  = $("#candtree");
-				$.ajax({
-					url : url1,
-					cache: false,
-					processData : false,
-				}).done(function(){
-						c.attr("src", url2).attr("data-zoom-image", url2).fadeIn().elevateZoom({
-					    zoomType : "lens", lensShape : "rectangle", lensSize : 200,
-						zoomWindowPosition:1});
-						c.css("width","100%");
-						c.css("height","80%");
-						c.css("display","inline");
-						c.css("margin","0px");
-
-				});
-
-
-			}
-			function getQueryTree(){
-
-				var qTree = document.getElementById('querytree');
-				qTree .setAttribute("src", '/static/images/ajax-loader.gif');
-				qTree .style="display: block;margin: auto; margin-top:80px";
-
-				$.ajax({
-					url: "/visualize/query/",
-					type: "GET",
-					dataType: "json",
-						error: function(response,n, textStatus, exception) {
-						alert('Error: ' + response.responseText);
-						console.log(n);
-						console.log(textStatus);
-
-					},
-					success: function(data) {
-						var htmlStr=data['query'];
-
-						htmlStr.replace(/\n/g,'&nbsp;<br/>');
-						htmlStr.replace(/\t/g,'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
-
-						document.getElementById('query').innerHTML=htmlStr;
-
-
-					}
-				});
-
-
-				var url1= "/visualize/querytree/?exec=yes";
-				var url2= "/visualize/querytree/?exec=no";
-				$.ajax({
-					url : url1,
-					cache: true,
-					processData : false,
-				}).done(function(){
-					var c  = $("#querytree");
-					c.attr("src", url2).attr("data-zoom-image", url2).fadeIn().elevateZoom({
-					    zoomType : "lens", lensShape : "rectangle", lensSize : 250,
-						zoomWindowPosition:1});
-					c.css("width","100%");
-					c.css("height","80%");
-					c.css("display","inline");
-					c.css("margin","0px");
-
-				});
-
-			}
-
-			function getQueryCandidates()
-			{
-
-				$.ajax({
-				url: "/visualize/candidates/",
-				type: "GET",
-				dataType: "json",
-					error: function(response,n, textStatus, exception) {
-					alert('Form Error: ' + response.responseText);
-					console.log(n);
-					console.log(textStatus);
-
-				},
-				success: function(data) {
-
-					var htmlStr="";
-					var key, i = 0;
-					for(key in data.candidates)
-						htmlStr=htmlStr + '<option value="'+data.candidates[i]+'" > Candidate '+i+++'</option>';
-					document.getElementById('cands').innerHTML=htmlStr;
-
-
-				}
-				});
-
-
-			}
-
-
-			function getQueryInfo()
-			{
-
-				$.ajax({
-				url: "/visualize/info/",
-				type: "GET",
-				dataType: "json",
-					error: function(response,n, textStatus, exception) {
-					alert('Form Error: ' + response.responseText);
-					console.log(n);
-					console.log(textStatus);
-
-				},
-				success: function(data) {
-					document.getElementById('qName').innerHTML=data['name'];
-					document.getElementById('qIndex').innerHTML=data['index'];
-					document.getElementById('qCache').innerHTML=data['cache'];
-					document.getElementById('qOpt').innerHTML=data['opt'];
-
-					}});
-			}
-
-		function runAntlr(){
-
-		getQueryTree();
-		getQueryCandidates();
-		}
-		$( document ).ready(function() {
-				getQueryInfo();
-			});
-
-		</script>
+		<script src="../static/js/visualize-scripts.js" type="text/javascript"></script>
 {% endblock %}
 
-
-
-{% block content_title %}
-
-<title>{{ TITLE }}</title>
-
-{% endblock %}
 
 {% block content %}
-<div class="row">
-	<div style="display: flex; flex-flow: row;">
 
+
+	<div style="display:-webkit-flex;  display: flex; flex-flow: row;">
 	<div id="leftUnit" class="col-md-2">
 			<div class="row">
-				<div class="col-md-12" style="color:#3BBEC0; border-color:#3BBEC0;border: 2px solid; height:230px;">
-
+				<div class="col-md-12" style="color:#3BBEC0; border-color:#3BBEC0;border: 2px solid; height:235px;">
 					<p class="text-center" style="font-size: 110%;font-weight: 800; padding-top:10px;">
 							Query Information
 					</p>
-
 				<div id="info" style="height:130px; margin-top:10px;">
-					<table style="width:100%;margin-top:10px;">
+					<table style="width:100%;margin-top:20px;">
 					  <tr>
 						<td style="padding-left:22px">Query:</td>
 						<td id='qName' style="color:#000"></td>
@@ -200,92 +42,64 @@
 						<td id='qOpt' style="color:#000"></td>
 					  </tr>
 					</table>
-
 				</div>
 				<input type="Button" class="btn btn-primary vis-btn" alt="graphData" style="width:100%;" value="VIEW" onclick="runAntlr()"></input>
-
-
-
 				</div>
 			</div>
 			<div class="row">
-			<div id="exp" class="col-md-12" style="color:#3BBEC0; border-color:#3BBEC0;border: 2px solid; height:310px; margin-top:5px">
+			<div id="exp" class="col-md-12" style="color:#3BBEC0; border-color:#3BBEC0;border: 2px solid; height:315px; margin-top:5px">
 				<p class="text-center" style="font-size: 110%;font-weight: 800; padding-top:10px;">
 						Candidates
 				</p>
-
-
 			<div style="display:inline-block; vertical-align:top; overflow:hidden; border-top:solid #3BBEC0 1px;border-bottom:solid #3BBEC0 1px;">
 				<select id="cands" style="padding:10px; margin:-5px -20px -5px -5px; height:250px; width:182px;" size="15" onchange="getCandidateTree(this)">
-
 				</select>
 			</div>
-
-
-
-
-
 			</div>
 		</div>
-
 	</div>
-	<div class="col-md-8" style="margin-left:4px; height:100%;">
-		<div class="row">
-			<div class='halves' style="width:41%;height:280px;">
-				<div class="sliding-content-rv">
+	<div class="col-md-9" style="margin-left:5px;">
 
+		<div class="row">
+
+			<div class='halves' style="width:41%;height:285px;">
+				<div class="sliding-content-rv">
 						<div class="text-center" style="font-size: 110%;font-weight: 800; ">
 							Query
-
 							<div id="query" class="text-left" style="color:#000;font-weight: normal;color:#000"></div>
 						</div>
-
 				</div>
 			</div>
-			<div class='halves' style="margin-left:5px;width:58.3%;	height:280px;">
+			<div class='halves' style="margin-left:5px;width:58.3%;	height:285px;">
 				<div class="sliding-content-lv">
 					<div class="text-center" style="font-size: 110%;font-weight: 800; padding-top:10px;">
 							Query Parse Tree
 							<img id="querytree"/>
 					</div>
 				</div>
-
-
-
 			</div>
-		</div>
-		<div class="row" style="margin-top:5px;">
-			<div class='halves' style="width:41%;height:260px;">
-				<div class="sliding-content-rv">
 
+		</div>
+
+		<div class="row" style="margin-top:5px;">
+			<div class='halves' style="width:41%;height:265px">
+				<div class="sliding-content-rv">
 						<div class="text-center" style="font-size: 110%;font-weight: 800; ">
 							Optimized Query
 							<div id="candquery" class="text-left" style="color:#000;font-weight: normal;color:#000"></div>
 						</div>
-
 				</div>
 			</div>
-			<div class='halves' style="margin-left:5px;width:58.3%;height:260px;">
+			<div class='halves' style="margin-left:5px;width:58.3%;height:265px;">
 				<div class="sliding-content-lv">
 					<div class="text-center" style="font-size: 110%;font-weight: 800; padding-top:10px;">
 						Optimized Query Parse Tree
 						<img id="candtree" />
 					</div>
 				</div>
-
-
-
 			</div>
 
-
 		</div>
-
 	</div>
 </div>
-</div>
-{% if IndexName %}
-<!--<div style="color:red;">The name of the new Index created is {{IndexName}}</div>-->
-{% endif %}
 {% endblock %}
-
-
