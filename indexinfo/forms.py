@@ -7,17 +7,13 @@ import datetime
 class IndexConstructionForm(ModelForm):
 
 	BTC = 'BTC'
-	LOGD = 'LOGD'
+	LOGD = 'LUBM'
 	D10 = 'D10'
 
-
-
 	MY_CHOICESDATASET = (
-		(BTC, 'BTC'),
-		(LOGD, 'LOGD'),
-		(D10,'D10-SML'),
-
-
+		(BTC, 'BTC (prebuilt)'),
+		#(LOGD, 'Prebuilt LUBM'),
+		(D10,'Upload ..'),
 	)
 
 	LHSKFIRST = 4
@@ -45,20 +41,22 @@ class IndexConstructionForm(ModelForm):
 		(LHSLFOURTH , 11),
 
 	)
-	BLOOMCAPACITYFIRST = '2.5M'
-	BLOOMCAPACITYSECOND = '5M'
-	BLOOMCAPACITYTHIRD = '10M'
+	BLOOMCAPACITYZEROTH = '1000000'
+	BLOOMCAPACITYFIRST  = '2500000'
+	BLOOMCAPACITYSECOND = '5000000'
+	BLOOMCAPACITYTHIRD  = '10000000'
 
 
 	MY_CHOICESBLOOMCAPACITY = (
+		(BLOOMCAPACITYZEROTH, '1M'),
 		(BLOOMCAPACITYFIRST, '2.5M'),
 		(BLOOMCAPACITYSECOND , '5M'),
 		(BLOOMCAPACITYTHIRD, '10M'),
 	)
 
-	BLOOMERRORFIRST = 1
-	BLOOMERRORSECOND = 5
-	BLOOMERRORTHIRD = 10
+	BLOOMERRORFIRST = 0.01
+	BLOOMERRORSECOND = 0.05
+	BLOOMERRORTHIRD = 0.1
 
 
 	MY_CHOICESBLOOMERROR = (
@@ -69,13 +67,26 @@ class IndexConstructionForm(ModelForm):
 
 	)
 
+	GRAPHINDEXFIRST = 1000
+	GRAPHINDEXSECOND = 100000
+	GRAPHINDEXTHIRD = 1000000
+	GRAPHINDEXFOURTH = 'all'
+
+	MY_CHOICESGRAPHINDEX= (
+		(GRAPHINDEXFIRST, '1,000'),
+		(GRAPHINDEXSECOND , '100,000'),
+		(GRAPHINDEXTHIRD, '1000,000'),
+		(GRAPHINDEXFOURTH, 'ALL'),
+
+	)
 	dataset = forms.ChoiceField(choices=MY_CHOICESDATASET, widget = forms.Select)
 	lhskparameter = forms.ChoiceField(choices=MY_CHOICESLHSK, widget = forms.Select)
 	lhslparameter = forms.ChoiceField(choices=MY_CHOICESLHSL, widget = forms.Select)
-	maximumgraphs = forms.CharField(label=(u'Maximum graphs'))
+	maximumgraphs = forms.TextInput(attrs={'class': 'form-control index','id':'maximumgraphs'}).render('value','')
 	bloomcapacity = forms.ChoiceField(choices=MY_CHOICESBLOOMCAPACITY, widget = forms.Select)
 	bloomerror = forms.ChoiceField(choices=MY_CHOICESBLOOMERROR, widget = forms.Select)
-	graphindex = forms.CharField(label=(u'Number of graphs to index'))
+	graphindex = forms.ChoiceField(choices=MY_CHOICESGRAPHINDEX, widget = forms.Select)
+
 
 
 	class Meta:

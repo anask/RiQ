@@ -142,7 +142,7 @@ def getResults(request):
 def getQueryGraph(request):
 	DIR =  os.path.join(os.path.abspath(os.pardir),'RIS/indexing/RIS.RUN/log/')
 
-	bgpfile = DIR+'query.btc-2012-split-clean.'+ 'dbpedia.q9.1.opt.cold.filter.1.log'
+	bgpfile = DIR+'logoutput/query.btc-2012-split-clean.'+ 'temp.q.opt.cold.filter.1.log'
 
 	rlog = open(bgpfile)
 	bStartRead = 0
@@ -300,29 +300,33 @@ GRAPH ?g {
     }
 }
 """
-	elif(queryname == 'dbpd9'):
-		query ="""PREFIX dbpedia: <http://dbpedia.org/resource/>
-	PREFIX dbp-owl: <http://dbpedia.org/ontology/>
-	PREFIX dbp-prop: <http://dbpedia.org/property/>
-	PREFIX dbp-yago: <http://dbpedia.org/class/yago/>
-	PREFIX dbp-cat: <http://dbpedia.org/resource/Category/>
-	PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-	PREFIX owl: <http://www.w3.org/2002/07/owl#>
-	PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-	PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-	PREFIX georss: <http://www.georss.org/georss/>
+	elif(queryname == 'btc10'):
+		query ="""PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
-	SELECT ?var2 ?var6 ?g
-	WHERE {
-		GRAPH ?g {
-        	{	?var6 <http://dbpedia.org/ontology/city> ?var2 . }
-        	UNION { ?var6 <http://dbpedia.org/ontology/location> ?var2 . }
-        	OPTIONAL { ?var6 foaf:homepage ?var6_home . }
-        	OPTIONAL { ?var6 <http://dbpedia.org/property/nativename> ?var6_name . }
-    	}
-	}"""
+SELECT *
+WHERE {
+	GRAPH ?g {
+		?var6 a <http://dbpedia.org/ontology/PopulatedPlace> .
+		?var6 <http://dbpedia.org/ontology/abstract> ?var1 .
+		?var6 rdfs:label ?var2 .
+		?var6 geo:lat ?var3 .
+		?var6 geo:long ?var4 .
+		{
+			?var6 rdfs:label "Brunei"@en .
+		}
+		UNION
+		{
+			?var5 <http://dbpedia.org/property/redirect> ?var6 .
+			?var5 rdfs:label "Brunei"@en .
+			OPTIONAL { ?var6 foaf:homepage ?var10 }
+			OPTIONAL { ?var6 <http://dbpedia.org/ontology/populationTotal> ?var12 }
+			OPTIONAL { ?var6 <http://dbpedia.org/ontology/thumbnail> ?var14 }
+		}
+	}
+}
+"""
 
 	return HttpResponse(query,  content_type="text/plain")
 

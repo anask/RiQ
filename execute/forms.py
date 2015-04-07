@@ -9,7 +9,7 @@ class ExecuteForm(forms.Form):
 
 
 	MY_CHOICESDATASET = (
-		(BTC, 'BTC'),
+		(BTC, 'BTC (prebuilt)'),
 		(LOGD, 'LOGD'),
 		(D10,'D10-SML'),
 
@@ -36,17 +36,18 @@ class ExecuteForm(forms.Form):
 
 	QBTC1 = 'BTC1'
 	QBTC2 = 'BTC2'
+	QBTC10 = 'BTC10'
 	DBPDSB1 = 'DBPD1'
 	DBPDSB2 = 'DBPD2'
-	DBPDSB9 = 'DBPD9'
 	CUS = 'CUSTOM'
 
 	MY_CHOICESQUERY=(
-		( QBTC1 ,'BTC - 1'),
-		( QBTC2,'BTC - 2'),
+		( QBTC1 ,'B1'),
+		( QBTC2,'B2'),
+		( QBTC10,'B10'),
 		( DBPDSB1,'DBPD SB - 1'),
 		( DBPDSB2,'DBPD SB - 2'),
-		( DBPDSB2,'DBPD SB - 9'),
+
 		( CUS,'CUSTOM'),
 	)
 

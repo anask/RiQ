@@ -1,21 +1,65 @@
 {% extends "base.html" %}
 {% block scripts %}
+
+		<script type="text/javascript">
+			function setBTCConfig(flag){
+
+				var ds   = document.getElementById("dataset");
+				var l    = document.getElementById("lhslparameter");
+				var k    = document.getElementById("lhskparameter");
+				var cap  = document.getElementById("bloomcapacity");
+				var err  = document.getElementById("bloomerror");
+				var max  = document.getElementById("maximumgraphs");
+				var numg = document.getElementById("graphindex");
+
+				if(flag){
+					ds.getElementsByTagName('option')[0].selected = true;
+				    k.getElementsByTagName('option')[0].selected = true;
+				    l.getElementsByTagName('option')[1].selected = true;
+					max.value = '25000';
+					cap.getElementsByTagName('option')[3].selected = 'selected';
+				    err.getElementsByTagName('option')[1].selected = 'selected';
+				    numg.getElementsByTagName('option')[3].selected = 'selected';
+					l.disabled=true;
+					k.disabled=true;
+					cap.disabled=true;
+					err.disabled=true;
+					max.disabled=true;
+					numg.disabled=true;
+
+				}
+				else{
+
+					k.selectedIndex = -1;
+					l.selectedIndex = -1;
+					cap.selectedIndex = -1;
+					err.selectedIndex = -1;
+					max.value = '';
+					numg.value = ''
+					l.disabled=false;
+					k.disabled=false;
+					cap.disabled=false;
+					err.disabled=false;
+					max.disabled=false;
+					numg.disabled=false;
+				}
+
+			}
+			$(document).ready(function() {
+				setBTCConfig(true);
+				$('form').bind('submit', function() {
+					$(this).find(':input').removeAttr('disabled');
+				});
+			});
+		</script>
 <script type = "text/javascript">
-	function showtotalgraphs()
-	 {
-	 	/*
-		var x = document.getElementById("dataset").value;
-		document.getElementById("datasetBTC").style.display = 'none';
-		document.getElementById("datasetLOGD").style.display = 'none';
-		if (x == "BTC") {
-			document.getElementById("datasetBTC").style.display = 'block';
-		}
-		else
-		if (x =="LOGD")
-		{
-			document.getElementById("datasetLOGD").style.display = 'block';
-		}
-		*/
+
+	function getSettings(e)
+	{
+			if(e.value=='BTC')
+				setBTCConfig(true);
+			else
+				setBTCConfig(false);
 
 
 	}
@@ -27,26 +71,28 @@
 		<script src="../static/js/index-donut.js" type="text/javascript"></script>
 		<script type="text/javascript">
 			function getTimeData(stats){
-				var total = Number(stats.group.build_graph_t)+Number(stats.group.pv_lsh_t)+Number(stats.group.union_t)+Number(stats.group.total_t)+Number(stats.cbf.cbf_t)+Number(stats.split.split_t )+Number(stats.pv_t);
+ 				//var total = Number(stats.group.build_graph_t)+Number(stats.group.pv_lsh_t)+Number(stats.group.union_t)+Number(stats.group.total_t)+Number(stats.cbf.cbf_t)+Number(stats.split.split_t )+Number(stats.pv_t);
+				var total =Number(stats.group.total_t)+Number(stats.cbf.cbf_t)+Number(stats.pv_t);
 				var tdata = {
-								'PV CONSTRUCTION':stats.pv_t,
+								'PV Construction':stats.pv_t,
 								'CBF':stats.cbf.cbf_t,
 								'SPLIT':stats.split.split_t,
 								'GROUP BUILD GRAPH':stats.group.build_graph_t,
 								'GROUP PV LSH':stats.group.pv_lsh_t,
 								'GROUP UNION':stats.group.union_t,
-								'GROUP TOTAL':stats.group.total_t,
+								'Group Construction':stats.group.total_t,
 								'TOTAL':total.toFixed(2),
 
 							};
 				var tpercent = [
-								['PV CONSTRUCTION',Number((Number(stats.pv_t)/total*100))],
+
+								['PV Construction',Number((Number(stats.pv_t)/total*100))],
 								['CBF',Number((Number(stats.cbf.cbf_t)/total*100 ))],
-								['SPLIT',Number((Number(stats.split.split_t)/total*100 ))],
-								['GROUP BUILD GRAPH',Number((Number(stats.group.build_graph_t)/total*100))],
-								['GROUP PV LSH',Number((Number(stats.group.pv_lsh_t)/total*100 ))],
-								['GROUP UNION',Number((Number(stats.group.union_t)/total*100) )],
-								['GROUP TOTAL',Number((Number(stats.group.total_t)/total*100 ))],
+// 								['SPLIT',Number((Number(stats.split.split_t)/total*100 ))],
+// 								['GROUP BUILD GRAPH',Number((Number(stats.group.build_graph_t)/total*100))],
+// 								['GROUP PV LSH',Number((Number(stats.group.pv_lsh_t)/total*100 ))],
+// 								['GROUP UNION',Number((Number(stats.group.union_t)/total*100) )],
+								['Group Construction',Number((Number(stats.group.total_t)/total*100 ))],
 							];
 				return [tdata,tpercent];
 			}
@@ -68,13 +114,13 @@
 <title>{{ TITLE }}</title>
 {% endblock %}
 {% block content %}
-<div class="row">
-	<div style="display: flex; flex-flow: row;">
-	<div id="config" class="col-md-2" style="color:#E87352; border-color:#E87352; 	border: 2px solid;padding:25px;">
+
+	<div style="display:-webkit-flex;   display: flex;  flex-flow: row;">
+	<div id="config"  style="color:#E87352; border-color:#E87352;border: 2px solid;padding:25px;width:200px;">
 		<p class="text-center" style="font-size: 110%;font-weight: 800;">
 			Configuration
 		</p>
-		<form action="" method="post">
+		<form method="post">
 			{% csrf_token %}
 			{% if form.dataset.errors %}
 			<div style="color:red;">
@@ -83,9 +129,9 @@
 			{% endif %}
 			<div class="row"  style="margin-bottom:10px;">
 				<div class="form-group">
-					<label for = "dataset" {% if form.dataset.errors %} class="error"{% endif %}>Dataset</label>
+					<label for = "dataset" {% if form.dataset.errors %} class="error"{% endif %}>Dataset/Prebuilt Index</label>
 					<div class="col-sm-12">
-						<select id="dataset" onchange = "showtotalgraphs();" NAME="dataset" class="form-control index">
+						<select id="dataset" onchange = "getSettings(this);" NAME="dataset" class="form-control index">
 							{% for value, text in form.dataset.field.choices %}
 							<option value="{{ value}}">{{ text}}</option>
 							{% endfor %}
@@ -133,15 +179,15 @@
 						<p class="error">{{form.maximumgraphs.errors}}</p>
 					</div>
 					{% endif %}
-					<label for = "maximumgraphs"  {% if form.maximumgraphs.errors %} class="error"{% endif %}>Maximum number of graphs per group</label>
+					<label for = "maximumgraphs"  {% if form.maximumgraphs.errors %} class="error"{% endif %}>Maximum number of PVs per group</label>
 					<div class="col-sm-12">
-						<input class="form-control index" id = {{ form.maximumgraphs}}
+						{{ form.maximumgraphs}}
 					</div>
 				</div>
 			</div>
 			<div class="row" style="margin-bottom:10px;">
 				<div class="form-group">
-					<label for = "capacityanderrorrate"  >Bloom/CBF</label><br/>
+					<label for = "capacityanderrorrate" >BF/CBF Construction</label><br/>
 					{% if form.bloomcapacity.errors %}
 					<div style="color:red;">
 						<p class="error">{{form.bloomcapacity.errors}}	</p>
@@ -155,9 +201,9 @@
 							{% endfor %}
 						</select>
 					</div>
-					<div class="col-sm-6">
-						<label for = "bloomerror" {% if form.bloomerror.errors %} class="error"{% endif %}>Error %</label>
-						<select id="bloomerror" NAME="bloomerror"class="form-control index" >
+					<div class="col-sm-6" >
+						<label for = "bloomerror" {% if form.bloomerror.errors %} class="error"{% endif %}>Err %</label>
+						<select id="bloomerror" NAME="bloomerror"class="form-control index">
 							{% for value, text in form.bloomerror.field.choices %}
 							<option value="{{ value}}">{{ text}}</option>
 							{% endfor %}
@@ -172,11 +218,19 @@
 				</div>
 				{% endif %}
 				<div class="form-group">
-					<label for = "graphindex" {% if form.graphindex.errors %} class="error"{% endif %}>Number of Graphs to Index</label>
+
 					<!--<p>{{ form.username}}</p>-->
-					<div class="col-sm-12">
-						<input class="form-control index" id = {{ form.graphindex}}
+					<label for = "graphindex" {% if form.graphindex.errors %} class="error"{% endif %}>Number of Graphs to Index</label>
+					<div class="col-sm-12" >
+
+						<select id="graphindex" NAME="graphindex"class="form-control index" >
+							{% for value, text in form.graphindex.field.choices %}
+							<option value="{{ value}}">{{ text}}</option>
+							{% endfor %}
+						</select>
 					</div>
+
+
 				</div>
 			</div>
 			<div class="row" >
@@ -188,11 +242,11 @@
 			</div>
 		</form>
 	</div>
-	<div class="col-md-8" style="margin-left:5px; height:100%;">
+	<div style="margin-left:5px; height:560px;width:810px;margin-left:20px;">
 		<div class="row">
-			<div class="col-md-12" style="color:#E87352; border-color:#E87352;border: 2px solid; height:130px;">
+			<div class="col-md-12" style="color:#E87352; border-color:#E87352;border: 2px solid; height:170px;">
 				<p class="text-center" style="font-size: 110%;font-weight: 800; padding-top:30px;">
-						PV Construction
+						Indexing Statistics
 				</p>
 
 			<div id="stats"> </div>
@@ -201,11 +255,12 @@
 			</div>
 		</div>
 		<div class="row">
-			<div id="exp" class="col-md-12" style="color:#E87352; border-color:#E87352;border: 2px solid; height:435px; margin-top:5px">
+			<div id="exp" class="col-md-12" style="color:#E87352; border-color:#E87352;border: 2px solid; margin-top:5px; min-height:395px;">
 				<p class="text-center" style="font-size: 110%;font-weight: 800; padding-top:30px;">
-						PV-Index Construction <br /> Breakup of Time Taken
+						PV-Index Construction<br />
+						Breakup of Time Taken
 				</p>
-				<div id="donutbox" style="width: 100%; height: 270px;margin-top:80px"></div>
+				<div id="donutbox" style="width: 100%; height: 260px;margin-top:50px"></div>
 
 
 			</div>
@@ -226,7 +281,7 @@
 
 	</div>
 </div>
-</div>
+
 {% if IndexName %}
 <!--<div style="color:red;">The name of the new Index created is {{IndexName}}</div>-->
 {% endif %}

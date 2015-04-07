@@ -10,8 +10,9 @@ function plotTimings(data){
         chart: {
 			type: 'column',
 			margin: 0,
-			height: 320,
-			width: 245,
+			marginLeft: 8,
+			height: 300,
+			width: 265,
 			borderWidth:0,
 			marginTop: 60,
 			marginBottom: 80,
@@ -203,7 +204,7 @@ function getQueryResults()
 	success: function(data) {
 
 		 rframe = $('#results');
-		rframe.text(data);
+		rframe.html(data.replace(/\n/g,'&nbsp;<br/>'));
 		}});
 
 

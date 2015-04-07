@@ -185,11 +185,7 @@ border-radius: 0px;
 .visualize {
   border-color:#3BBEC0;
 }
-div.thrds {
-	 width:32.7%;
 
-
-}
 div.halves{
 	color:#3BBEC0;
 	border-color:#3BBEC0;
@@ -207,12 +203,11 @@ div.widen{
 
 div.sliding-content-r{
     z-index:0;
-	width:100%;
-	height:100%;
 	position:absolute;
-	top:0;
-	left:0;
-	width:100%;
+	top:1;
+	left:1;
+	width:273px;
+	height:416px;
 	overflow:hidden;
 	-webkit-transition: all 1s ease;
     -moz-transition: all 1s ease;
@@ -224,7 +219,7 @@ div.sliding-content-r{
 }
 div.sliding-content-r:hover{
     z-index:100;
-    width:310%;
+    width:837px;
     overflow-y:auto;
     transition-delay:1s;
 
@@ -248,7 +243,7 @@ div.sliding-content-rv{
 }
 div.sliding-content-rv:hover{
     z-index:100;
-    width:246%;
+    width:245.5%;
     overflow-y:auto;
     transition-delay:1s;
 
@@ -282,13 +277,12 @@ div.sliding-content-lv:hover{
 
 div.sliding-content-lr{
     z-index:0;
-	width:100%;
-	height:100%;
+	width:273px;
+	height:416px;
 	position:absolute;
 
-	top:0;
-	left:0;
-	width:100%;
+	top:1;
+	left:1;
 	overflow:hidden;
 	-webkit-transition: all 1s ease;
     -moz-transition: all 1s ease;
@@ -302,9 +296,9 @@ div.sliding-content-lr{
 }
 div.sliding-content-lr:hover{
     z-index:100;
-    width:309.7%;
-	margin-left:-104.5%;
-	margin-right:-104.5%;
+    width:837px;
+	margin-left:-282px;
+
 	overflow-y:auto;
 	transition-delay:1s;
  }
@@ -340,7 +334,6 @@ div.sliding-content-l:hover{
 	height:100%;
 	overflow:hidden;
 	position:absolute;
-	width:100%;
 	-webkit-transition: all 1s ease;
     -moz-transition: all 1s ease;
     -o-transition: all 1s ease;
@@ -351,8 +344,8 @@ div.sliding-content-l:hover{
 }
 div.sliding-content-t:hover{
     z-index:100;
-margin-top:-455px;
-height:551px;
+margin-top:-426px;
+height:552px;
     overflow-y:auto;
         transition-delay:1s;
  }

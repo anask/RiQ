@@ -18,14 +18,24 @@ function showdonut(timedata,timepercentage){
 //         }
 //         return colors;
 //     }());
-    var colors = Highcharts.getOptions().colors;
+   // var colors = Highcharts.getOptions().colors;
+	Highcharts.getOptions().plotOptions.pie.colors = ['#3BBEC0','#DCB543','#43C487'];
+	//Highcharts.getOptions().plotOptions.pie.colors = ['#0101DF','#01A9DB','green'];
     $('#donutbox').highcharts({
 		labels: {
 			items : [{
-				html : 'Total: <br />'+ timedata['TOTAL']+'s',
+				html : "Total:",
+				style : {
+					left : '370px',
+					top : '180px',
+					fontSize : '20px',
+					color:'#000'
+				}
+			},{
+				html : timedata['TOTAL'].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+'s',
 				style : {
 					left : '340px',
-					top : '180px',
+					top : '200px',
 					fontSize : '20px',
 					color:'#000'
 				}
@@ -35,10 +45,10 @@ function showdonut(timedata,timepercentage){
 			  enabled: false
 		  },
         chart: {
-            plotBackgroundColor: null,
+			backgroundColor:'rgba(255, 255, 255, 0.1)',
             plotBorderWidth: 0,
             plotShadow: false,
-            marginBottom:-10
+            margin:15
 
         },
         title: {
@@ -57,7 +67,7 @@ function showdonut(timedata,timepercentage){
                     connectorWidth: 1,
 					enabled: true,
 					formatter: function() {
-						return '<b>'+ this.point.name +'</b>: <br/>'+ Number(timedata[this.point.name]).toFixed(3)+'s';
+						return '<b>'+ this.point.name +'</b>: <br/>'+ Number(timedata[this.point.name]).toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+'s';
                     },
 
 

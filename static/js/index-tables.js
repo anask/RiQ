@@ -1,5 +1,6 @@
 function showtables(stats){
-	var total = Number(stats.group.build_graph_t)+Number(stats.group.pv_lsh_t)+Number(stats.group.union_t)+Number(stats.group.total_t)+Number(stats.cbf.cbf_t)+Number(stats.split.split_t )+Number(stats.pv_t);
+//	var total = Number(stats.group.build_graph_t)+Number(stats.group.pv_lsh_t)+Number(stats.group.union_t)+Number(stats.group.total_t)+Number(stats.cbf.cbf_t)+Number(stats.split.split_t )+Number(stats.pv_t);
+	var total =Number(stats.group.total_t)+Number(stats.cbf.cbf_t)+Number(stats.pv_t);
 // 	var t_content = "<table style='width:100%' > ";
 // 		t_content += '<tr>';
 // 				t_content += "<td style='font-weight:500;'> G BUILD GRAPH</td>"+"<td style='font-weight:400;color:#000;'>" + stats.group.build_graph_t  + '</td>';
@@ -16,21 +17,31 @@ function showtables(stats){
 // 	t_content += "</table>";
 
 	var pv_content = "<table style='width:100%;text-align: center;' > ";
-			pv_content += '<tr>';
-									pv_content += "<td style='font-weight:500;'> TOTAL SIZE</td>";
-									pv_content += "<td style='font-weight:500;'> AVG GRAPH SIZE</td>";
-									pv_content += "<td style='font-weight:500;'> MAX GRAPH SIZE</td>";
- 									pv_content += "<td style='font-weight:500;'> TOTAL TIME</td>";
+			pv_content += '<tr style="background:#E87352;color:#FFF;  border-top: 1px solid #000;  border-left: 1px solid #000;border-right: 1px solid #000;">';
+									pv_content += "<td style='font-weight:500;border-right: 1px solid #000;'> Total # of Quads</td>";
+									pv_content += "<td style='font-weight:500;border-right: 1px solid #000;'> Avg # of Quads/Graph</td>";
+									pv_content += "<td style='font-weight:500;'> Max # of Quads/Graph</td>";
+			pv_content += '</tr>';
+			pv_content += '<tr style="border-left: 1px solid #000;border-right: 1px solid #000;">';
+
+									pv_content += "<td style='font-weight:400;color:#000;border-right: 1px solid #000;'>" + stats["Total size"]  + '</td>';
+									pv_content += "<td style='font-weight:400;color:#000;border-right: 1px solid #000;'>" + stats["Avg graph size"]  + '</td>';
+									pv_content += "<td style='font-weight:400;color:#000;'>" + stats["Max graph size"]  + '</td>';
+
+			pv_content += '<tr style="background:#E87352;color:#FFF;border-left: 1px solid #000;border-right: 1px solid #000;">';
+									pv_content += "<td style='font-weight:500;border-right: 1px solid #000;'> Number of Graphs</td>";
+ 									pv_content += "<td style='font-weight:500;border-right: 1px solid #000;'> PV-Index Size</td>";
+ 									pv_content += "<td style='font-weight:500;'> Total Time</td>";
+
 
 			pv_content += '</tr>';
-			pv_content += '<tr>';
 
-									pv_content += "<td style='font-weight:400;color:#000;'>" + stats["Total size"]  + '</td>';
-									pv_content += "<td style='font-weight:400;color:#000;'>" + stats["Avg graph size"]  + '</td>';
-									pv_content += "<td style='font-weight:400;color:#000;'>" + stats["Max graph size"]  + '</td>';
-									pv_content += "<td style='font-weight:400;color:#000;'>" + Number(stats.pv_t).toFixed(2)   + 's</td>';
-// 									pv_content += "<td style='font-weight:500;'> TOTAL URIS/LITERALS</td>"+"<td style='font-weight:400;color:#000;'>" + stats["Total URIs/literals"]  + '</td>';
-// 									pv_content += "<td style='font-weight:500;'> WRITTEN GRAPHS</td>"+"<td style='font-weight:400;color:#000;'>" + stats["Written graphs"]  + '</td>';
+			pv_content += '<tr style="border-bottom: 1px solid #000;border-left: 1px solid #000;border-right: 1px solid #000;">';
+
+
+									pv_content +=  "<td style='font-weight:400;color:#000;border-right: 1px solid #000;'>" + stats["Written graphs"]  + '</td>';
+									pv_content += "<td style='font-weight:400;color:#000;border-right: 1px solid #000;'>" + stats["PV Index Size"]   + '</td>';
+ 									pv_content += "<td style='font-weight:400;color:#000;'>" +total.toFixed(2)   + 's</td>';
 			pv_content += '</tr>';
 
 		pv_content += "</table>";
