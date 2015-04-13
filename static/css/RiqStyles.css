@@ -154,6 +154,24 @@ i {
 	border-color:#DCB543;
 
 }
+
+
+.linked-btn{
+	background-color:#43C487;
+	border-color:#000;
+	font-size: 110%;
+	font-weight: 500;
+	border-radius:0px;
+}
+.linked-btn:hover {
+
+	background-color:#000;
+	border-color:#43C487;
+
+}
+
+
+
 .vis-btn{
 	background-color:#3BBEC0;
 	border-color:#000;
@@ -224,6 +242,30 @@ div.sliding-content-r:hover{
     transition-delay:1s;
 
  }
+div.sliding-content-r-linked{
+    z-index:0;
+	position:absolute;
+	top:1;
+	left:1;
+	width:555px;
+	height:416px;
+	overflow:hidden;
+	-webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    transition: all 1s ease;
+	outline: 2px solid #43C487;
+    background:#FFF;
+    padding:15px;
+}
+div.sliding-content-r-linked:hover{
+    z-index:100;
+    width:837px;
+    overflow-y:auto;
+    transition-delay:1s;
+
+ }
+
 div.sliding-content-rv{
     z-index:0;
 	width:100%;
@@ -344,8 +386,29 @@ div.sliding-content-l:hover{
 }
 div.sliding-content-t:hover{
     z-index:100;
-margin-top:-426px;
-height:552px;
+margin-top:-425px;
+height:551px;
+    overflow-y:auto;
+        transition-delay:1s;
+ }
+ div.sliding-content-t-linked{
+    z-index:0;
+	width:100%;
+	height:100%;
+	overflow:hidden;
+	position:absolute;
+	-webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    transition: all 1s ease;
+	outline: 2px solid #43C487;
+    background:#FFF;
+        padding:15px;
+}
+div.sliding-content-t-linked:hover{
+    z-index:100;
+margin-top:-425px;
+height:551px;
     overflow-y:auto;
         transition-delay:1s;
  }
