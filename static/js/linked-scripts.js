@@ -129,10 +129,12 @@ function displayLoaders(){
 
 	var ldrImgResults = "<img src='/static/images/ajax-loader-green.gif' style='display: block;margin: auto; margin-top:5px;'/>";
 	var ldrImgTime = "<img src='/static/images/ajax-loader-green.gif' style='display: block;margin: auto; margin-top:100px;'/>";
+	var loadR = document.getElementById('rLoader');
+	var time = document.getElementById('tLoader');
 	var results = document.getElementById('results');
-	var time = document.getElementById('time');
-	results.innerHTML=ldrImgResults;
+	loadR.innerHTML=ldrImgResults;
 	time.innerHTML=ldrImgTime;
+	results.innerHTML="";
 
 
 }
@@ -221,6 +223,8 @@ function runRIQ(e)
 	timeout: 9000000000,
 	success: function(response,n, textStatus, exception) {
 		console.log("Linked Form Submitted Successfully");
+		document.getElementById('rLoader').innerHTML='';
+		document.getElementById('tLoader').innerHTML='';
 		document.getElementById('results').innerHTML=response;
 
 	},

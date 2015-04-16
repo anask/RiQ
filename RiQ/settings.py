@@ -92,7 +92,7 @@ TIMEOUT = 900
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT ='/static/'
+STATIC_ROOT ='../static_resources/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
