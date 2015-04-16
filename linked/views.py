@@ -86,66 +86,44 @@ def getQueryList(request):
 	queryname = request.GET['name'].lower()
 	query = """SELECT *
 WHERE {
-	GRAPH ?g{
-		?s ?p	?o .
-	}
-} LIMIT 10
-"""
-	if(queryname == 'f1'):
-		query = """PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX geo: <http://aims.fao.org/aos/geopolitical.owl#>
-PREFIX collect: <http://purl.org/collections/nl/am/>
-PREFIX ore: <http://www.openarchives.org/ore/terms/>
-PREFIX fbase: <http://rdf.freebase.com/ns/>
-
-SELECT ?s1 ?o1 ?s2 WHERE {
-	GRAPH ?g {
-		?s1 collect:acquisitionDate "1980-05-16" .
-		?s1 collect:acquisitionMethod collect:t-14382 .
-		?s1 collect:associationSubject ?o1 .
-		?s1 collect:contentMotifGeneral collect:t-8782 .
-		?s1 collect:creditLine collect:t-14773 .
-		?s1 collect:material collect:t-3249 .
-		?s1 collect:objectCategory collect:t-15606 .
-		?s1 collect:objectName collect:t-10444 .
-		?s1 collect:objectNumber "KA 17150" .
-		?s1 collect:priref "23182" .
-		?s1 collect:productionDateEnd "1924" .
-		?s1 collect:productionDateStart "1924" .
-		?s1 collect:productionPlace collect:t-624 .
-		?s1 collect:title "Plate commemorating the first Amsterdam-Batavia flight"@en .
-		?s1 ore:proxyFor collect:physical-23182 .
-		?s1 ore:proxyIn collect:aggregation-23182 .
-		?s1 collect:relatedObjectReference ?s2 .
-		?s2 collect:relatedObjectReference ?s1 .
-	}
+		SERVICE   <http://134.193.129.222:8080/endpoints/>{
+			graph ?g {
+				?s ?p "Brunei"@en .
+			}
+		}
 }
 """
+	if(queryname == 'f1'):
+		query = """PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX movie: <http://data.linkedmdb.org/resource/movie/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+SELECT ?film ?label ?subject WHERE {
+	SERVICE <http://data.linkedmdb.org/sparql> {
+		?film a movie:film .
+		?film rdfs:label ?label .
+		?film owl:sameAs ?dbpediaLink .
+		FILTER(regex(str(?dbpediaLink), "dbpedia", "i"))
+	}
+	SERVICE <http://dbpedia.org/sparql> {
+		?dbpediaLink dcterms:subject ?subject .
+	}
+}
+LIMIT 50
+"""
 	elif(queryname == 'f2'):
-		query ="""SELECT ?sub ?pred1 ?pred2 ?pred3 ?pred4
-WHERE
-{
-	?sub ?pred1 <http://lexvo.org/id/term/afr/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/aze/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/bez/Hupanama> .
-	?sub ?pred1 <http://lexvo.org/id/term/ces/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/cgg/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/cym/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/dan/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/dav/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/deu/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/dje/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/lav/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/lin/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/nmg/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/nno/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/nob/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/zul/i-Panama> .
-	?sub ?pred2 <http://lexvo.org/id/un_m49/013> .
-	?sub ?pred3 <lvont:GeographicRegion> .
-	?sub ?pred4 <http://psi.oasis-open.org/iso/3166/#591> .
-	?sub ?pred4 <http://sws.geonames.org/3703430/> .
+		query ="""PREFIX bibleontology: <http://bibleontology.com/resource/>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+SELECT ?art ?abstract
+WHERE {
+	SERVICE <http://bibleontology.com/sparql/> {
+		bibleontology:Ezra owl:sameAs ?art .
+	}
+	SERVICE <http://dbpedia.org/sparql> {
+		?art dbo:abstract ?abstract .
+	}
 }
 """
 
