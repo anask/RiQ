@@ -113,18 +113,12 @@ SELECT ?film ?label ?subject WHERE {
 LIMIT 50
 """
 	elif(queryname == 'f2'):
-		query ="""PREFIX bibleontology: <http://bibleontology.com/resource/>
-PREFIX dbo: <http://dbpedia.org/ontology/>
-PREFIX owl: <http://www.w3.org/2002/07/owl#>
-SELECT ?art ?abstract
+		query ="""SELECT DISTINCT ?person
 WHERE {
-	SERVICE <http://bibleontology.com/sparql/> {
-		bibleontology:Ezra owl:sameAs ?art .
-	}
 	SERVICE <http://dbpedia.org/sparql> {
-		?art dbo:abstract ?abstract .
+		?person a <http://xmlns.com/foaf/0.1/Person> .
 	}
-}
+} LIMIT 10
 """
 
 	return HttpResponse(query,  content_type="text/plain")
