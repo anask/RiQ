@@ -25,9 +25,9 @@ class LinkedForm(forms.Form):
 	MY_CHOICESQUERY=(
 		( QBTC1 ,'F1'),
 		( QBTC2,'F2'),
-		( QBTC10,'B10'),
-		( DBPDSB1,'DBPD SB - 1'),
-		( DBPDSB2,'DBPD SB - 2'),
+# 		( QBTC10,'B10'),
+# 		( DBPDSB1,'DBPD SB - 1'),
+# 		( DBPDSB2,'DBPD SB - 2'),
 		( CUS,'CUSTOM'),
 	)
 
