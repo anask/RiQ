@@ -8,8 +8,8 @@ import sys, os
 import json
 # import sh
 # import pexpect
-# import fyzz
-# import glob
+import fyzz
+import glob
 from subprocess import call
 
 def land(request):
@@ -30,69 +30,32 @@ def land(request):
 
 def runQuery(query):
 	createQueryFile(query)
-# 	riq = './run_riq_query.py -C /home/anask/riq.conf.py -q /home/anask/temp.q  -c none  -r 1 -f xml'
-
 	DIR  = os.path.join(os.path.abspath(os.pardir))
-	cmd = [ "python", DIR+"/RIS/indexing/RIS/scripts/run_riq_query.py", "-C", "RiQ/config-files/riq.conf","-q", "RiQ/tempLinked.q",  "-c" ,"none" , "-r", "1", "-f" ,"xml"]
-
+	cmd = [ DIR+"/RIS/indexing/RIS/scripts/run_riq_query.py", "-C", "config-files/riq.conf","-q", "queries/tempLinked.q", "-f" ,"xml"]
+	print cmd
 	p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	p_stdout = p.stdout.read()
 	p_stderr = p.stderr.read()
 	print(p_stdout)
  	print(p_stderr)
 
-#
-#
-#
-#
-# 	usr=os.getlogin()
-# 	os.chdir('/home/'+usr+'/RIS/indexing/RIS/scripts/')
-#
-#         child = ' '
-# 	try:
-#                 child = pexpect.spawn("su")
-#         except:
-#                 print "Unable to login as root."
-#                 sys.exit()
-#
-#         i = child.expect([pexpect.TIMEOUT, "Password:"])
-#
-#         if i == 0:
-#                 print "Timed out when logging into root."
-#                 sys.exit()
-#         if i == 1:
-#                 child.sendline("yeb4<slav")
-#
-# 		try:
-# 			riq = './run_riq_query.py -C /home/anask/riq.conf.py -q /home/anask/temp.q  -c none  -r 1 -f xml'
-# 			child.sendline(riq)
-# 			child.expect('Done.')
-# 			# print results #
-# 			files= glob.glob('/home/anask/log/*.results')
-# 			with open (files[0], "r") as myfile:
-# 				data=myfile.read()
-# 				print '!'+data+'!'
-# 				myfile.close()
-# 		except Exception as E:
-# 			print E
-# 			# Error, return empty xml #
-# 			selected_vars = getVars(qStr)
-# 			print getXML(selected_vars)
+	try:
+ 		rfile = DIR+"/RIS/indexing/RIS.RUN/log/"+'query.'+'btc-2012-split-clean'+'.tempLinked.q.nopt.none.tdb2.xml.1.results'
+ 		with open (rfile, "r") as myfile:
+ 				data=myfile.read()
+ 				myfile.close()
+		return HttpResponse(content=data,content_type='xml; charset=utf-8')
+	except Exception as E:
+ 			print E
+ 			# Error, return empty xml #
+ 			selected_vars = getVars(qStr)
+ 			data =  getXML(selected_vars)
+			return HttpResponse(content=data,content_type='xml; charset=utf-8')
 
 def createQueryFile(queryStr):
         f = open('queries/tempLinked.q','w')
         f.write(queryStr)
         f.close()
- 		#WRITE QUERY TO FILE
-# 		try:
-# 			qf = open('queries/tempLinked.q', 'w')
-# 			qf.write(query.encode(sys.stdout.encoding))
-# 			qf.close()
-# 		except:
-# 			print "Unexpected File Error:", sys.exc_info()[0]
-# 			return HttpResponse("File Error!", status=500,content_type='plain/text')
-
-#		return HttpResponse("Received Form", status=200,content_type='plain/text')
 
 def getVars (query):
 	vrs=[]
