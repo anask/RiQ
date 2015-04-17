@@ -11,4 +11,5 @@ urlpatterns = patterns('',
 	url(r'^candidatetree/$', 'visualize.views.getOptimizedQueryTree'),
 	url(r'^query/$', 'visualize.views.getQuery'),
 	url(r'^candquery/$', 'visualize.views.getCandQuery'),
+	url(r'^parse/$', 'visualize.views.getParseTree'),
 )

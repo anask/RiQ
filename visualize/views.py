@@ -126,3 +126,132 @@ def getOptimizedQueryTree(request):
 		response = HttpResponse(content_type="image/jpeg")
 		img.save(response, "JPEG")
 		return response
+
+def getParseTree(request):
+	cand = request.GET['cand']
+	if cand == 'false':
+
+	# open visualize non-candidate graph data
+		v = open('output/visualizenoncandidatedata.log')
+		for line in v:
+		   print line
+		   expression = line
+		   break
+		v.close
+		#expression = "( Root( SQ ( VBZ ) ( NP ( DT ) ( NN ) ) ( VP ( VB ) ( NP ( NN ) ) ) ))"
+		expression, nodeMap = parseExpression(expression)
+		tree = toTree(expression)
+		myjson=printTree(tree, tree[''][0], nodeMap, 1, None)
+		data = json.dumps(myjson)
+
+	else:
+		#convert int to binary
+		result = str(bin(int(cand.strip("Candidate"))))
+
+		binaryValue = result[2:]
+		print 'length of binaryValue: ' + str(len(binaryValue))
+		if len(binaryValue) == 15:
+			binaryValue = '0' + result[2:]
+
+		print "binaryValue: " + binaryValue
+
+		#assuming binary value is always in the file
+		expression = ''
+		v = open('output/visualizecandidatedata.log')
+		for line in v:
+		   if line.find(binaryValue) != -1:
+			   print 'found matching candidate'
+			   expression = next(v)
+			   break
+		v.close
+		print "expression: " + expression
+		expression, nodeMap = parseExpression(expression)
+		tree = toTree(expression)
+		myjson=printTree(tree, tree[''][0], nodeMap, 1, None)
+		data = json.dumps(myjson)
+
+	return HttpResponse(data, content_type="application/json")
+
+
+def parseExpression(expression):
+    nodeMap = dict()
+    counter = 1
+    node = ""
+    retExp =""
+    for char in expression:
+        if char == '(' or char == ')' :
+            if (len(node) > 0):
+                nodeMap[str(counter)] = node;
+                retExp += str(counter)
+                counter +=1
+            retExp += char
+            node =""
+        elif char == ' ': continue
+        else :
+            node += char
+    return retExp,nodeMap
+
+def toTree(expression):
+    tree = dict()
+    msg =""
+    stack = list()
+    for char in expression:
+        if(char == '('):
+            stack.append(msg)
+            msg = ""
+        elif char == ')':
+            parent = stack.pop()
+            if parent not in tree:
+                tree[parent] = list()
+            tree[parent].append(msg)
+            msg = parent
+        else:
+            msg += char
+    return tree
+
+def printTree(tree, node, nodeMap, childIndex, parentNode):
+	jsonstr = '{"name": "%s"' % (nodeMap[node])
+	#print '{"name": "%s"' % (nodeMap[node])
+	#print str(childIndex) + ' childIndex, node: ' + (nodeMap[node])
+	if node in tree:
+		#print ',"children" : ['
+		jsonstr += ',"children" : ['
+	else:
+		if childIndex > 0:
+			#print '},' #+ ' -----> childIndex = ' + str(childIndex)
+			jsonstr += '},' #+ ' -----> childIndex = ' + str(childIndex)
+		else:
+			#print '}' #+ ' -----> childIndex = ' + str(childIndex)
+			jsonstr += '}' #+ ' -----> childIndex = ' + str(childIndex)
+		return jsonstr
+	#print 'child count of the node for ' + nodeMap[node] + ' = ' + str(len(tree[node]))
+	parent = node
+	childIndex = len(tree[node])
+	for child in tree[node]:
+		childIndex = childIndex - 1
+		jsonstr += printTree(tree, child, nodeMap, childIndex, parent)
+	if node in tree:
+		#print ']'
+		jsonstr += ']'
+	#need to check if nodeMap[node] is the last child of the parent. If not, then add comma
+	parentNodeName = ''
+	#print parentNode
+	if parentNode is not None:
+		parentNodeName = nodeMap[parentNode]
+		#print 'parentNodeName: ' + parentNodeName
+		#print 'length of parent node: ' + str(len(tree[parentNode]))
+		#print 'index of node in parent list: ' + str(tree[parentNode].index(node))
+		if len(tree[parentNode])-1 > tree[parentNode].index(node):
+			#print '},'
+			jsonstr += '},'
+		else:
+			#print '}'
+			jsonstr += '}'
+		#print ' ----> end of node ' + nodeMap[node] + '  parentNode = ' + parentNodeName
+	else:
+		#print '}'
+		jsonstr += '}'
+		#print 'THIS IS ROOT NODE OF THE TREE...!'
+		#print jsonstr
+	#print '}' + ' ----> end of node ' + nodeMap[node] + '  parentNode = ' + parentNodeName
+	return jsonstr

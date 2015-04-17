@@ -313,6 +313,7 @@ div.sliding-content-lv:hover{
     width:172%;
 	margin-left:-207%;
 	overflow-y:auto;
+  overflow-x:auto;
     transition-delay:1s;
 
  }
