@@ -201,7 +201,7 @@ function renderD3JsonGraph(container, data)
 {
 var margin = {top: 40, right: 100, bottom: 10, left: 100},
                    width = 1000 - margin.right - margin.left,
-                   height = 800 - margin.top - margin.bottom;
+                   height = 1000 - margin.top - margin.bottom;
 
                    var i = 0,
                    duration = 750,
@@ -261,11 +261,18 @@ var margin = {top: 40, right: 100, bottom: 10, left: 100},
                    .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
 
                    nodeEnter.append("text")
-                   .attr("x", function(d) { return d.children || d._children ? 9 : 10; })
-                   .attr("dy", ".35em")
+                   .attr("x", function(d) { return d.children || d._children ? 12 : 10; })
+                   .attr("dy", "0.4em")
                    .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
-		   .attr("text-anchor", "right")
-                   .text(function(d) { return d.name; })
+				   .attr("text-anchor", "right")
+                   .text(function(d) {
+					   var nameArr = d.name.split(":");
+                    	if(nameArr[1].charAt(0)=='0'){
+                    		return "F "+nameArr[0];
+                    	}
+                    		return "T "+nameArr[0];
+
+                   })
                    .style("fill-opacity", 1e-6);
 
                    // Transition nodes to their new position.
@@ -275,11 +282,17 @@ var margin = {top: 40, right: 100, bottom: 10, left: 100},
 
                    nodeUpdate.select("circle")
                    .attr("r", 8.5)
-                   .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+                   .style("fill", function(d) {
 
-                   nodeUpdate.select("text")
+                    var nameArr = d.name.split(":");
+                    	if(nameArr[1].charAt(0)=='0'){
+                    		return "red";
+                    	}
+                    	return "green";
+                   	 });
 
-                   .style("fill-opacity", 0.2);
+
+                  nodeUpdate.select("text").style("fill-opacity", 1);
 
                    // Transition exiting nodes to the parent's new position.
                    var nodeExit = node.exit().transition()

@@ -131,15 +131,19 @@ def getParseTree(request):
 	cand = request.GET['cand']
 	if cand == 'false':
 
-	# open visualize non-candidate graph data
+		# open visualize non-candidate graph data
 		v = open('output/visualizenoncandidatedata.log')
 		for line in v:
-		   print line
+		   #print line
 		   expression = line
 		   break
 		v.close
-		#expression = "( Root( SQ ( VBZ ) ( NP ( DT ) ( NN ) ) ( VP ( VB ) ( NP ( NN ) ) ) ))"
+		print expression
+		expression = replaceKeyWords(expression)
+		print expression
+		#expression = "( Root( LC ( MC ) ( RC ( RCLC:1 ) ( RCLC:0 ) ) ( ANC ( ANCLC ) ( ANCRC ( ANCRCGC ) ) ) ))"
 		expression, nodeMap = parseExpression(expression)
+
 		tree = toTree(expression)
 		myjson=printTree(tree, tree[''][0], nodeMap, 1, None)
 		data = json.dumps(myjson)
@@ -165,6 +169,8 @@ def getParseTree(request):
 			   break
 		v.close
 		print "expression: " + expression
+		expression = replaceKeyWords(expression)
+		print expression
 		expression, nodeMap = parseExpression(expression)
 		tree = toTree(expression)
 		myjson=printTree(tree, tree[''][0], nodeMap, 1, None)
@@ -172,6 +178,14 @@ def getParseTree(request):
 
 	return HttpResponse(data, content_type="application/json")
 
+def replaceKeyWords(expression):
+		expression = expression.replace(" UNION:0", " :0 (UNION:0)");
+		expression = expression.replace(" UNION:1", " :1 (UNION:1)");
+		expression = expression.replace(" FILTER:0", " :0 (FILTER:0)");
+		expression = expression.replace(" FILTER:1", " :1 (FILTER:1)");
+		expression = expression.replace(" OPTIONAL:0", " :0 (OPTIONAL:0)");
+		expression = expression.replace(" OPTIONAL:1", " :1 (OPTIONAL:1)");
+		return expression
 
 def parseExpression(expression):
     nodeMap = dict()
