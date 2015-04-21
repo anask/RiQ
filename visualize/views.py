@@ -152,7 +152,7 @@ def getParseTree(request):
 		#convert int to binary
 		result = str(bin(int(cand.strip("Candidate"))))
 
-		binaryValue = result[2:]
+		binaryValue = '0010011010000000'#result[2:]
 		print 'length of binaryValue: ' + str(len(binaryValue))
 		if len(binaryValue) == 15:
 			binaryValue = '0' + result[2:]

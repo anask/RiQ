@@ -390,6 +390,7 @@ div.sliding-content-t:hover{
 margin-top:-425px;
 height:551px;
     overflow-y:auto;
+    overflow-x:auto;
         transition-delay:1s;
  }
  div.sliding-content-t-linked{

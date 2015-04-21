@@ -10,8 +10,8 @@ class ExecuteForm(forms.Form):
 
 	MY_CHOICESDATASET = (
 		(BTC, 'BTC (prebuilt)'),
-		(LOGD, 'LOGD'),
-		(D10,'D10-SML'),
+# 		(LOGD, 'LOGD'),
+# 		(D10,'D10-SML'),
 
 
 	)

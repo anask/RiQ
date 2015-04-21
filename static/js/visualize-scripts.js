@@ -268,9 +268,9 @@ var margin = {top: 40, right: 100, bottom: 10, left: 100},
                    .text(function(d) {
 					   var nameArr = d.name.split(":");
                     	if(nameArr[1].charAt(0)=='0'){
-                    		return "F "+nameArr[0];
+                    		return nameArr[0]+" (F)";
                     	}
-                    		return "T "+nameArr[0];
+                    		return nameArr[0]+" (T)";
 
                    })
                    .style("fill-opacity", 1e-6);

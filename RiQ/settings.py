@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'execute',
     'linked',
     'visualize',
+    'run',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from indexinfo.models import indexdata,graphdata,queryfilenametable
 from django.template import RequestContext
 from execute.forms import ExecuteForm
+from run.views import *
 import json
 from os import remove
 import ConfigParser
@@ -74,14 +75,6 @@ def land(request):
 		except:
 			return HttpResponse("Form Not Valid!", status=500,content_type='plain/text')
 
-		#WRITE QUERY TO FILE
-		try:
-			qf = open('queries/temp.q', 'w')
-			qf.write(query.encode(sys.stdout.encoding))
-			qf.close()
-		except:
-			print "Unexpected File Error:", sys.exc_info()[0]
-			return HttpResponse("File Error!", status=500,content_type='plain/text')
 
 		#DETERMINE CACHE/OPT PARAMETERS
 		try:
@@ -107,15 +100,15 @@ def land(request):
 			optimizeType = ''
 			queryInfo['opt']='Disabled'
 
-
+		args = " "+TypeCache+" "+optimizeType+" "
 
 		qi = open('queries/temp.info', 'w')
 		qi.write(json.dumps(queryInfo).encode('utf-8'));
 		qi.close()
 
-		#	s.sendline('/home/vsfgd/RIS/indexing/RIS/scripts/./run_riq_query.py -C ../../RIS.RUN/riq.conf -q ' + executequeryfilename + ' -c ' + TypeCache + optoption)
-	    #   s.prompt(timeout=1000)
-
+		# Run the query
+		results = runQuery(query.encode(sys.stdout.encoding), args,"temp.q")
+		print results
 		return HttpResponse("Received Form", status=200,content_type='plain/text')
 
 def getTimings(request):
@@ -131,13 +124,8 @@ def getTimings(request):
 
 
 def getResults(request):
-
-	f =  os.path.join(os.path.abspath(os.pardir),'RiQ/output/results.txt')
-	outf = open(f,'r')
-	data=outf.read()
-	outf.close()
-
-	return HttpResponse(data, content_type="plain/text")
+	data = getQueryResults('temp.q')
+	return HttpResponse(content=data,content_type='xml; charset=utf-8')
 
 def getQueryGraph(request):
 	DIR =  os.path.join(os.path.abspath(os.pardir),'RIS/indexing/RIS.RUN/log/')
