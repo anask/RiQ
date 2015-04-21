@@ -11,6 +11,7 @@ import ConfigParser
 import os
 import sys
 import glob
+import time
 def land(request):
 	indexdataobject = indexdata.objects.all()
 	querynamedataobject = queryfilenametable.objects.all()
@@ -106,8 +107,15 @@ def land(request):
 		qi.write(json.dumps(queryInfo).encode('utf-8'));
 		qi.close()
 
+                sFile = open('status/execute','w')
+		sFile.write('Running Query via RIQ..\n')
+		sFile.flush()
 		# Run the query
+		start = time.time()
 		results = runQuery(query.encode(sys.stdout.encoding), args,"temp.q")
+		end = time.time()
+		sFile.write('RIQ Finished: '+(str(end - start))+' s\n')
+		sFile.close()
 		if (results.startswith("error")):
 			return HttpResponse(results , status=600,content_type='plain/text')
 		return HttpResponse("Received Query", status=200,content_type='plain/text')
