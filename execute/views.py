@@ -10,7 +10,7 @@ from os import remove
 import ConfigParser
 import os
 import sys
-
+import glob
 def land(request):
 	indexdataobject = indexdata.objects.all()
 	querynamedataobject = queryfilenametable.objects.all()
@@ -108,8 +108,9 @@ def land(request):
 
 		# Run the query
 		results = runQuery(query.encode(sys.stdout.encoding), args,"temp.q")
-		print results
-		return HttpResponse("Received Form", status=200,content_type='plain/text')
+		if (results.startswith("error")):
+			return HttpResponse(results , status=600,content_type='plain/text')
+		return HttpResponse("Received Query", status=200,content_type='plain/text')
 
 def getTimings(request):
 
@@ -128,9 +129,14 @@ def getResults(request):
 	return HttpResponse(content=data,content_type='xml; charset=utf-8')
 
 def getQueryGraph(request):
+	filename = 'temp.q'	
 	DIR =  os.path.join(os.path.abspath(os.pardir),'RIS/indexing/RIS.RUN/log/')
-
-	bgpfile = DIR+'logoutput/query.btc-2012-split-clean.'+ 'temp.q.opt.cold.filter.1.log'
+        bgpfile = ''
+        file_dir_extension = os.path.join(DIR, '*'+filename+'*filter.1.log')
+	print 'Getting TPs in the query from:'
+        for name in glob.glob(file_dir_extension):
+		print name
+                bgpfile = name
 
 	rlog = open(bgpfile)
 	bStartRead = 0
@@ -162,22 +168,27 @@ def getQueryGraph(request):
 
 
 	rlog.close()
-	#print d3records
+	#move this code to visualize
+	#DIR =  os.path.join(os.path.abspath(os.pardir),'RIS/indexing/RIS.RUN/log/')
+        #candidatefile = ''
+        #file_dir_extension = os.path.join(DIR, '*'+filename+'*filter.candidates')
+        #for name in glob.glob(file_dir_extension):
+        #        print name
+        #        candidatefile = name
 
-	candidatefile = DIR+'query.btc-2012-split-clean.'+'dbpedia.q9.1.opt.cold.filter.candidates'
-	candidatelog = open(candidatefile)
+	#candidatelog = open(candidatefile)
 
-	demodir =  os.path.join(os.path.abspath(os.pardir),'RiQ/')
+	#demodir =  os.path.join(os.path.abspath(os.pardir),'RiQ/')
 
-	candidatelogindecimal = open(demodir+"output/candidatedataindecimal.txt", 'w')
-	for line in candidatelog:
-		binarytodecimal = str(int(line, 2))
+	#candidatelogindecimal = open(demodir+"output/candidatedataindecimal.txt", 'w')
+	#for line in candidatelog:
+	#	binarytodecimal = str(int(line, 2))
 		#print binarytodecimal
 		#print ('Candidate' + binarytodecimal)
-		candidatelogindecimal.write('Candidate' + binarytodecimal + '\n')
+	#	candidatelogindecimal.write('Candidate' + binarytodecimal + '\n')
 
-	candidatelog.close()
-	candidatelogindecimal.close()
+	#candidatelog.close()
+	#candidatelogindecimal.close()
 
 	#print(d3records)
 	#html = "<html><body> "+"Hello"+"</body></html>"

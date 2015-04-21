@@ -7,35 +7,58 @@ import json
 import fyzz
 import glob
 from subprocess import call
+from django.shortcuts import render
+import json
+import time
+import subprocess
+import sys, os
+import json
+import fyzz
+import glob
+from subprocess import call
 
 def runQuery(query,args,filename):
 	createQueryFile(query,filename)
 	DIR  = os.path.join(os.path.abspath(os.pardir))
-	print args
-	cmd = [ DIR+"/RIS/indexing/RIS/scripts/run_riq_query.py", "-C", "config-files/riq.conf","-q", "queries/"+filename, "-f" ,"xml",args]
+	args = args.split()
+	cmd = [ DIR+"/RIS/indexing/RIS/scripts/run_riq_query.py", "-C", "config-files/riq.conf","-q", "queries/"+filename, "-f" ,"xml"]
+	for a in args:
+		cmd.append(a)
+	print cmd
+ 	p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+ 	p_stdout = p.stdout.read()
+ 	p_stderr = p.stderr.read()
+	print 'Running RIQ..'
+ 	print(p_stdout)
+ 	if len(p_stderr)>0:
+ 		print(p_stderr)
+	output = p_stdout.split('\n')
+	for s in output:
+		if s.startswith("error"):
+			return s
+		elif s == "Done.":
+                        return s
 
-# 	p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-# 	p_stdout = p.stdout.read()
-# 	p_stderr = p.stderr.read()
-# 	print(p_stdout)
-# 	print(len(p_stderr))
-# 	print(p_stderr)
 
 def getQueryResults(filename):
 	DIR  = os.path.join(os.path.abspath(os.pardir))
 	try:
-		print 'locating results file..'
+		rFile = ''
+		file_dir_extension = os.path.join(DIR+"/RIS/indexing/RIS.RUN/log/", '*'+filename+'*.results')
+		print 'locating results file: '+file_dir_extension
 
-		file_dir_extension = os.path.join(DIR+"/RIS/indexing/RIS.RUN/log/", '*'+filename+'*')
-		print file_dir_extension
 		for name in glob.glob(file_dir_extension):
 			print name
+			rFile = name
 
- 		with open (name, "r") as myfile:
- 				data=myfile.read()
+ 		with open (rFile, "r") as myfile:
+ 				dataStr=myfile.read()
  				myfile.close()
-		return data
+
+		
+		return dataStr
 	except Exception as E:
+		print 'Results Error:'
 		print E
 		# Error, return empty xml #
 		f =  DIR+'/RiQ/queries/'+filename

@@ -132,7 +132,7 @@ function getQueryTimimgs()
 	type: "GET",
 	dataType: "json",
 		error: function(response,n, textStatus, exception) {
-		alert('Form Error: ' + response.responseText);
+		alert('Error: ' + response.responseText);
 		console.log(n);
 		console.log(textStatus);
 
@@ -163,7 +163,7 @@ function getQueryGraph()
 	type: "GET",
 	dataType: "json",
 		error: function(response,n, textStatus, exception) {
-		alert('Form Error: ' + response.responseText);
+		alert('Error: ' + response.responseText);
 		console.log(n);
 		console.log(textStatus);
 
@@ -182,7 +182,7 @@ function getQueryGraph()
 // 			  {source: "Samsung", target: "Apple", label: "suit"},
 // 			  {source: "Motorola", target: "Apple", label: "suit"},
 // 			];
-
+			$('#query-graph').html('');
 			render(links);
 		}});
 
@@ -196,15 +196,15 @@ function getQueryResults()
 	type: "GET",
 	dataType: "text",
 		error: function(response,n, textStatus, exception) {
-		alert('Form Error: ' + response.responseText);
+		alert('Error: ' + response.responseText);
 		console.log(n);
 		console.log(textStatus);
 
 	},
-	success: function(data) {
-
-		 rframe = $('#results');
-		rframe.html(data.replace(/\n/g,'&nbsp;<br/>'));
+	success: function(data){
+			
+                        var rframe = document.getElementById('results');
+                        rframe.innerHTML= data.replace(/</gim,'&lt;').replace(/>/gim,'&gt;');
 		}});
 
 
@@ -232,12 +232,36 @@ function showQuery(e)
 	});
 }
 
-//Javascript to run RIQ
+function displayLoaders(show){
+        var graph = document.getElementById('query-graph');
+        var time = document.getElementById('time');
+        var results = document.getElementById('results');
+
+if(show){
+	var ldrImgResults = "<img src='/static/images/ajax-loader-yellow.gif' style='display: block;margin: auto; margin-top:5px;'/>";
+	var ldrImg1 = "<img src='/static/images/ajax-loader-yellow.gif' style='display: block;margin: auto; margin-top:118px;'/>";
+	var ldrImg2 = "<img src='/static/images/ajax-loader-yellow.gif' style='display: block;margin: auto; margin-top:100px;'/>";
+	
+	results.innerHTML=ldrImgResults;
+	time.innerHTML=ldrImg2;
+	graph.innerHTML=ldrImg1;
+
+}
+else{
+        results.innerHTML='';
+        time.innerHTML='';
+        graph.innerHTML='';
+
+}
+}
+//Jevascript to run RIQ
 function runRIQ(e)
 {
+	//display loader img
+	displayLoaders(true);
 
 	document.getElementById("query-text").value= $('#query').html().replace(/<br\s*[\/]?>|&nbsp;/gi,' ').replace(/&lt;/gi,' <').replace(/&gt;/gi,'> ');
-
+	
 	var form = document.getElementById("frmRIQ");
 	var formURL = form.action;
 	var postData = $('#frmRIQ').serialize();
@@ -250,17 +274,20 @@ function runRIQ(e)
 	timeout: 9000000000,
 	success: function(m) {
 		console.log("Execute Form Submitted Successfully");
+        	getQueryResults();
+        	//getQueryTimimgs();
+        	getQueryGraph();
 
 	},
 	error: function(response,n, textStatus, exception) {
-		alert('Form Error: ' + response.responseText);
+		alert(response.responseText);
 		console.log(n);
 		console.log(textStatus);
+		displayLoaders(false);
 
 	}
 	});
-	getQueryResults();
-	getQueryTimimgs();
-	getQueryGraph();
 
+
+  
 }
