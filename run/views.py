@@ -15,6 +15,7 @@ import sys, os
 import json
 import fyzz
 import glob
+import shutil
 from subprocess import call
 
 
@@ -31,8 +32,10 @@ def runMultiToolQuery(filename,query,args):
 
 		sFile.write('Running Query via JenaTDB..\n')
 		sFile.flush()
-		args = TypeCache.split()[1]
-		args = args + ' 1'
+		if args.find('warm'):
+			args = 'warm 1'
+		else:
+			args = 'cold 1'
 		start = time.time()
 		results2 = runQuery(query, args,"temp.q",'jena')
 		end = time.time()
@@ -141,9 +144,12 @@ def removePreviousRunFiles(caller):
 
 	if caller=='execute':
 		filename='temp.q'
-		os.remove(DIR+'/RiQ/status/execute')
+		#os.remove(DIR+'/RiQ/status/execute')
 
 	log_dir_extension = os.path.join(DIR+"/RIS/indexing/RIS.RUN/log/", '*'+filename+'*')
 	print 'removing files in: '+log_dir_extension
 	for name in glob.glob(log_dir_extension):
-		os.remove(name)
+		if os.path.isfile(name):
+			os.remove(name)
+		else:
+			shutil.rmtree(name)

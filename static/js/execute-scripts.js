@@ -262,7 +262,7 @@ function getStatusUpdates(){
 		isDone=httpGet(url)
 
 		if(isDone == 'false') {
-		       window.setTimeout(getStatusUpdates, 5000); /* this checks the flag every 100 milliseconds*/
+		       setTimeout(getStatusUpdates, 5000); /* this checks the flag every 100 milliseconds*/
 		} else {
 
 				displayLoaders(false);
