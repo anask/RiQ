@@ -18,15 +18,33 @@ import glob
 from subprocess import call
 
 
-def runMultiToolQuery(filename):
-	print filename
-	run(5)
-	run(10)
-	run(15)
+def runMultiToolQuery(filename,query,args):
 
-def run(n):
-	for i in range(n):
-		print i
+		sFile = open('status/execute','w')
+
+		sFile.write('Running Query via RIQ..\n')
+		sFile.flush()
+		start = time.time()
+		results1 = runQuery(query, args,"temp.q",'riq')
+		end = time.time()
+		sFile.write('RIQ Finished: '+(str(round(end - start,3))+' s\n'))
+
+		sFile.write('Running Query via JenaTDB..\n')
+		sFile.flush()
+		args = TypeCache.split()[1]
+		args = args + ' 1'
+		start = time.time()
+		results2 = runQuery(query, args,"temp.q",'jena')
+		end = time.time()
+		sFile.write('Jena Finished: '+(str(round(end - start,3))+' s\n'))
+
+		if (results1.startswith("error") or results2.startswith("error")):
+			sFile.write('Error')
+		else:
+			sFile.write('Done')
+		sFile.close()
+
+
 def runQuery(query,args,filename,tool):
 	createQueryFile(query,filename)
 	DIR  = os.path.join(os.path.abspath(os.pardir))
@@ -78,7 +96,7 @@ def getQueryResults(filename):
  				dataStr=myfile.read()
  				myfile.close()
 
-		
+
 		return dataStr
 	except Exception as E:
 		print 'Results Error:'
@@ -117,3 +135,15 @@ def getXML(variables):
 		xmlDoc=xmlDoc+'<variable name="'+v+'"/>'
 	xmlDoc = xmlDoc + '</head></sparql>'
 	return xmlDoc
+
+def removePreviousRunFiles(caller):
+	DIR  = os.path.join(os.path.abspath(os.pardir))
+
+	if caller=='execute':
+		filename='temp.q'
+		os.remove(DIR+'/RiQ/status/execute')
+
+	log_dir_extension = os.path.join(DIR+"/RIS/indexing/RIS.RUN/log/", '*'+filename+'*')
+	print 'removing files in: '+log_dir_extension
+	for name in glob.glob(log_dir_extension):
+		os.remove(name)

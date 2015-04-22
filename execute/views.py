@@ -108,32 +108,9 @@ def land(request):
 		qi.write(json.dumps(queryInfo).encode('utf-8'));
 		qi.close()
 
-		"""
-                sFile = open('status/execute','w')
-		sFile.write('Running Query via RIQ..\n')
-		sFile.flush()
-		# Run the query
-		start = time.time()
-		results1 = runQuery(query.encode(sys.stdout.encoding), args,"temp.q",'riq')
-		end = time.time()
-		sFile.write('RIQ Finished: '+(str(round(end - start,3))+' s\n'))
+		removePreviousRunFiles('execute')
+		start_new_thread(runMultiToolQuery,('temp.q',query.encode(sys.stdout.encoding),args))
 
-		sFile.write('Running Query via JenaTDB..\n')
-		args = TypeCache.split()[1]
-		args = args + ' 1'
-                start = time.time()
-                results2 = runQuery(query.encode(sys.stdout.encoding), args,"temp.q",'jena')
-                end = time.time()
-                sFile.write('Jena Finished: '+(str(round(end - start,3))+' s\n'))
-
-		sFile.close()
-		if (results1.startswith("error")):
-			return HttpResponse(results1 , status=600,content_type='plain/text')
-		"""
-		print 'Starting threads'
-		start_new_thread(runMultiToolQuery,('jack',))
-		print 'Started Threads'
-		
 		return HttpResponse("Received Query", status=200,content_type='plain/text')
 
 def getTimings(request):
@@ -153,9 +130,22 @@ def getResults(request):
 	return HttpResponse(content=data,content_type='xml; charset=utf-8')
 
 def getStatus(request):
-		return HttpResponse("true", status=200,content_type='plain/text')
+
+		a=open('status/execute','rb')
+		lines = a.readlines()
+		a.close()
+		if lines:
+			first_line = lines[:1]
+			last_line = lines[-1]
+
+		if last_line == 'Done':
+			return HttpResponse("true", status=200,content_type='plain/text')
+		elif last_line == 'Error':
+			return HttpResponse("error", status=200,content_type='plain/text')
+
+		return HttpResponse("false", status=200,content_type='plain/text')
 def getQueryGraph(request):
-	filename = 'temp.q'	
+	filename = 'temp.q'
 	DIR =  os.path.join(os.path.abspath(os.pardir),'RIS/indexing/RIS.RUN/log/')
         bgpfile = ''
         file_dir_extension = os.path.join(DIR, '*'+filename+'*filter.1.log')

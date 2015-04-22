@@ -202,7 +202,7 @@ function getQueryResults()
 
 	},
 	success: function(data){
-			
+
                         var rframe = document.getElementById('results');
                         rframe.innerHTML= data.replace(/</gim,'&lt;').replace(/>/gim,'&gt;');
 		}});
@@ -241,7 +241,7 @@ if(show){
 	var ldrImgResults = "<img src='/static/images/ajax-loader-yellow.gif' style='display: block;margin: auto; margin-top:5px;'/>";
 	var ldrImg1 = "<img src='/static/images/ajax-loader-yellow.gif' style='display: block;margin: auto; margin-top:118px;'/>";
 	var ldrImg2 = "<img src='/static/images/ajax-loader-yellow.gif' style='display: block;margin: auto; margin-top:100px;'/>";
-	
+
 	results.innerHTML=ldrImgResults;
 	time.innerHTML=ldrImg2;
 	graph.innerHTML=ldrImg1;
@@ -256,36 +256,27 @@ else{
 }
 
 function getStatusUpdates(){
-alert('Get Status...');
 
-		var isDone = 'false';
-		while (isDone=='false'){
-                        //sleep 5sec
-                        //check if done
-                        setTimeout(function(){
-                                 alert("Hello");
-                                 $.ajax({
-                                        url: "/execute/getstatus/?verbose=false",
-                                        type: "GET",
-                                        dataType: "text",
-                                        data: d,
-                                        success: function(m) {
-                                                alert(m)
-                                        }});
+		var isDone='false';
+		var url = "/execute/getstatus/?verbose=false";
+		isDone=httpGet(url)
 
-                        isDone='error';
-                        }
+		if(isDone == 'false') {
+		       window.setTimeout(getStatusUpdates, 5000); /* this checks the flag every 100 milliseconds*/
+		} else {
 
-                , 5000);
+				displayLoaders(false);
+				if(isDone=='true'){
+					getQueryResults();
+					getQueryTimimgs();
+					getQueryGraph();
+				}
+				else
+					alert('Query Execution Error');
+    	}
 
-                }
-		if (isDone=='error')
-			displayLoaders(false);
-		else{
-                	getQueryResults();
-               		getQueryTimimgs();
-                	getQueryGraph();
-		}
+
+
 
 }
 //Jevascript to run RIQ
@@ -295,7 +286,7 @@ function runRIQ(e)
 	displayLoaders(true);
 
 	document.getElementById("query-text").value= $('#query').html().replace(/<br\s*[\/]?>|&nbsp;/gi,' ').replace(/&lt;/gi,' <').replace(/&gt;/gi,'> ');
-	
+
 	var form = document.getElementById("frmRIQ");
 	var formURL = form.action;
 	var postData = $('#frmRIQ').serialize();
@@ -308,7 +299,7 @@ function runRIQ(e)
 	timeout: 9000000000,
 	success: function(m) {
 		console.log("Execute Form Submitted Successfully");
-		alert('Query Received! Click the status icon (i) for updates.');
+		alert('Query Received!\nClick the status icon i (see footer) for updates.');
 		getStatusUpdates();
 
 	},
@@ -322,5 +313,5 @@ function runRIQ(e)
 	});
 
 
-  
+
 }
