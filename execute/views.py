@@ -5,6 +5,7 @@ from indexinfo.models import indexdata,graphdata,queryfilenametable
 from django.template import RequestContext
 from execute.forms import ExecuteForm
 from run.views import *
+from thread import start_new_thread
 import json
 from os import remove
 import ConfigParser
@@ -107,17 +108,32 @@ def land(request):
 		qi.write(json.dumps(queryInfo).encode('utf-8'));
 		qi.close()
 
+		"""
                 sFile = open('status/execute','w')
 		sFile.write('Running Query via RIQ..\n')
 		sFile.flush()
 		# Run the query
 		start = time.time()
-		results = runQuery(query.encode(sys.stdout.encoding), args,"temp.q")
+		results1 = runQuery(query.encode(sys.stdout.encoding), args,"temp.q",'riq')
 		end = time.time()
-		sFile.write('RIQ Finished: '+(str(end - start))+' s\n')
+		sFile.write('RIQ Finished: '+(str(round(end - start,3))+' s\n'))
+
+		sFile.write('Running Query via JenaTDB..\n')
+		args = TypeCache.split()[1]
+		args = args + ' 1'
+                start = time.time()
+                results2 = runQuery(query.encode(sys.stdout.encoding), args,"temp.q",'jena')
+                end = time.time()
+                sFile.write('Jena Finished: '+(str(round(end - start,3))+' s\n'))
+
 		sFile.close()
-		if (results.startswith("error")):
-			return HttpResponse(results , status=600,content_type='plain/text')
+		if (results1.startswith("error")):
+			return HttpResponse(results1 , status=600,content_type='plain/text')
+		"""
+		print 'Starting threads'
+		start_new_thread(runMultiToolQuery,('jack',))
+		print 'Started Threads'
+		
 		return HttpResponse("Received Query", status=200,content_type='plain/text')
 
 def getTimings(request):
@@ -136,6 +152,8 @@ def getResults(request):
 	data = getQueryResults('temp.q')
 	return HttpResponse(content=data,content_type='xml; charset=utf-8')
 
+def getStatus(request):
+		return HttpResponse("true", status=200,content_type='plain/text')
 def getQueryGraph(request):
 	filename = 'temp.q'	
 	DIR =  os.path.join(os.path.abspath(os.pardir),'RIS/indexing/RIS.RUN/log/')

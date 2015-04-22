@@ -17,28 +17,51 @@ import fyzz
 import glob
 from subprocess import call
 
-def runQuery(query,args,filename):
+
+def runMultiToolQuery(filename):
+	print filename
+	run(5)
+	run(10)
+	run(15)
+
+def run(n):
+	for i in range(n):
+		print i
+def runQuery(query,args,filename,tool):
 	createQueryFile(query,filename)
 	DIR  = os.path.join(os.path.abspath(os.pardir))
 	args = args.split()
-	cmd = [ DIR+"/RIS/indexing/RIS/scripts/run_riq_query.py", "-C", "config-files/riq.conf","-q", "queries/"+filename, "-f" ,"xml"]
-	for a in args:
-		cmd.append(a)
-	print cmd
- 	p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
- 	p_stdout = p.stdout.read()
- 	p_stderr = p.stderr.read()
-	print 'Running RIQ..'
- 	print(p_stdout)
- 	if len(p_stderr)>0:
- 		print(p_stderr)
-	output = p_stdout.split('\n')
-	for s in output:
-		if s.startswith("error"):
-			return s
-		elif s == "Done.":
-                        return s
 
+	print 'Running Query via '+tool
+	if tool == 'riq':
+		cmd = [ DIR+"/RIS/indexing/RIS/scripts/run_riq_query.py", "-C", "config-files/riq.conf","-q", "queries/"+filename, "-f" ,"xml"]
+		for a in args:
+			cmd.append(a)
+ 		p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+ 		p_stdout = p.stdout.read()
+ 		p_stderr = p.stderr.read()
+ 		print(p_stdout)
+ 		if len(p_stderr)>0:
+ 			print(p_stderr)
+		output = p_stdout.split('\n')
+		for s in output:
+			if s.startswith("error"):
+				return s
+			elif s == "Done.":
+        	                return s
+	elif tool == 'jena':
+		cmd = [ DIR+"/RIS/scripts/run_query_all.sh", "/mnt/data2/datasets/btc-2012-split-clean/btc-2012-split-clean.nq.tdb", "queries/"+filename,"tdb"]
+                for a in args:
+                        cmd.append(a)
+		cmd.append('xml')
+ 		p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+ 		p_stdout = p.stdout.read()
+ 		p_stderr = p.stderr.read()
+ 		print(p_stdout)
+ 		if len(p_stderr)>0:
+ 			print(p_stderr)
+			return 'error'
+		return 'Done.'
 
 def getQueryResults(filename):
 	DIR  = os.path.join(os.path.abspath(os.pardir))

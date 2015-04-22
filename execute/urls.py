@@ -9,4 +9,5 @@ urlpatterns = patterns('',
 	url(r'^timings/$', 'execute.views.getTimings'),
 	url(r'^results/$', 'execute.views.getResults'),
 	url(r'^graph/$', 'execute.views.getQueryGraph'),
+	url(r'^getstatus/$', 'execute.views.getStatus'),
 )

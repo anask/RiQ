@@ -254,6 +254,40 @@ else{
 
 }
 }
+
+function getStatusUpdates(){
+alert('Get Status...');
+
+		var isDone = 'false';
+		while (isDone=='false'){
+                        //sleep 5sec
+                        //check if done
+                        setTimeout(function(){
+                                 alert("Hello");
+                                 $.ajax({
+                                        url: "/execute/getstatus/?verbose=false",
+                                        type: "GET",
+                                        dataType: "text",
+                                        data: d,
+                                        success: function(m) {
+                                                alert(m)
+                                        }});
+
+                        isDone='error';
+                        }
+
+                , 5000);
+
+                }
+		if (isDone=='error')
+			displayLoaders(false);
+		else{
+                	getQueryResults();
+               		getQueryTimimgs();
+                	getQueryGraph();
+		}
+
+}
 //Jevascript to run RIQ
 function runRIQ(e)
 {
@@ -274,9 +308,8 @@ function runRIQ(e)
 	timeout: 9000000000,
 	success: function(m) {
 		console.log("Execute Form Submitted Successfully");
-        	getQueryResults();
-        	//getQueryTimimgs();
-        	getQueryGraph();
+		alert('Query Received! Click the status icon (i) for updates.');
+		getStatusUpdates();
 
 	},
 	error: function(response,n, textStatus, exception) {
