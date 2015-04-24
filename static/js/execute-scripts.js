@@ -124,11 +124,11 @@ function plotTimings(data){
 
 
 }
-function getQueryTimimgs()
+function getQueryTimimgs(args)
 {
 
 	$.ajax({
-	url: "/execute/timings/",
+	url: "/execute/timings/"+args,
 	type: "GET",
 	dataType: "json",
 		error: function(response,n, textStatus, exception) {
@@ -155,11 +155,11 @@ function getLable(str){
                 return objValue.trim();
 }
 
-function getQueryGraph()
+function getQueryGraph(args)
 {
 
 	$.ajax({
-	url: "/execute/graph/",
+	url: "/execute/graph/"+args,
 	type: "GET",
 	dataType: "json",
 		error: function(response,n, textStatus, exception) {
@@ -188,11 +188,11 @@ function getQueryGraph()
 
 
 }
-function getQueryResults()
+function getQueryResults(args)
 {
 
 	$.ajax({
-	url: "/execute/results/",
+	url: "/execute/results/"+args,
 	type: "GET",
 	dataType: "text",
 		error: function(response,n, textStatus, exception) {
@@ -255,9 +255,19 @@ else{
 }
 }
 
-function getStatusUpdates(){
+function getStatusUpdates(qId,cache,opt){
 
 		var isDone='false';
+		var args = '?queryId='+qId+'&cache='+cache+'&opt='+opt;
+
+		if (qId=='BTC10' ||qId=='BTC11') {
+
+					getQueryResults(args);
+					getQueryTimimgs(args);
+					getQueryGraph(args);
+					return;
+		}
+
 		var url = "/execute/getstatus/?verbose=false";
 		isDone=httpGet(url)
 
@@ -267,9 +277,9 @@ function getStatusUpdates(){
 
 				displayLoaders(false);
 				if(isDone=='true'){
-					getQueryResults();
-					getQueryTimimgs();
-					getQueryGraph();
+					getQueryResults(args);
+					getQueryTimimgs(args);
+					getQueryGraph(args);
 				}
 				else
 					alert('Query Execution Error');
@@ -297,10 +307,36 @@ function runRIQ(e)
 	dataType: "text",
 	data: postData,
 	timeout: 9000000000,
-	success: function(m) {
+	success: function(m,response,textStatus) {
 		console.log("Execute Form Submitted Successfully");
-		alert('Query Received!\nClick the status icon i (see footer) for updates.');
-		getStatusUpdates();
+
+		alert(textStatus.responseText);
+
+		//get query id
+		var e = document.getElementById("queryDisplay");
+		var qId = e.options[e.selectedIndex].value;
+
+		//get selected cache
+		var cache ='warm';
+		var radios = document.getElementsByName('typecache');
+		for (var i = 0; i < radios.length; i++) {
+
+			if (radios[i].type === 'radio' && radios[i].checked) {
+				cache = radios[i].value;
+			}
+		}
+
+		//get selected optimization
+		var opt ='opt';
+		var radios = document.getElementsByName('optimizationtype');
+		for (var i = 0; i < radios.length; i++) {
+			if (radios[i].type === 'radio' && radios[i].checked) {
+				opt = radios[i].value;
+			}
+		}
+
+
+		getStatusUpdates(qId,cache,opt);
 
 	},
 	error: function(response,n, textStatus, exception) {

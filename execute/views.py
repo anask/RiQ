@@ -31,56 +31,16 @@ def land(request):
 			query = request.POST.__getitem__('qtext')
 			queryInfo['index']=IndexName
 			queryInfo['name']=QueryId
-
-			#*************** WRITE NEW DATASET NAME ***************
-			RIQ_CONF =  ('config-files/riq.conf')
-
-			config = ConfigParser.RawConfigParser()
-			config.optionxform=str
-			config.read(RIQ_CONF)
-
-			# Write prefix for the dataset and set its conf name
-			DATASET_PREFIX_DIR =  os.path.join(os.path.abspath(os.pardir),'RIS/indexing/RIS.RUN/data/')
-			FILE = ''
-
-			if   IndexName == 'BTC':
-				FILE = 'btc-2012-split-clean'
-			elif IndexName == 'LOGD':
-				FILE = 'dbpedia'
-			elif IndexName == 'D10':
-				FILE = 'd10-small-sample'
-
-			config.set('Dataset', 'NAME',FILE)
-
-			#Write new configuration
+			updateDatasetName(IndexName)
 
 
-			f = open('riqtemp.conf','w')
-			config.write(f)
-			f.close()
-
-			# read the riqtemp.conf
-			# create riq.conf
-			q = open('riqtemp.conf')
-			r = open('config-files/riq.conf', 'w')
-			for line in q:
-				if line.find(' = ') != -1:
-					r.write(line.replace(' = ', '='))
-				else:
-					r.write(line)
-			q.close()
-			r.close()
-
-			# remove riqtemp.conf
-			remove('riqtemp.conf')
-			#******************************************************
 		except:
 			return HttpResponse("Form Not Valid!", status=500,content_type='plain/text')
 
 
 		#DETERMINE CACHE/OPT PARAMETERS
 		try:
-			TypeCache 	= request.POST.__getitem__('typecache')
+			TypeCache = request.POST.__getitem__('typecache')
 		except:
 			TypeCache = 'warm'
 		try:
@@ -102,32 +62,142 @@ def land(request):
 			optimizeType = ''
 			queryInfo['opt']='Disabled'
 
+		print QueryId
+		print QueryId=='BTC10'
+		if QueryId=='BTC10' or QueryId=='BTC11':
+			return HttpResponse("Results from previous\n   runs will be shown!", status=200,content_type='plain/text')
+
 		args = " "+TypeCache+" "+optimizeType+" "
 
 		qi = open('queries/temp.info', 'w')
 		qi.write(json.dumps(queryInfo).encode('utf-8'));
 		qi.close()
 
-		removePreviousRunFiles('execute')
-		start_new_thread(runMultiToolQuery,('temp.q',query.encode(sys.stdout.encoding),args))
+		#removePreviousRunFiles('execute')
+		#start_new_thread(runMultiToolQuery,('temp.q',query.encode(sys.stdout.encoding),args))
 
-		return HttpResponse("Received Query", status=200,content_type='plain/text')
+		return HttpResponse('Query Received!', status=200,content_type='plain/text')
+
+def updateDatasetName(IndexName):
+			DATASET_PREFIX_DIR =  os.path.join(os.path.abspath(os.pardir),'RIS/indexing/RIS.RUN/data/')
+			FILE = ''
+
+			if IndexName == 'BTC':
+				FILE = 'btc-2012-split-clean'
+			elif IndexName == 'LOGD':
+				FILE = 'dbpedia'
+			elif IndexName == 'D10':
+				FILE = 'd10-small-sample'
+			RIQ_CONF =  ('config-files/riq.conf')
+
+			config = ConfigParser.RawConfigParser()
+			config.optionxform=str
+			config.read(RIQ_CONF)
+
+			config.set('Dataset', 'NAME',FILE)
+
+			#Write new configuration
+			f = open('riqtemp.conf','w')
+			config.write(f)
+			f.close()
+
+			# read the riqtemp.conf
+			# create riq.conf
+			q = open('riqtemp.conf')
+			r = open('config-files/riq.conf', 'w')
+			for line in q:
+				if line.find(' = ') != -1:
+					r.write(line.replace(' = ', '='))
+				else:
+					r.write(line)
+			q.close()
+			r.close()
+
+			remove('riqtemp.conf')
 
 def getTimings(request):
 
-	 times = {}
-	 times['type'] = 'cold'
-	 times['riqf'] = '6.42'
-	 times['riq'] = '16.29'
-	 times['virt'] = '39.18'
-	 times['jena'] = '3564.4'
+	qId = request.GET['queryId']
+	c = request.GET['cache']
+	o = request.GET['opt']
+	times = {}
+	if qId == 'CUSTOM':
+		times['type'] = c
+		times['riqf'] = '100.00'
+		times['riq'] = '20.00'
+		times['virt'] = '100.00'
+		times['jena'] = '100.00'
 
-	 return HttpResponse(json.dumps(times), content_type="application/json")
+
+	elif qId == 'BTC10':
+		if c=='cold':
+			times['type'] = 'cold'
+			if o=='opt':
+				times['riqf'] = '6.42'
+				times['riq'] = '16.29'
+				times['virt'] = '39.18'
+				times['jena'] = '3564.4'
+			elif o=='nopt':
+				times['riqf'] = '11.83'
+				times['riq'] = '495.81'
+				times['virt'] = '39.18'
+				times['jena'] = '3564.4'
+		if c=='warm':
+			times['type'] = 'warm'
+			if o=='opt':
+				times['riq'] = '6.79'
+				times['riqf'] = '0.66'
+				times['virt'] = '0.16'
+				times['jena'] = '369.81'
+			elif o=='nopt':
+				times['riq'] = '355.07'
+				times['riqf'] = '0.95'
+				times['virt'] = '0.16'
+				times['jena'] = '369.81'
+	elif qId == 'BTC11':
+		if c=='cold':
+			times['type'] = 'cold'
+			if o=='opt':
+				times['riq'] = '158.18'
+				times['riqf'] = '5.7'
+				times['virt'] = '237.58'
+				times['jena'] = '2050.62'
+			elif o=='nopt':
+				times['riq'] = '163.05'
+				times['riqf'] = '5.45'
+				times['virt'] = '237.58'
+				times['jena'] = '2050.62'
+		if c=='warm':
+			times['type'] = 'warm'
+			if o=='opt':
+				times['riq'] = '76.68'
+				times['riqf'] = '0.61'
+				times['virt'] = '120.28'
+				times['jena'] = '2102.06'
+			elif o=='nopt':
+				times['riq'] = '90.09'
+				times['riqf'] = '0.43'
+				times['virt'] = '120.28'
+				times['jena'] = '2102.06'
+
+	return HttpResponse(json.dumps(times), content_type="application/json")
 
 
 def getResults(request):
-	data = getQueryResults('temp.q')
-	return HttpResponse(content=data,content_type='xml; charset=utf-8')
+	qId = request.GET['queryId']
+	c = request.GET['cache']
+	o = request.GET['opt']
+	if qId == 'CUSTOM':
+		data = getQueryResults('temp.q')
+		return HttpResponse(content=data,content_type='xml; charset=utf-8')
+	elif qId == 'BTC10':
+		data = getQueryResults('q20.'+o+'.'+c+'.')
+		return HttpResponse(content=data,content_type='plain/text')
+	elif qId == 'BTC11':
+		data = getQueryResults('q3.opt.cold.tdb2.csv.9')
+		return HttpResponse(content=data,content_type='plain/text')
+
+
 
 def getStatus(request):
 
@@ -144,8 +214,22 @@ def getStatus(request):
 			return HttpResponse("error", status=200,content_type='plain/text')
 
 		return HttpResponse("false", status=200,content_type='plain/text')
+
 def getQueryGraph(request):
-	filename = 'temp.q'
+
+	qId = request.GET['queryId']
+	c = request.GET['cache']
+	o = request.GET['opt']
+
+	if qId == 'CUSTOM':
+		filename = 'temp.q'
+
+	elif qId == 'BTC10':
+		filename = 'q20.'+o+'.'+c
+
+	elif qId == 'BTC11':
+		filename = 'aux.q3.'+o+'.'+c
+
 	DIR =  os.path.join(os.path.abspath(os.pardir),'RIS/indexing/RIS.RUN/log/')
         bgpfile = ''
         file_dir_extension = os.path.join(DIR, '*'+filename+'*filter.1.log')
@@ -217,104 +301,32 @@ def getQueryList(request):
 	query = """SELECT *
 WHERE {
 	GRAPH ?g{
-		?s ?p	?o .
+		?s ?p	"Brunei"@en .
 	}
-} LIMIT 10
+}
 """
-	if(queryname == 'btc1'):
-		query = """PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+	if(queryname == 'btc11'):
+		query = """PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX geo: <http://aims.fao.org/aos/geopolitical.owl#>
-PREFIX collect: <http://purl.org/collections/nl/am/>
-PREFIX ore: <http://www.openarchives.org/ore/terms/>
-PREFIX fbase: <http://rdf.freebase.com/ns/>
+PREFIX space: <http://purl.org/net/schemas/space/>
+PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>
+PREFIX dbpedia-prop: <http://dbpedia.org/property/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?s1 ?o1 ?s2 WHERE {
+SELECT *
+WHERE {
 	GRAPH ?g {
-		?s1 collect:acquisitionDate "1980-05-16" .
-		?s1 collect:acquisitionMethod collect:t-14382 .
-		?s1 collect:associationSubject ?o1 .
-		?s1 collect:contentMotifGeneral collect:t-8782 .
-		?s1 collect:creditLine collect:t-14773 .
-		?s1 collect:material collect:t-3249 .
-		?s1 collect:objectCategory collect:t-15606 .
-		?s1 collect:objectName collect:t-10444 .
-		?s1 collect:objectNumber "KA 17150" .
-		?s1 collect:priref "23182" .
-		?s1 collect:productionDateEnd "1924" .
-		?s1 collect:productionDateStart "1924" .
-		?s1 collect:productionPlace collect:t-624 .
-		?s1 collect:title "Plate commemorating the first Amsterdam-Batavia flight"@en .
-		?s1 ore:proxyFor collect:physical-23182 .
-		?s1 ore:proxyIn collect:aggregation-23182 .
-		?s1 collect:relatedObjectReference ?s2 .
-		?s2 collect:relatedObjectReference ?s1 .
+		?var5 dbpedia-owl:thumbnail ?var4 .
+		?var5 rdf:type dbpedia-owl:Person .
+		?var5 rdfs:label ?var .
+		?var5 foaf:page ?var8 .
+		OPTIONAL { ?var5 foaf:homepage ?var10 . }
 	}
 }
 """
-	elif(queryname == 'btc2'):
-		query ="""SELECT ?sub ?pred1 ?pred2 ?pred3 ?pred4
-WHERE
-{
-	?sub ?pred1 <http://lexvo.org/id/term/afr/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/aze/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/bez/Hupanama> .
-	?sub ?pred1 <http://lexvo.org/id/term/ces/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/cgg/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/cym/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/dan/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/dav/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/deu/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/dje/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/lav/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/lin/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/nmg/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/nno/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/nob/Panama> .
-	?sub ?pred1 <http://lexvo.org/id/term/zul/i-Panama> .
-	?sub ?pred2 <http://lexvo.org/id/un_m49/013> .
-	?sub ?pred3 <lvont:GeographicRegion> .
-	?sub ?pred4 <http://psi.oasis-open.org/iso/3166/#591> .
-	?sub ?pred4 <http://sws.geonames.org/3703430/> .
-}
-"""
-	elif(queryname == 'dbpd1'):
-		query = """PREFIX resource: <http://dbpedia.org/resource/>
-PREFIX ontology: <http://dbpedia.org/ontology/>
-SELECT ?city ?area ?code ?zone ?abstract ?postal ?water ?popu ?offset ?g
-WHERE {
-  GRAPH ?g {
-    { ?city ontology:areaLand ?area .
-      ?city ontology:areaCode ?code . }
-    UNION
-    { ?city ontology:timeZone ?zone .
-      ?city ontology:abstract ?abstract . }
-    ?city ontology:country resource:United_States .
-    ?city ontology:postalCode ?postal .
-    OPTIONAL { ?city ontology:areaWater ?water . }
-    OPTIONAL { ?city ontology:populationTotal ?popu . }
-    FILTER EXISTS { ?city ontology:utcOffset ?offset . }
-  }
-}
-"""
-	elif(queryname == 'dbpd2'):
-		query = """PREFIX res: <http://dbpedia.org/resource/>
-PREFIX onto: <http://dbpedia.org/ontology/>
-SELECT ?city ?area ?code ?zone ?abstract ?postal ?offset ?popu ?g
-WHERE {
-GRAPH ?g {
-    { ?city onto:areaLand ?area .
-    ?city onto:areaCode ?code . }
-    UNION
-    { ?city onto:timeZone ?zone .
-    ?city onto:abstract ?abstract . }
-    ?city onto:country res:United_States .
-    ?city onto:postalCode ?postal .
-    FILTER EXISTS { ?city onto:utcOffset ?offset . }
-    OPTIONAL { ?city onto:populationTotal ?popu . }
-    }
-}
-"""
+
 	elif(queryname == 'btc10'):
 		query ="""PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
