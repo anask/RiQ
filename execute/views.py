@@ -62,19 +62,19 @@ def land(request):
 			optimizeType = ''
 			queryInfo['opt']='Disabled'
 
-		print QueryId
-		print QueryId=='BTC10'
-		if QueryId=='BTC10' or QueryId=='BTC11':
-			return HttpResponse("Results from previous\n   runs will be shown!", status=200,content_type='plain/text')
-
-		args = " "+TypeCache+" "+optimizeType+" "
 
 		qi = open('queries/temp.info', 'w')
 		qi.write(json.dumps(queryInfo).encode('utf-8'));
 		qi.close()
 
-		#removePreviousRunFiles('execute')
-		#start_new_thread(runMultiToolQuery,('temp.q',query.encode(sys.stdout.encoding),args))
+		if QueryId=='BTC10' or QueryId=='BTC11':
+			return HttpResponse("Results from previous\n   runs will be shown!", status=200,content_type='plain/text')
+
+		args = " "+TypeCache+" "+optimizeType+" "
+
+
+		removePreviousRunFiles('execute')
+		start_new_thread(runMultiToolQuery,('temp.q',query.encode(sys.stdout.encoding),args))
 
 		return HttpResponse('Query Received!', status=200,content_type='plain/text')
 
@@ -268,30 +268,6 @@ def getQueryGraph(request):
 
 
 	rlog.close()
-	#move this code to visualize
-	#DIR =  os.path.join(os.path.abspath(os.pardir),'RIS/indexing/RIS.RUN/log/')
-        #candidatefile = ''
-        #file_dir_extension = os.path.join(DIR, '*'+filename+'*filter.candidates')
-        #for name in glob.glob(file_dir_extension):
-        #        print name
-        #        candidatefile = name
-
-	#candidatelog = open(candidatefile)
-
-	#demodir =  os.path.join(os.path.abspath(os.pardir),'RiQ/')
-
-	#candidatelogindecimal = open(demodir+"output/candidatedataindecimal.txt", 'w')
-	#for line in candidatelog:
-	#	binarytodecimal = str(int(line, 2))
-		#print binarytodecimal
-		#print ('Candidate' + binarytodecimal)
-	#	candidatelogindecimal.write('Candidate' + binarytodecimal + '\n')
-
-	#candidatelog.close()
-	#candidatelogindecimal.close()
-
-	#print(d3records)
-	#html = "<html><body> "+"Hello"+"</body></html>"
 
 	return HttpResponse(json.dumps(d3records), content_type="application/json")
 

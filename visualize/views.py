@@ -6,6 +6,7 @@ import os
 import subprocess
 from subprocess import call
 from PIL import Image
+import glob
 def land(request):
 	return render_to_response('visualize.html', { 'TITLE': 'Visualize Query'})
 
@@ -14,26 +15,191 @@ def getQueryInfo(request):
 	with open('queries/temp.info') as json_file:
 		json_data = json.load(json_file)
 
+	#generate candidates file
+	qId= json_data['name']
+	o =  'opt' if json_data['opt']=='Enabled' else 'nopt'
+	c =  'warm' if json_data['cache']=='Warm' else 'cold'
+
+	if qId == 'CUSTOM':
+		filename = 'temp.q'
+
+	elif qId == 'BTC10':
+		filename = '.dbpedia.g.q20.'+o+'.'+c
+
+	elif qId == 'BTC11':
+		filename = '.dbpedia.g.aux.q3.'+o+'.'+c
+
+
+	#############     generate candidates file    #############
+	DIR =  os.path.join(os.path.abspath(os.pardir),'RIS/indexing/RIS.RUN/log/')
+	candidatefile = ''
+	file_dir_extension = os.path.join(DIR, '*'+filename+'*filter.candidates')
+	print 'Cand Log File: '
+	for name in glob.glob(file_dir_extension):
+			print name
+			candidatefile = name
+
+
+	candidatelog = open(candidatefile)
+
+	demodir =  os.path.join(os.path.abspath(os.pardir),'RiQ/')
+
+	candidatelogindecimal = open(demodir+"output/candidatedataindecimal.txt", 'w')
+	for line in candidatelog:
+		binarytodecimal = str(int(line, 2))
+		candidatelogindecimal.write('Candidate' + binarytodecimal + '\n')
+
+	candidatelog.close()
+	candidatelogindecimal.close()
+	###########################################################
+
+	bgpfile = DIR+'query.btc-2012-split-clean'+ filename +'.filter.1.log'
+	print 'LOG FILE: '+bgpfile
+	print 'LOG FILE FOUND: '+str(os.path.exists(bgpfile))
+	################## generate non candidate log #############
+	# create visualize non-candidate graph data
+	bStartRead = 0
+	b = open(bgpfile,'r')
+	v = open('output/visualizenoncandidatedata.log', 'w')
+	for line in b:
+		if line.startswith('eval_tree: 0') == True & bStartRead == 0:
+			bStartRead = 1
+		if line.startswith('print_eval_tree:') == True & bStartRead == 1:
+			v.write(line[line.find(': ')+1:])
+			break
+
+	b.close()
+	v.close()
+	###########################################################
+
+	################## generate candidate log #################
+	# create visualize candidate graph data
+	expression = ''
+	bStartRead = 0
+	b = open(bgpfile,'r')
+	y = open('output/visualizecandidatedata.log', 'w')
+	for line in b:
+		if line.startswith('eval_tree: 1') == True & bStartRead == 0:
+			bStartRead = 1
+		if line.startswith('print_eval_tree:') == True & bStartRead == 1:
+			expression =  line[line.find(': ')+1:]
+		if line.startswith('candidate GRAPHID:') == True & bStartRead == 1:
+			y.write(line)
+			y.write(expression)
+
+	b.close()
+	y.close()
+	###########################################################
+
 	return HttpResponse(json.dumps(json_data), content_type="application/json")
 
+def getExecuteQueryInfo():
+	#{"opt": "Enabled", "index": "BTC", "cache": "Cold", "name": "BTC10"}
+	with open('queries/temp.info') as json_file:
+		json_data = json.load(json_file)
+	return json_data
 
 def getQuery(request):
+	info = getExecuteQueryInfo()
 	query={}
-	with open('queries/temp.q') as f:
-		query['query']=f.read()
+
+	if info['name']=='CUSTOM':
+		with open('queries/temp.q') as f:
+			query['query']=f.read()
+	elif info['name']=='BTC10':
+			query['query']="""PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+SELECT *
+WHERE {
+	GRAPH ?g {
+		?var6 a <http://dbpedia.org/ontology/PopulatedPlace> .
+		?var6 <http://dbpedia.org/ontology/abstract> ?var1 .
+		?var6 rdfs:label ?var2 .
+		?var6 geo:lat ?var3 .
+		?var6 geo:long ?var4 .
+		{
+			?var6 rdfs:label "Brunei"@en .
+		}
+		UNION
+		{
+			?var5 <http://dbpedia.org/property/redirect> ?var6 .
+			?var5 rdfs:label "Brunei"@en .
+			OPTIONAL { ?var6 foaf:homepage ?var10 }
+			OPTIONAL { ?var6 <http://dbpedia.org/ontology/populationTotal> ?var12 }
+			OPTIONAL { ?var6 <http://dbpedia.org/ontology/thumbnail> ?var14 }
+		}
+	}
+}
+"""
+	elif info['name']=='BTC11':
+		query['query']="""PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX space: <http://purl.org/net/schemas/space/>
+PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>
+PREFIX dbpedia-prop: <http://dbpedia.org/property/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT *
+WHERE {
+	GRAPH ?g {
+		?var5 dbpedia-owl:thumbnail ?var4 .
+		?var5 rdf:type dbpedia-owl:Person .
+		?var5 rdfs:label ?var .
+		?var5 foaf:page ?var8 .
+		OPTIONAL { ?var5 foaf:homepage ?var10 . }
+	}
+}
+"""
 
 	return HttpResponse(json.dumps(query), content_type="application/json")
 
 
 def getCandQuery(request):
+	info = getExecuteQueryInfo()
+
+	cand=request.GET['cand']
+
+	#convert int to binary
+	result = str(bin(int(cand.strip("Candidate"))))
+	binaryValue = result[2:]
+	if len(binaryValue) == 15:
+		binaryValue = '0' + result[2:]
+
 	query={}
-	candidate=request.GET['cand']
-	binaryCandidate = str(bin(int(candidate.strip("Candidate"))))[2:]
-	query['binary']=binaryCandidate
+	query['binary']=binaryValue
+
+
+	#create filename pattern
+	with open('queries/temp.info') as json_file:
+		json_data = json.load(json_file)
+
+	#generate candidates file
+	qId= json_data['name']
+	o =  'opt' if json_data['opt']==u'Enabled' else 'nopt'
+	c =  'warm' if json_data['cache']==u'Warm' else 'cold'
+
+	if qId == 'CUSTOM':
+		filename = 'temp.q'
+
+	elif qId == 'BTC10':
+		filename = 'q20.'+o+'.'+c
+
+	elif qId == 'BTC11':
+		filename = 'aux.q3.'+o+'.'+c
 
 	DIR  = os.path.join(os.path.abspath(os.pardir))
 	optDir = DIR+'/RIS/indexing/RIS.RUN/log/'
-	optQuery = optDir+'dbpedia.g.q4.' + '0000001000000000'+'.rqmod'
+	optQuery = optDir+'*'+filename+'*'+'.rqmod/*'+binaryValue+'*.rqmod'
+
+
+
+	for name in glob.glob(optQuery):
+			print name
+			optQuery = name
 
 	with open(optQuery) as f:
 		query['query']=f.read()
@@ -132,13 +298,14 @@ def getParseTree(request):
 	if cand == 'false':
 
 		# open visualize non-candidate graph data
+		expression=''
 		v = open('output/visualizenoncandidatedata.log')
 		for line in v:
-		   #print line
+		   print line
 		   expression = line
 		   break
 		v.close
-		print expression
+		print 'Expression Tree: '+expression
 		expression = replaceKeyWords(expression)
 		print expression
 		#expression = "( Root( LC ( MC ) ( RC ( RCLC:1 ) ( RCLC:0 ) ) ( ANC ( ANCLC ) ( ANCRC ( ANCRCGC ) ) ) ))"
@@ -152,7 +319,7 @@ def getParseTree(request):
 		#convert int to binary
 		result = str(bin(int(cand.strip("Candidate"))))
 
-		binaryValue = '0010011010000000'#result[2:]
+		binaryValue = result[2:]
 		print 'length of binaryValue: ' + str(len(binaryValue))
 		if len(binaryValue) == 15:
 			binaryValue = '0' + result[2:]
@@ -168,9 +335,8 @@ def getParseTree(request):
 			   expression = next(v)
 			   break
 		v.close
-		print "expression: " + expression
 		expression = replaceKeyWords(expression)
-		print expression
+		print "expression: " + expression
 		expression, nodeMap = parseExpression(expression)
 		tree = toTree(expression)
 		myjson=printTree(tree, tree[''][0], nodeMap, 1, None)
