@@ -160,9 +160,9 @@ $(document).ready(function() {
 
 function renderD3JsonGraph(container, data)
 {
-var margin = {top: 40, right: 100, bottom: 10, left: 100},
-                   width = 1000 - margin.right - margin.left,
-                   height = 1000 - margin.top - margin.bottom;
+var margin = {top: 40, right: 10, bottom: 10, left: 10},
+                   width = 1800,
+                   height = 1800;
 
                    var i = 0,
                    duration = 750,

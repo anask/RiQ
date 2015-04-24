@@ -192,10 +192,10 @@ def getResults(request):
 		return HttpResponse(content=data,content_type='xml; charset=utf-8')
 	elif qId == 'BTC10':
 		data = getQueryResults('q20.'+o+'.'+c+'.')
-		return HttpResponse(content=data,content_type='plain/text')
+		return HttpResponse(content=data,content_type='xml; charset=utf-8')
 	elif qId == 'BTC11':
-		data = getQueryResults('q3.opt.cold.tdb2.csv.9')
-		return HttpResponse(content=data,content_type='plain/text')
+		data = getQueryResults('q3.'+o+'.'+c+'.')
+		return HttpResponse(content=data,content_type='xml; charset=utf-8')
 
 
 
