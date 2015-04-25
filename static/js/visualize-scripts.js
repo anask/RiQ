@@ -3,7 +3,15 @@ function getCandidateTree(s) {
 	var cqTree = document.getElementById('parseCandTree');
 	//display loader img
 	cqTree.innerHTML = '<img id="candquerytree" src="/static/images/ajax-loader-blue.gif" style = "display: block;margin: auto; margin-top:80px;"/>'
+	var opt = document.getElementById('qOpt').innerHTML;
 
+	if(opt=='Disabled'){
+                        cqTree.innerHTML='';
+                        var x = document.getElementById("cands").selectedIndex;
+                        cqTree.innerHTML='CANDIDATE '+x+' <br/>'+document.getElementById('parseQueryTree').innerHTML;
+			document.getElementById('candquery').innerHTML=document.getElementById('query').innerHTML;
+			return;
+	}
 
 
 	$.ajax({
@@ -28,25 +36,25 @@ function getCandidateTree(s) {
 // 			obj.html(obj.html().replace(/\t/g,'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'));
 
 			cqTree.innerHTML='';
-		}
-	});
+  			var x = document.getElementById("cands").selectedIndex;
+                      	cqTree.innerHTML='CANDIDATE '+x+' <br/>';
+		        //show cand query parse tree
+	      $.ajax({
+        	      url: "/visualize/parse/?cand="+s.value,
+             	 type: "GET",
+             	 dataType: "json",
+             	 error: function(response, n, textStatus, exception) {
+                      alert('Error: ' + response.responseText);
+                      console.log(n);
+                      console.log(textStatus);
+        	      },
+             		 success: function(data) {
+                      renderD3JsonGraph('#parseCandTree',JSON.parse(data));
+ 		             }
+		      });}
+		});
 
 
-	//show cand query parse tree
-	$.ajax({
-		url: "/visualize/parse/?cand="+s.value,
-		type: "GET",
-		dataType: "json",
-		error: function(response, n, textStatus, exception) {
-			alert('Error: ' + response.responseText);
-			console.log(n);
-			console.log(textStatus);
-		},
-		success: function(data) {
-			cqTree.innerHTML = '';
-			renderD3JsonGraph('#parseCandTree',JSON.parse(data));
-		}
-	});
 
 
 }

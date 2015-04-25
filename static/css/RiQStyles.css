@@ -54,6 +54,10 @@
 	color: #999;
 	animation-iteration-count: 5;
 }
+.blink:hover{
+	color:#FFF;
+
+}
 .r-blink{
 animation-direction: reverse;
 

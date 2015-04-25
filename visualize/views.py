@@ -17,9 +17,9 @@ def getQueryInfo(request):
 
 	#generate candidates file
 	qId= json_data['name']
-	o =  'opt' if json_data['opt']=='Enabled' else 'nopt'
+	#o =  'opt' if json_data['opt']=='Enabled' else 'nopt'
 	c =  'warm' if json_data['cache']=='Warm' else 'cold'
-
+	o = 'opt'
 	if qId == 'CUSTOM':
 		filename = 'temp.q'
 
