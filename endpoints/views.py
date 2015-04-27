@@ -8,7 +8,7 @@ def land(request):
 			query =  request.GET['query']
 			print 'RIQ RECEIVED:'
 			print query
-			results = runQuery(query,"tempLinked.q")
+			results = runQuery(query,'warm 1',"tempLinked.q",'riq')
 			return HttpResponse(content=results,content_type='xml; charset=utf-8')
 
 	else:
