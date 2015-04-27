@@ -225,8 +225,7 @@ function runRIQ(e)
 		console.log("Linked Form Submitted Successfully");
 		document.getElementById('rLoader').innerHTML='';
 		document.getElementById('tLoader').innerHTML='';
-		document.getElementById('results').innerHTML=response;
-
+		document.getElementById('results').innerHTML=response;//.replace(/</gim,'&lt;').replace(/>/gim,'&gt;');
 	},
 	error: function(response,n, textStatus, exception) {
 		alert('Form Error: ' + response.responseText);

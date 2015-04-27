@@ -53,11 +53,12 @@ def runQuery(query,args,filename,tool):
 	DIR  = os.path.join(os.path.abspath(os.pardir))
 	args = args.split()
 
-	print 'Running Query via '+tool
+	print 'Running Tool Query via '+tool
 	if tool == 'riq':
 		cmd = [ DIR+"/RIS/indexing/RIS/scripts/run_riq_query.py", "-C", "config-files/riq.conf","-q", "queries/"+filename, "-f" ,"xml"]
 		for a in args:
 			cmd.append(a)
+		print 'Issuing command: '+ str(cmd)
  		p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
  		p_stdout = p.stdout.read()
  		p_stderr = p.stderr.read()
