@@ -74,7 +74,7 @@ def land(request):
 
 
 		removePreviousRunFiles('execute')
-		start_new_thread(runMultiToolQuery,('temp.q',query.encode(sys.stdout.encoding),args))
+		start_new_thread(runMultiToolQuery,('temp.q',query.encode(sys.stdout.encoding),args,[True,True]))
 
 		return HttpResponse('Query Received!', status=200,content_type='plain/text')
 

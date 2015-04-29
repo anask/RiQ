@@ -125,6 +125,22 @@ function plotTimings(data){
 
 }
 
+function getStatusUpdates(){
+
+                var isDone='false';
+                var url = "/linked/getstatus/";
+                isDone=httpGet(url)
+
+                if(isDone == 'false') {
+                       setTimeout(getStatusUpdates, 5000); /* this checks the flag every 100 milliseconds*/
+                } else{ 
+                	document.getElementById('rLoader').innerHTML='';
+                	document.getElementById('tLoader').innerHTML='';
+			getQueryResults();
+                	//document.getElementById('results').innerHTML=response;
+		}
+
+}
 function displayLoaders(){
 
 	var ldrImgResults = "<img src='/static/images/ajax-loader-green.gif' style='display: block;margin: auto; margin-top:5px;'/>";
@@ -162,24 +178,22 @@ function getQueryTimimgs()
 function getQueryResults()
 {
 
+ 	$.ajax({
+ 	url: "/linked/getresults/",
+ 	type: "GET",
+ 	dataType: "text",
+ 		error: function(response,n, textStatus, exception) {
+ 		alert('Form Error: ' + response.responseText);
+ 		console.log(n);
+ 		console.log(textStatus);
 
-//
-// 	$.ajax({
-// 	url: "/linked/results/",
-// 	type: "GET",
-// 	dataType: "text",
-// 		error: function(response,n, textStatus, exception) {
-// 		alert('Form Error: ' + response.responseText);
-// 		console.log(n);
-// 		console.log(textStatus);
-//
-// 	},
-// 	success: function(data) {
-//
-// 		 rframe = $('#results');
-// 		rframe.html(data.replace(/\n/g,'&nbsp;<br/>'));
-// 		}});
-//
+ 	},
+ 	success: function(data) {
+
+ 		 rframe = $('#results');
+ 		rframe.html(data);
+ 		}});
+
 
 }
 
@@ -198,7 +212,7 @@ function showQuery(e)
 		obj.html(obj.html().replace(/\n/g,'&nbsp;<br/>'));
 		obj.html(obj.html().replace(/\t/g,'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'));
 		obj.bind('DOMNodeInserted DOMSubtreeModified DOMNodeRemoved', function(event) {
-		document.getElementById("queryDisplay").selectedIndex = 5;
+		document.getElementById("queryDisplay").selectedIndex = 2;
 
 		});
 	}
@@ -222,10 +236,9 @@ function runRIQ(e)
 	data: postData,
 	timeout: 9000000000,
 	success: function(response,n, textStatus, exception) {
+
 		console.log("Linked Form Submitted Successfully");
-		document.getElementById('rLoader').innerHTML='';
-		document.getElementById('tLoader').innerHTML='';
-		document.getElementById('results').innerHTML=response;//.replace(/</gim,'&lt;').replace(/>/gim,'&gt;');
+		getStatusUpdates();
 	},
 	error: function(response,n, textStatus, exception) {
 		alert('Form Error: ' + response.responseText);
