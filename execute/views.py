@@ -42,14 +42,14 @@ def land(request):
 		try:
 			TypeCache = request.POST.__getitem__('typecache')
 		except:
-			TypeCache = 'warm'
+			TypeCache = 'none'#was warm
 		try:
 			optimizeType = request.POST.__getitem__('optimizationtype')
 		except:
 			optimizeType = 'opt'
 
 		if(TypeCache=='warm'):
-			TypeCache = '-c warm'
+			TypeCache = '-c none'#was warm
 			queryInfo['cache']='Warm'
 		else:
 			TypeCache = '-c cold'
@@ -67,14 +67,26 @@ def land(request):
 		qi.write(json.dumps(queryInfo).encode('utf-8'));
 		qi.close()
 
+		s = open('status/execute', 'w')
+		s.write('Started..\n')
+		s.close()
 		if QueryId=='BTC10' or QueryId=='BTC11':
-			return HttpResponse("Results from previous\n   runs will be shown!", status=200,content_type='plain/text')
+			tools=[True,False,False]
+		else:
+			tools=[True,True,True]
+		#	return HttpResponse("Results from previous\n   runs will be shown!", status=200,content_type='plain/text')
 
 		args = " "+TypeCache+" "+optimizeType+" "
 
 
 		removePreviousRunFiles('execute')
-		start_new_thread(runMultiToolQuery,('temp.q',query.encode(sys.stdout.encoding),args,[True,True]))
+			
+		r=runMultiToolQuery('temp.q',query.encode(sys.stdout.encoding),args,tools)
+	
+          	s = open('status/execute', 'a')
+                s.write('Done\n')
+                s.close()
+		#start_new_thread(runQuery,(query.encode(sys.stdout.encoding),args,'temp.q','riq')
 
 		return HttpResponse('Query Received!', status=200,content_type='plain/text')
 
@@ -121,65 +133,98 @@ def getTimings(request):
 	c = request.GET['cache']
 	o = request.GET['opt']
 	times = {}
-	if qId == 'CUSTOM':
-		times['type'] = c
-		times['riqf'] = '100.00'
-		times['riq'] = '20.00'
-		times['virt'] = '100.00'
-		times['jena'] = '100.00'
+
+	print 'Getting timings..'
+	print 'Query: '+qId
+	print 'Cache: '+c
+	print 'Optimization: '+o
+   
+    	a=open('status/execute','rb')
+        lines = a.readlines()
+        a.close()
+	print lines
+        if lines:
+		
+                slast_line = lines[-2]
+                last_line = lines[-1].rstrip('\n')
+		
+                if last_line == 'Done':
+			print 'Time is Ready'
+                        t = slast_line.rstrip('\n').split(':')[1].split(',')
+                        tr= t[0].split('/')
+               		times['riqf'] = tr[1]
+                	times['riq'] =  tr[0]
+	
+			if qId == 'CUSTOM':
+				times['type'] = c
+				times['virt'] = t[2]
+				times['jena'] = t[1]
 
 
-	elif qId == 'BTC10':
-		if c=='cold':
-			times['type'] = 'cold'
-			if o=='opt':
-				times['riqf'] = '6.42'
-				times['riq'] = '16.29'
-				times['virt'] = '39.18'
-				times['jena'] = '3564.4'
-			elif o=='nopt':
-				times['riqf'] = '11.83'
-				times['riq'] = '495.81'
-				times['virt'] = '39.18'
-				times['jena'] = '3564.4'
-		if c=='warm':
-			times['type'] = 'warm'
-			if o=='opt':
-				times['riq'] = '6.79'
-				times['riqf'] = '0.66'
-				times['virt'] = '0.16'
-				times['jena'] = '369.81'
-			elif o=='nopt':
-				times['riq'] = '355.07'
-				times['riqf'] = '0.95'
-				times['virt'] = '0.16'
-				times['jena'] = '369.81'
-	elif qId == 'BTC11':
-		if c=='cold':
-			times['type'] = 'cold'
-			if o=='opt':
-				times['riq'] = '158.18'
-				times['riqf'] = '5.7'
-				times['virt'] = '237.58'
-				times['jena'] = '2050.62'
-			elif o=='nopt':
-				times['riq'] = '163.05'
-				times['riqf'] = '5.45'
-				times['virt'] = '237.58'
-				times['jena'] = '2050.62'
-		if c=='warm':
-			times['type'] = 'warm'
-			if o=='opt':
-				times['riq'] = '76.68'
-				times['riqf'] = '0.61'
-				times['virt'] = '120.28'
-				times['jena'] = '2102.06'
-			elif o=='nopt':
-				times['riq'] = '90.09'
-				times['riqf'] = '0.43'
-				times['virt'] = '120.28'
-				times['jena'] = '2102.06'
+			elif qId == 'BTC10':
+				if c=='cold':
+					times['type'] = 'cold'
+					if o=='opt':
+						#times['riqf'] = '6.42'
+						#times['riq'] = '16.29'
+						times['virt'] = '39.18'
+						times['jena'] = '3564.4'
+					elif o=='nopt':
+						#times['riqf'] = '11.83'
+						#times['riq'] = '495.81'
+						times['virt'] = '39.18'
+						times['jena'] = '3564.4'
 
+				elif c=='warm':
+					times['type'] = 'warm'
+					if o=='opt':
+						#times['riq'] = '6.79'
+						#times['riqf'] = '0.66'
+						times['virt'] = '0.16'
+						times['jena'] = '369.81'
+					elif o=='nopt':
+						#times['riq'] = '355.07'
+						#times['riqf'] = '0.95'
+						times['virt'] = '0.16'
+						times['jena'] = '369.81'
+			elif qId == 'BTC11':
+				if c=='cold':
+					times['type'] = 'cold'
+					if o=='opt':
+						#times['riq'] = '158.18'
+						#times['riqf'] = '5.7'
+						times['virt'] = '237.58'
+						times['jena'] = '2050.62'
+					elif o=='nopt':
+						#times['riq'] = '163.05'
+						#times['riqf'] = '5.45'
+						times['virt'] = '237.58'
+						times['jena'] = '2050.62'
+				elif c=='warm':
+					times['type'] = 'warm'
+					if o=='opt':
+						#times['riq'] = '76.68'
+						#times['riqf'] = '0.61'
+						times['virt'] = '120.28'
+						times['jena'] = '2102.06'
+					elif o=='nopt':
+						#times['riq'] = '90.09'
+						#times['riqf'] = '0.43'
+						times['virt'] = '120.28'
+						times['jena'] = '2102.06'
+
+
+                elif last_line == 'Error':
+                        times['riqf'] = '10'
+                        times['riq'] =  '5'
+                        times['virt'] = '10'
+                        times['jena'] = '10'
+        else:
+                        times['riq']  = '15'
+                        times['riqf'] = '15'
+                        times['virt'] = '15'
+                        times['jena'] = '15'
+	print times
 	return HttpResponse(json.dumps(times), content_type="application/json")
 
 
@@ -187,17 +232,19 @@ def getResults(request):
 	qId = request.GET['queryId']
 	c = request.GET['cache']
 	o = request.GET['opt']
-	if qId == 'CUSTOM':
-		data = getQueryResults('temp.q')
-		return HttpResponse(content=data,content_type='xml; charset=utf-8')
-	elif qId == 'BTC10':
-		data = getQueryResults('q20.'+o+'.'+c+'.')
-		return HttpResponse(content=data,content_type='xml; charset=utf-8')
-	elif qId == 'BTC11':
-		data = getQueryResults('q3.'+o+'.'+c+'.')
-		return HttpResponse(content=data,content_type='xml; charset=utf-8')
 
+	if c=='warm':
+		c='none'
 
+	#if qId == 'CUSTOM':
+	data = getQueryResults('temp.q','riq',c)
+	return HttpResponse(content=data,content_type='xml; charset=utf-8')
+	#elif qId == 'BTC10':
+	#	data = getQueryResults('q20.','riq',c)
+	#	return HttpResponse(content=data,content_type='xml; charset=utf-8')
+	#elif qId == 'BTC11':
+	#	data = getQueryResults('q3.','riq',c)
+	#	return HttpResponse(content=data,content_type='xml; charset=utf-8')
 
 def getStatus(request):
 

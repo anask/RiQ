@@ -120,7 +120,6 @@ function plotTimings(data){
             stack:1
         }]
     });
-	document.getElementById('note').innerHTML="Note: Query not supported by RDF-3X";
 
 
 }
@@ -139,6 +138,15 @@ function getQueryTimimgs(args)
 	},
 	success: function(data) {
 		plotTimings(data);
+
+                var e = document.getElementById("queryDisplay");
+                var qId = e.options[e.selectedIndex].value;
+                if(qId != 'CUSTOM'){
+                        document.getElementById('note').innerHTML="Note: displaying previously run <br />timings for JenaTDB and Virtuoso."+" Query not supported by RDF-3X";
+		 }
+		 else
+                        document.getElementById('note').innerHTML="";
+
 		}});
 
 
@@ -236,6 +244,7 @@ function displayLoaders(show){
         var graph = document.getElementById('query-graph');
         var time = document.getElementById('time');
         var results = document.getElementById('results');
+	var note = document.getElementById('note');
 
 if(show){
 	var ldrImgResults = "<img src='/static/images/ajax-loader-yellow.gif' style='display: block;margin: auto; margin-top:5px;'/>";
@@ -245,12 +254,14 @@ if(show){
 	results.innerHTML=ldrImgResults;
 	time.innerHTML=ldrImg2;
 	graph.innerHTML=ldrImg1;
+        note.innerHTML="";
 
 }
 else{
         results.innerHTML='';
         time.innerHTML='';
         graph.innerHTML='';
+        note.innerHTML='';
 
 }
 }
@@ -310,7 +321,7 @@ function runRIQ(e)
 	success: function(m,response,textStatus) {
 		console.log("Execute Form Submitted Successfully");
 
-		alert(textStatus.responseText);
+		console.log(textStatus.responseText);
 
 		//get query id
 		var e = document.getElementById("queryDisplay");

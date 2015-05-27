@@ -13,7 +13,7 @@ class IndexConstructionForm(ModelForm):
 	MY_CHOICESDATASET = (
 		(BTC, 'BTC (prebuilt)'),
 		#(LOGD, 'Prebuilt LUBM'),
-		(D10,'Upload ..'),
+	#	(D10,'Upload ..'),
 	)
 
 	LHSKFIRST = 4

@@ -31,7 +31,11 @@ class LinkedForm(forms.Form):
 		( CUS,'CUSTOM'),
 	)
 
+
+
+	COLDC = 'cold'
+	WARMC = 'warm'
 	outputformat = forms.ChoiceField(choices=MY_CHOICESFORMAT, widget = forms.Select)
 	runsetting = forms.MultipleChoiceField(choices=MY_CHOICES_RUNQUERY, widget=forms.CheckboxSelectMultiple())
-
 	query = forms.ChoiceField(choices=MY_CHOICESQUERY, widget = forms.RadioSelect())
+

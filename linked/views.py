@@ -32,36 +32,38 @@ def land(request):
 	elif request.method == 'POST':
 
 		print request.POST
+		QueryId = 'CUSTOM'
 		try:
-			format 	= request.POST.__getitem__('format')
-			QueryId	= request.POST.__getitem__('queries')
+			format  = request.POST.__getitem__('format')
+			QueryId = request.POST.__getitem__('queries')
 			query = request.POST.__getitem__('qtext')
 			settings = request.POST.getlist('settings')
 		except:
-			print "Linked Form Error:", sys.exc_info()[0]
-
-			return HttpResponse("Form Not Valid!", status=500,content_type='plain/text')
-	
+				print "Linked Form Error:", sys.exc_info()[0]
+				return HttpResponse("Form Not Valid!", status=500,content_type='plain/text')
 		tools=''
-		if u'riq' in settings:
-			tools = '1'
-		else:
-			tools = '0'
-		
-		if u'jena' in settings: 
-			tools = tools + '1'
-		else:
-			tools = tools + '0'
-		if u'virt' in settings:
-			tools = tools + '1'
-		else:
-			tools = tools + '0'
-               
-		query = query.replace(' <http://134.193.129.222:8080/endpoints/>',' <http://134.193.129.222:8080/endpoints/?tools='+tools+'>')		
-		start_new_thread(executeQuery,(query,format))
-		print 'Spawning querying thread..'
-                return HttpResponse('Query Received!', status=200,content_type='plain/text')
 
+		if QueryId != 'F1' and  QueryId != 'F2':
+	
+			if u'riq' in settings:
+                	        tools = '1'
+			else:
+                        	tools = '0'
+
+			if u'jena' in settings:
+        	                tools = tools + '1'
+			else:
+                	        tools = tools + '0'
+			if u'virt' in settings:
+                	        tools = tools + '1'
+			else:
+                        	tools = tools + '0'
+		else :
+			tools='100'
+
+		query = query.replace(' <http://134.193.129.222:8080/endpoints/>',' <http://134.193.129.222:8080/endpoints/?tools='+tools+'>')
+		executeQuery(query,format)
+		return HttpResponse('Query Received!', status=200,content_type='plain/text')
 
 def executeQuery(query,outputformat):
 	print 'Thread started'
@@ -87,7 +89,9 @@ def executeQuery(query,outputformat):
              print(p_stderr)
        
         print 'Linked Query Finished'
-
+	xml =  p_stdout.split('<?xml version="1.0"?>')
+        if (len(xml)>1):
+                        p_stdout='<?xml version="1.0"?>'+xml[1]
 	f = open('output/tempLinked.txt','w')
 	f.write(p_stdout)
 	f.close()
@@ -114,67 +118,131 @@ def getStatus(request):
 
                 return HttpResponse("false")
 def getTimings(request):
+	qid = request.GET['qid']
+	times = {}
+	
+ 	a=open('status/linked','rb')
+	lines = a.readlines()
+	a.close()
 
-	 times = {}
-	 times['type'] = 'cold'
-	 times['riqf'] = '6.42'
-	 times['riq'] = '16.29'
-	 times['virt'] = '39.18'
-	 times['jena'] = '3564.4'
+	if lines:
+                slast_line = lines[-2]
+                last_line = lines[-1]
 
-	 return HttpResponse(json.dumps(times), content_type="application/json")
+        	if last_line == 'Done':
+			t = slast_line.rstrip('\n').split(':')[1].split(',')
+			times['riq']  = t[0]
+       			if qid =='CUSTOM':
+                        	times['virt'] = t[2]
+                        	times['jena'] = t[1]
+                	elif qid=='F1':
+				times['virt'] = '39.18'
+				times['jena'] = '3564.4'
+			elif qid=='F2':     
+				times['virt'] = '237.58'
+				times['jena'] = '2050.62'
+  
+        	elif last_line == 'Error':
+                
+			times['riq']  = '5'
+			times['virt'] = '5'
+			times['jena'] = '5'
+	else:
+	                times['riq']  = '10'
+                        times['virt'] = '10'
+                        times['jena'] = '10'
+
+	return HttpResponse(json.dumps(times), content_type="application/json")
 
 
 def getResults(request):
 
-	f =  os.path.join(os.path.abspath(os.pardir),'RiQ/output/tempLinked.txt')
-	outf = open(f,'r')
-	data=outf.read()
-	outf.close()
-
-	#response = HttpResponse(content=resp.text,content_type=outputformat+'; charset=utf-8')
-	return HttpResponse(data, content_type="plain/text")
+	rf =  os.path.join(os.path.abspath(os.pardir),'RiQ/output/tempLinked.txt')
+        with open (rf, "r") as f:
+                        N=10000
+                        line = f.readline()
+                        i = 0
+                        while line and i < N:
+                                
+                                line = line + f.readline()
+                                i = i + 1
+			if i > 998:
+				line = line + 'Showing first 10000 lines.' 
+	return HttpResponse(line, content_type="plain/text")
 
 
 def getQueryList(request):
 	queryname = request.GET['name'].lower()
-	query = """SELECT *
+	query = """SELECT * 
 WHERE {
-		SERVICE   <http://134.193.129.222:8080/endpoints/>{
-			graph ?g {
-				?s ?p "Brunei"@en .
-			}
+	SERVICE <http://134.193.129.222:8080/endpoints/> {
+		GRAPH ?g {
+			?s ?p "Brunei"@en .
+			?s <http://dbpedia.org/property/leaderName> ?leader.
 		}
+	}
+ 
+	SERVICE <http://dbpedia.org/sparql> {
+		?s <http://dbpedia.org/property/establishedDate> ?est .
+		?s <http://dbpedia.org/ontology/capital> ?cap .
+	}
 }
 """
+
 	if(queryname == 'f1'):
-		query = """PREFIX owl: <http://www.w3.org/2002/07/owl#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX movie: <http://data.linkedmdb.org/resource/movie/>
-PREFIX dcterms: <http://purl.org/dc/terms/>
+		query = """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
-SELECT ?film ?label ?subject WHERE {
-	SERVICE <http://data.linkedmdb.org/sparql> {
-		?film a movie:film .
-		?film rdfs:label ?label .
-		?film owl:sameAs ?dbpediaLink .
-		FILTER(regex(str(?dbpediaLink), "dbpedia", "i"))
+SELECT * 
+WHERE {
+	SERVICE <http://134.193.129.222:8080/endpoints/> {
+	GRAPH ?g {
+		?var6 a <http://dbpedia.org/ontology/PopulatedPlace> .
+		?var6 <http://dbpedia.org/ontology/abstract> ?var1 .
+		?var6 rdfs:label ?var2 .
+		?var6 geo:lat ?var3 .
+		?var6 geo:long ?var4 .
+		{
+			?var6 rdfs:label "Brunei"@en .
+		}
+		UNION
+		{
+			?var5 <http://dbpedia.org/property/redirect> ?var6 .
+			?var5 rdfs:label "Brunei"@en .
+			OPTIONAL { ?var6 foaf:homepage ?var10 }
+			OPTIONAL { ?var6 <http://dbpedia.org/ontology/populationTotal> ?var12 }
+			OPTIONAL { ?var6 <http://dbpedia.org/ontology/thumbnail> ?var14 }
+		}
 	}
-	SERVICE <http://dbpedia.org/sparql> {
-		?dbpediaLink dcterms:subject ?subject .
+	}   
+}
+"""
+
+	elif(queryname == 'f2'):
+		query ="""
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX space: <http://purl.org/net/schemas/space/>
+PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>
+PREFIX dbpedia-prop: <http://dbpedia.org/property/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT * 
+WHERE {
+	SERVICE <http://134.193.129.222:8080/endpoints/> {
+	GRAPH ?g {
+		?var5 dbpedia-owl:thumbnail ?var4 .
+		?var5 rdf:type dbpedia-owl:Person .
+		?var5 rdfs:label ?var .
+		?var5 foaf:page ?var8 .
+		OPTIONAL { ?var5 foaf:homepage ?var10 . }
+	}	
 	}
 }
-LIMIT 50
 """
-	elif(queryname == 'f2'):
-		query ="""SELECT DISTINCT ?person
-WHERE {
-	SERVICE <http://dbpedia.org/sparql> {
-		?person a <http://xmlns.com/foaf/0.1/Person> .
-	}
-} LIMIT 10
-"""
-
 	return HttpResponse(query,  content_type="text/plain")
 
 class D3GraphData:

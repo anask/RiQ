@@ -65,7 +65,7 @@ def land(request):
 			config = ConfigParser.RawConfigParser()
 			config.optionxform=str
 			config.read(RIQ_CONF)
-			config.set('DEFAULT', 'USER', 'anask') # getpass.getuser()
+			config.set('DEFAULT', 'USER', 'vsfgd') # getpass.getuser()
 			config.set('Dataset', 'NAME',DS)
 
 			config.set('LSH','LSHK',LSH_K)
