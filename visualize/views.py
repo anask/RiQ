@@ -7,12 +7,22 @@ import subprocess
 from subprocess import call
 from PIL import Image
 import glob
+
+SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
+head, tail = os.path.split(SITE_ROOT)
+
 def land(request):
+	print("SRoot: ",SITE_ROOT)
+	print('HEAD: ',head,' TAIL: ',tail)
 	return render_to_response('visualize.html', { 'TITLE': 'Visualize Query'})
 
 
 def getQueryInfo(request):
-	with open('queries/temp.info') as json_file:
+	print ('Getting query info from: '+head+'/queries/temp.info')
+	with open(head+'/queries/temp.info') as json_file:
+
+	#print ('Getting query info from: /queries/temp.info')
+	#with open('/queries/temp.info') as json_file:
 		json_data = json.load(json_file)
 
 	#generate candidates file
@@ -32,8 +42,10 @@ def getQueryInfo(request):
 
 	#############     generate candidates file    #############
 	DIR =  os.path.join(os.path.abspath(os.pardir),'RIS/indexing/RIS.RUN/log/')
+	#DIR =  os.path.join(os.path.abspath(os.pardir),'RIS/indexing/RIS.RUN/log/')
 	candidatefile = ''
 	file_dir_extension = os.path.join(DIR, '*'+filename+'*filter.candidates')
+	print 'Looking for candidates in: '+ file_dir_extension 
 	print 'Cand Log File: '
 	for name in glob.glob(file_dir_extension):
 			print name
@@ -41,9 +53,10 @@ def getQueryInfo(request):
 
 
 	candidatelog = open(candidatefile)
-
+	print 'Candidates file opened!'
+	#demodir =  os.path.join(os.path.abspath(os.pardir),'anask/RiQ/')
 	demodir =  os.path.join(os.path.abspath(os.pardir),'RiQ/')
-
+	print 'Openning: '+demodir+"output/candidatedataindecimal.txt" 
 	candidatelogindecimal = open(demodir+"output/candidatedataindecimal.txt", 'w')
 	for line in candidatelog:
 		binarytodecimal = str(int(line, 2))
@@ -60,14 +73,16 @@ def getQueryInfo(request):
 	# create visualize non-candidate graph data
 	bStartRead = 0
 	b = open(bgpfile,'r')
-	v = open('output/visualizenoncandidatedata.log', 'w')
+	#print 'Create Vis ncgd at: '+head+'/output/visualizenoncandidatedata.log'
+	print 'Create Vis ncgd at: /output/visualizenoncandidatedata.log'
+	v = open(head+'/output/visualizenoncandidatedata.log', 'w')
+	#v = open('/output/visualizenoncandidatedata.log', 'w')
 	for line in b:
 		if line.startswith('eval_tree: 0') == True & bStartRead == 0:
 			bStartRead = 1
 		if line.startswith('print_eval_tree:') == True & bStartRead == 1:
 			v.write(line[line.find(': ')+1:])
 			break
-
 	b.close()
 	v.close()
 	###########################################################
@@ -77,7 +92,8 @@ def getQueryInfo(request):
 	expression = ''
 	bStartRead = 0
 	b = open(bgpfile,'r')
-	y = open('output/visualizecandidatedata.log', 'w')
+	y = open(head+'/output/visualizecandidatedata.log', 'w')
+	#y = open('/output/visualizecandidatedata.log', 'w')
 	for line in b:
 		if line.startswith('eval_tree: 1') == True & bStartRead == 0:
 			bStartRead = 1

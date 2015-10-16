@@ -253,13 +253,13 @@ def getStatus(request):
 		a.close()
 		if lines:
 			first_line = lines[:1]
-			last_line = lines[-1]
+			last_line = lines[-1].rstrip()
 
 		if last_line == 'Done':
 			return HttpResponse("true", status=200,content_type='plain/text')
 		elif last_line == 'Error':
 			return HttpResponse("error", status=200,content_type='plain/text')
-
+		print last_line
 		return HttpResponse("false", status=200,content_type='plain/text')
 
 def getQueryGraph(request):

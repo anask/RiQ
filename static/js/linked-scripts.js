@@ -218,7 +218,7 @@ function showQuery(e)
 		obj.html(obj.html().replace(/\n/g,'&nbsp;<br/>'));
 		obj.html(obj.html().replace(/\t/g,'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'));
 		obj.bind('DOMNodeInserted DOMSubtreeModified DOMNodeRemoved', function(event) {
-		document.getElementById("queryDisplay").selectedIndex = 2;
+		document.getElementById("queryDisplay").selectedIndex = 3;
 
 		});
 	}

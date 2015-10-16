@@ -67,6 +67,7 @@ def land(request):
 
 def executeQuery(query,outputformat):
 	print 'Thread started'
+
 	f = open('status/linked','w')
 	f.write('started\n')
 	f.close()
@@ -243,8 +244,42 @@ WHERE {
 	}
 }
 """
-	return HttpResponse(query,  content_type="text/plain")
+	elif(queryname == 'f3'):
+		query ="""
+SELECT ?union ?unionShortName ?continent1 ?country1 ?officialName1 ?continent2 ?country2 ?officialName2 WHERE
+{
+SERVICE <http://134.193.129.222:8080/endpoints/> {
 
+  GRAPH ?g {
+    ?union <http://aims.fao.org/aos/geopolitical.owl#nameShortEN> ?unionShortName .
+    ?union <http://aims.fao.org/aos/geopolitical.owl#hasMember> ?country1 .
+    ?union <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://aims.fao.org/aos/geopolitical.owl#economic_region> .
+
+    ?continent1 <http://aims.fao.org/aos/geopolitical.owl#hasMember> ?country1 .
+    ?continent1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://aims.fao.org/aos/geopolitical.owl#geographical_region> .
+    ?continent1 <http://aims.fao.org/aos/geopolitical.owl#nameShortEN> "Africa"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+    ?continent2 <http://aims.fao.org/aos/geopolitical.owl#hasMember> ?country2 .
+    ?continent2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://aims.fao.org/aos/geopolitical.owl#geographical_region> .
+    ?continent2 <http://aims.fao.org/aos/geopolitical.owl#nameShortEN> "Asia"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+    ?country1 <http://aims.fao.org/aos/geopolitical.owl#nameOfficialEN> ?officialName1 .
+    ?country1 <http://aims.fao.org/aos/geopolitical.owl#isInGroup> ?union .
+    ?country1 <http://aims.fao.org/aos/geopolitical.owl#isInGroup> ?continent1 .
+    ?country1 <http://aims.fao.org/aos/geopolitical.owl#isInGroup> <http://aims.fao.org/aos/geopolitical.owl#World> .
+    ?country1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://aims.fao.org/aos/geopolitical.owl#self_governing> .
+    ?country1 <http://aims.fao.org/aos/geopolitical.owl#hasBorderWith> ?country2 .
+
+    ?country2 <http://aims.fao.org/aos/geopolitical.owl#nameOfficialEN> ?officialName2 .
+    ?country2 <http://aims.fao.org/aos/geopolitical.owl#isInGroup> ?continent2 .
+    ?country2 <http://aims.fao.org/aos/geopolitical.owl#isInGroup> <http://aims.fao.org/aos/geopolitical.owl#World> .
+    ?country2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://aims.fao.org/aos/geopolitical.owl#self_governing> .
+    ?country2 <http://aims.fao.org/aos/geopolitical.owl#hasBorderWith> ?country1 .
+  }
+}
+}
+"""
+	return HttpResponse(query,  content_type="text/plain")
 class D3GraphData:
   def __init__(self):
     self.subject = None

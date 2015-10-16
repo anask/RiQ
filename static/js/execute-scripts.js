@@ -283,7 +283,7 @@ function getStatusUpdates(qId,cache,opt){
 		isDone=httpGet(url)
 
 		if(isDone == 'false') {
-		       setTimeout(getStatusUpdates, 5000); /* this checks the flag every 100 milliseconds*/
+		       setTimeout(getStatusUpdates, 10000); /* this checks the flag every 100 milliseconds*/
 		} else {
 
 				displayLoaders(false);
