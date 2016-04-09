@@ -4,32 +4,15 @@ function getCandidateTree(s) {
 	//display loader img
 	cqTree.innerHTML = '<img id="candquerytree" src="/static/images/ajax-loader-blue.gif" style = "display: block;margin: auto; margin-top:80px;"/>'
 	var opt = document.getElementById('qOpt').innerHTML;
-	
+
 	if(opt=='Disabled'){
-		$.ajax({
-                	url: "/visualize/parse/?cand=false",
-              		type: "GET",
-                	dataType: "json",
-                	error: function(response, n, textStatus, exception) {
-                        	alert('Error: ' + response.responseText);
-                        	console.log(n);
-                        	console.log(textStatus);
+                        cqTree.innerHTML='';
+                        var x = document.getElementById("cands").selectedIndex;
+                        cqTree.innerHTML='CANDIDATE '+x+' <br/>'+document.getElementById('parseQueryTree').innerHTML;
+			document.getElementById('candquery').innerHTML=document.getElementById('query').innerHTML;
+			return;
+	}
 
-                	},
-                	success: function(data) {
-                        	
-                        	var x = document.getElementById("cands").selectedIndex;
-                        	cqTree.innerHTML='CANDIDATE '+x;
-				renderD3JsonGraph('#parseCandTree',JSON.parse(data));
-			
-
-                	}
-       		});
-		
-		document.getElementById('candquery').innerHTML="<br/><br/><div style='text-align:center;'><h4>Optimization Disabled!</h4><h5>Using original query.</h5></div>";        
-		return;
-        }
-	
 
 	$.ajax({
 		url: "/visualize/candquery/?cand=" + s.value,
@@ -79,9 +62,9 @@ function getCandidateTree(s) {
 function getQueryTree() {
 
 
-	//#QPT var qTree = document.getElementById('parseQueryTree');
+	var qTree = document.getElementById('parseQueryTree');
 	//display loader img
-	//#QPT qTree.innerHTML = '<img id="querytree" src="/static/images/ajax-loader-blue.gif" style = "display: block;margin: auto; margin-top:80px;"/>'
+	qTree.innerHTML = '<img id="querytree" src="/static/images/ajax-loader-blue.gif" style = "display: block;margin: auto; margin-top:80px;"/>'
 
 	//show query
 	$.ajax({
@@ -117,8 +100,8 @@ function getQueryTree() {
 
 		},
 		success: function(data) {
-			// #QPT qTree.innerHTML = '';
-			// #QPT renderD3JsonGraph('#parseQueryTree',JSON.parse(data));
+			qTree.innerHTML = '';
+			QPT renderD3JsonGraph('#parseQueryTree',JSON.parse(data));
 		}
 	});
 
@@ -186,8 +169,8 @@ $(document).ready(function() {
 function renderD3JsonGraph(container, data)
 {
 var margin = {top: 40, right: 10, bottom: 10, left: 10},
-                   width = 800,
-                   height = 950;
+                   width = 1800,
+                   height = 1800;
 
                    var i = 0,
                    duration = 750,

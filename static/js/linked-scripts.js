@@ -170,7 +170,7 @@ function getQueryTimimgs(qId)
 	},
 	success: function(data) {
 		plotTimings(data);
-		if(qId != 'CUSTOM')
+		if(qId != 'CUSTOM' && qId != 'F3')
                         document.getElementById('note').innerHTML="Note: displaying previously run <br />timings for JenaTDB and Virtuoso.";
 		else
                         document.getElementById('note').innerHTML="Note: Time spent by selected tool(s) <br />at the endpoint";

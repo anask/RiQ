@@ -74,15 +74,49 @@ animation-direction: reverse;
 .icon-grid-1 {
     background: url("../icons/index-icon.png");
     position: absolute;
-
-       margin: auto;
-
+    margin: auto;
     top: 0;
     left: 0;
     right: 0;
     bottom: 20%;
-	background-size: 100px 100px;
+    background-size: 100px 100px;
 }
+
+.icon-grid-2 {
+    background: url("../icons/exec-icon.png");
+    position: absolute;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 20%;
+    background-size: 100px 100px;
+}
+
+.icon-grid-4 {
+    background: url("../icons/vis-icon.png");
+    position: absolute;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 20%;
+    background-size: 100px 100px;
+}
+
+.icon-grid-3 {
+    background: url("../icons/link-icon.png");
+    position: absolute;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 20%;
+    background-size: 100px 100px;
+}
+
+
+
 
 i {
     position: relative;
@@ -289,10 +323,35 @@ div.sliding-content-rv{
 }
 div.sliding-content-rv:hover{
     z-index:100;
-    width:245.5%;
+    width:202.5%;
     overflow-y:auto;
     transition-delay:1s;
 
+ }
+ 
+ div.sliding-content-tv{
+    z-index:0;
+	width:100%;
+	height:100%;
+	overflow:hidden;
+	position:absolute;
+	-webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    transition: all 1s ease;
+	outline: 2px solid #3BBEC0;
+    background:#FFF;
+        padding:15px;
+
+
+}
+div.sliding-content-tv:hover{
+    z-index:100;
+margin-top:-290px;
+height:551px;
+    overflow-y:auto;
+    overflow-x:auto;
+        transition-delay:1s;
  }
 
 div.sliding-content-lv{
@@ -314,8 +373,8 @@ div.sliding-content-lv{
 }
 div.sliding-content-lv:hover{
     z-index:100;
-    width:172%;
-	margin-left:-207%;
+    width:202.5%;
+	margin-left:-407%;
 	overflow-y:auto;
   overflow-x:auto;
     transition-delay:1s;
@@ -375,6 +434,7 @@ div.sliding-content-l:hover{
     transition-delay:1s;
 
  }
+
  div.sliding-content-t{
     z-index:0;
 	width:100%;

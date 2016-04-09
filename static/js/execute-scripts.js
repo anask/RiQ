@@ -142,10 +142,10 @@ function getQueryTimimgs(args)
                 var e = document.getElementById("queryDisplay");
                 var qId = e.options[e.selectedIndex].value;
                 if(qId != 'CUSTOM'){
-                        document.getElementById('note').innerHTML="Note: displaying previously run <br />timings for JenaTDB and Virtuoso."+" Query not supported by RDF-3X";
+                        document.getElementById('note').innerHTML="Note: displaying previously run <br />timings for JenaTDB and Virtuoso. Small timings may not appear on chart.";
 		 }
 		 else
-                        document.getElementById('note').innerHTML="";
+                        document.getElementById('note').innerHTML="Small timings may not appear on chart.";
 
 		}});
 
@@ -233,7 +233,7 @@ function showQuery(e)
 		obj.html(obj.html().replace(/\n/g,'&nbsp;<br/>'));
 		obj.html(obj.html().replace(/\t/g,'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'));
 		obj.bind('DOMNodeInserted DOMSubtreeModified DOMNodeRemoved', function(event) {
-		document.getElementById("queryDisplay").selectedIndex = 5;
+		document.getElementById("queryDisplay").selectedIndex = 2;
 
 		});
 	}
@@ -351,8 +351,9 @@ function runRIQ(e)
 
 	},
 	error: function(response,n, textStatus, exception) {
-		alert(response.responseText);
+		alert("ERORR: "+response.responseText);
 		console.log(n);
+		console.log(exception);
 		console.log(textStatus);
 		displayLoaders(false);
 
