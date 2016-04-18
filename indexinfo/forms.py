@@ -9,9 +9,11 @@ class IndexConstructionForm(ModelForm):
 	BTC = 'BTC'
 	LOGD = 'LUBM'
 	D10 = 'D10'
+	LUBM = 'LUBM'
 
 	MY_CHOICESDATASET = (
 		(BTC, 'BTC (prebuilt)'),
+		(LUBM, 'LUBM (prebuilt)'),
 		#(LOGD, 'Prebuilt LUBM'),
 	#	(D10,'Upload ..'),
 	)

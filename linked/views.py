@@ -61,7 +61,7 @@ def land(request):
 		else :
 			tools='100'
 
-		query = query.replace(' <http://134.193.129.222:8080/endpoints/>',' <http://134.193.129.222:8080/endpoints/?tools='+tools+'>')
+		query = query.replace(' <http://134.193.128.32:8080/endpoints/>',' <http://134.193.128.32:8080/endpoints/?tools='+tools+'>')
 		executeQuery(query,format)
 		return HttpResponse('Query Received!', status=200,content_type='plain/text')
 
@@ -125,8 +125,8 @@ def getTimings(request):
  	a=open('status/linked','rb')
 	lines = a.readlines()
 	a.close()
-
 	if lines:
+		print ("STATS: "+str(lines))
                 slast_line = lines[-2]
                 last_line = lines[-1]
 
@@ -176,7 +176,7 @@ def getQueryList(request):
 	queryname = request.GET['name'].lower()
 	query = """SELECT * 
 WHERE {
-	SERVICE <http://134.193.129.222:8080/endpoints/> {
+	SERVICE <http://134.193.128.32:8080/endpoints/> {
 		GRAPH ?g {
 			?s ?p "Brunei"@en .
 			?s <http://dbpedia.org/property/leaderName> ?leader.
@@ -197,7 +197,7 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
 SELECT * 
 WHERE {
-	SERVICE <http://134.193.129.222:8080/endpoints/> {
+	SERVICE <http://134.193.128.32:8080/endpoints/> {
 	GRAPH ?g {
 		?var6 a <http://dbpedia.org/ontology/PopulatedPlace> .
 		?var6 <http://dbpedia.org/ontology/abstract> ?var1 .
@@ -233,7 +233,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT * 
 WHERE {
-	SERVICE <http://134.193.129.222:8080/endpoints/> {
+	SERVICE <http://134.193.128.32:8080/endpoints/> {
 	GRAPH ?g {
 		?var5 dbpedia-owl:thumbnail ?var4 .
 		?var5 rdf:type dbpedia-owl:Person .
@@ -246,39 +246,32 @@ WHERE {
 """
 	elif(queryname == 'f3'):
 		query ="""
-SELECT ?union ?unionShortName ?continent1 ?country1 ?officialName1 ?continent2 ?country2 ?officialName2 WHERE
-{
-SERVICE <http://134.193.129.222:8080/endpoints/> {
+SELECT * 
+WHERE
+{ 
+SERVICE <http://134.193.128.32:8080/endpoints/> {
 
-  GRAPH ?g {
-    ?union <http://aims.fao.org/aos/geopolitical.owl#nameShortEN> ?unionShortName .
-    ?union <http://aims.fao.org/aos/geopolitical.owl#hasMember> ?country1 .
-    ?union <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://aims.fao.org/aos/geopolitical.owl#economic_region> .
+  GRAPH ?g { 
+    ?union <http://aims.fao.org/aos/geopolitical.owl#nameShortEN> ?unionShortName . 
+    ?union <http://aims.fao.org/aos/geopolitical.owl#hasMember> ?country1 . 
+    ?union <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://aims.fao.org/aos/geopolitical.owl#economic_region> . 
 
-    ?continent1 <http://aims.fao.org/aos/geopolitical.owl#hasMember> ?country1 .
-    ?continent1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://aims.fao.org/aos/geopolitical.owl#geographical_region> .
-    ?continent1 <http://aims.fao.org/aos/geopolitical.owl#nameShortEN> "Africa"^^<http://www.w3.org/2001/XMLSchema#string> .
+    ?continent1 <http://aims.fao.org/aos/geopolitical.owl#hasMember> ?country1 . 
+    ?continent1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://aims.fao.org/aos/geopolitical.owl#geographical_region> . 
+    ?continent1 <http://aims.fao.org/aos/geopolitical.owl#nameShortEN> "Africa"^^<http://www.w3.org/2001/XMLSchema#string> . 
 
-    ?continent2 <http://aims.fao.org/aos/geopolitical.owl#hasMember> ?country2 .
-    ?continent2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://aims.fao.org/aos/geopolitical.owl#geographical_region> .
-    ?continent2 <http://aims.fao.org/aos/geopolitical.owl#nameShortEN> "Asia"^^<http://www.w3.org/2001/XMLSchema#string> .
+    ?continent2 <http://aims.fao.org/aos/geopolitical.owl#hasMember> ?country2 . 
+    ?continent2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://aims.fao.org/aos/geopolitical.owl#geographical_region> . 
+    ?continent2 <http://aims.fao.org/aos/geopolitical.owl#nameShortEN> "Asia"^^<http://www.w3.org/2001/XMLSchema#string> . 
 
-    ?country1 <http://aims.fao.org/aos/geopolitical.owl#nameOfficialEN> ?officialName1 .
-    ?country1 <http://aims.fao.org/aos/geopolitical.owl#isInGroup> ?union .
-    ?country1 <http://aims.fao.org/aos/geopolitical.owl#isInGroup> ?continent1 .
-    ?country1 <http://aims.fao.org/aos/geopolitical.owl#isInGroup> <http://aims.fao.org/aos/geopolitical.owl#World> .
-    ?country1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://aims.fao.org/aos/geopolitical.owl#self_governing> .
-    ?country1 <http://aims.fao.org/aos/geopolitical.owl#hasBorderWith> ?country2 .
-
-    ?country2 <http://aims.fao.org/aos/geopolitical.owl#nameOfficialEN> ?officialName2 .
-    ?country2 <http://aims.fao.org/aos/geopolitical.owl#isInGroup> ?continent2 .
-    ?country2 <http://aims.fao.org/aos/geopolitical.owl#isInGroup> <http://aims.fao.org/aos/geopolitical.owl#World> .
-    ?country2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://aims.fao.org/aos/geopolitical.owl#self_governing> .
-    ?country2 <http://aims.fao.org/aos/geopolitical.owl#hasBorderWith> ?country1 .
+    ?country1 <http://aims.fao.org/aos/geopolitical.owl#nameOfficialEN> ?officialName1 . 
+    ?country1 <http://aims.fao.org/aos/geopolitical.owl#isInGroup> ?union . 
+    ?country1 <http://aims.fao.org/aos/geopolitical.owl#isInGroup> ?continent1 . 
+    ?country1 <http://aims.fao.org/aos/geopolitical.owl#isInGroup> <http://aims.fao.org/aos/geopolitical.owl#World> . 
+    ?country1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://aims.fao.org/aos/geopolitical.owl#self_governing> . 
   }
 }
-}
-"""
+}"""
 	return HttpResponse(query,  content_type="text/plain")
 class D3GraphData:
   def __init__(self):

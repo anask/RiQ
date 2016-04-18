@@ -13,6 +13,9 @@ import os
 import sys
 import glob
 import time
+import traceback
+from shutil import copyfile
+
 def land(request):
 	indexdataobject = indexdata.objects.all()
 	querynamedataobject = queryfilenametable.objects.all()
@@ -31,10 +34,11 @@ def land(request):
 			query = request.POST.__getitem__('qtext')
 			queryInfo['index']=IndexName
 			queryInfo['name']=QueryId
-			updateDatasetName(IndexName)
+			#updateDatasetName(IndexName)
+			selectConfigFile(IndexName)
 
-
-		except:
+		except Exception,e: 
+			print str(e)
 			return HttpResponse("Form Not Valid!", status=500,content_type='plain/text')
 
 
@@ -70,7 +74,7 @@ def land(request):
 		s = open('status/execute', 'w')
 		s.write('Started..\n')
 		s.close()
-		if QueryId=='BTC10' or QueryId=='BTC11':
+		if QueryId in ['BTC10','BTC11','LUBM3'] :
 			tools=[True,False,False]
 		else:
 			tools=[True,True,True]
@@ -80,7 +84,7 @@ def land(request):
 
 
 		removePreviousRunFiles('execute')
-			
+		print('Issuing Query..')			
 		r=runMultiToolQuery('temp.q',query.encode(sys.stdout.encoding),args,tools)
 	
           	s = open('status/execute', 'a')
@@ -89,6 +93,14 @@ def land(request):
 		#start_new_thread(runQuery,(query.encode(sys.stdout.encoding),args,'temp.q','riq')
 
 		return HttpResponse('Query Received!', status=200,content_type='plain/text')
+
+def selectConfigFile(indexName):	
+	if indexName == 'BTC':
+		FILE = 'btc'
+	elif indexName == 'LUBM':
+		FILE = 'lubm'
+	copyfile('config-files/riq.conf.'+FILE, 'config-files/riq.conf')
+
 
 def updateDatasetName(IndexName):
 			DATASET_PREFIX_DIR =  os.path.join(os.path.abspath(os.pardir),'RIS/indexing/RIS.RUN/data/')
@@ -100,6 +112,9 @@ def updateDatasetName(IndexName):
 				FILE = 'dbpedia'
 			elif IndexName == 'D10':
 				FILE = 'd10-small-sample'
+			elif IndexName == 'LUBM':
+				FILE = 'UbaData-1.38B'
+
 			RIQ_CONF =  ('config-files/riq.conf')
 
 			config = ConfigParser.RawConfigParser()
@@ -213,6 +228,31 @@ def getTimings(request):
 						times['virt'] = '120.28'
 						times['jena'] = '2102.06'
 
+			elif qId == 'LUBM3':
+				if c=='cold':
+					times['type'] = 'cold'
+					if o=='opt':
+						#times['riq'] = '158.18'
+						#times['riqf'] = '5.7'
+						times['virt'] = '119.62'
+						times['jena'] = '523.78'
+					elif o=='nopt':
+						#times['riq'] = '163.05'
+						#times['riqf'] = '5.45'
+						times['virt'] = '119.62'
+						times['jena'] = '523.78'
+				elif c=='warm':
+					times['type'] = 'warm'
+					if o=='opt':
+						#times['riq'] = '76.68'
+						#times['riqf'] = '0.61'
+						times['virt'] = '36.58'
+						times['jena'] = '244.82'
+					elif o=='nopt':
+						#times['riq'] = '90.09'
+						#times['riqf'] = '0.43'
+						times['virt'] = '36.58'
+						times['jena'] = '244.82'
 
                 elif last_line == 'Error':
                         times['riqf'] = '10'
@@ -268,21 +308,27 @@ def getQueryGraph(request):
 	c = request.GET['cache']
 	o = request.GET['opt']
 
-	if qId == 'CUSTOM':
-		filename = 'temp.q'
+	if (c=='warm'):
+		c='none'	
+	#if qId == 'CUSTOM':
+	filename = 'temp.q'
 
-	elif qId == 'BTC10':
-		filename = 'q20.'+o+'.'+c
+	#elif qId == 'BTC10':
+	#	filename = 'q20.'+o+'.'+c
 
-	elif qId == 'BTC11':
-		filename = 'aux.q3.'+o+'.'+c
+	#elif qId == 'BTC11':
+	#	filename = 'aux.q3.'+o+'.'+c
 
 	DIR =  os.path.join(os.path.abspath(os.pardir),'RIS/indexing/RIS.RUN/log/')
         bgpfile = ''
-        file_dir_extension = os.path.join(DIR, '*'+filename+'*filter.1.log')
+       
+
+	file_dir_extension = os.path.join(DIR, '*'+filename+"."+o+"."+c+'*filter.1.log')
+
+	print ('Openning dir: '+file_dir_extension)
 	print 'Getting TPs in the query from:'
         for name in glob.glob(file_dir_extension):
-		print name
+		print 'File: '+name
                 bgpfile = name
 
 	rlog = open(bgpfile)
@@ -376,6 +422,37 @@ WHERE {
 		}
 	}
 }
+"""
+	elif(queryname == 'lubm3'):
+		query ="""PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX ub: <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>  
+SELECT *
+WHERE {
+graph ?g {
+	?student1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> ?undergradUni .    
+	?student1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#memberOf> ?dept .   
+	?student2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> ?undergradUni .    
+	?student1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#advisor> ?professor .
+	?publication <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?student1 .   
+	?publication <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?student2 . 
+	?publication <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?professor. 
+	?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#name>                    "AssociateProfessor5" .
+	?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#telephone>               ?tpnu . 
+	?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#emailAddress>            ?emAddr . 
+	?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> ?bsdg . 
+	?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#teacherOf>               ?course . 
+	?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#worksFor>                ?dept . 
+	?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#researchInterest>        ?researchInt .
+	?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#mastersDegreeFrom>       ?msdg .
+	?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#doctoralDegreeFrom>      ?phddg .
+	?student1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#GraduateStudent> .   
+	?dept <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#Department> .   
+	?dept <file:///home/vsfgd/datasets/lubm/univ-bench.owl#subOrganizationOf> <http://www.University10.edu> .    
+	?student2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#GraduateStudent> . 
+	?undergradUni <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#University> .    
+	?publication <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#Publication> .   
+	?student2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#memberOf> ?dept .   
+} }
 """
 
 	return HttpResponse(query,  content_type="text/plain")

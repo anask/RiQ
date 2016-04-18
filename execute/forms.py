@@ -6,10 +6,11 @@ class ExecuteForm(forms.Form):
 	BTC = 'BTC'
 	LOGD = 'LOGD'
 	D10 = 'D10'
-
+	LUBM = 'LUBM'
 
 	MY_CHOICESDATASET = (
 		(BTC, 'BTC (prebuilt)'),
+ 		(LUBM, 'LUBM (prebuilt)'),
 # 		(LOGD, 'LOGD'),
 # 		(D10,'D10-SML'),
 
@@ -39,12 +40,16 @@ class ExecuteForm(forms.Form):
 	QBTC10 = 'BTC10'
 	DBPDSB1 = 'DBPD1'
 	DBPDSB2 = 'DBPD2'
+	QLUBM3 = 'LUBM3'
 	CUS = 'CUSTOM'
 
 	MY_CHOICESQUERY=(
 		( QBTC10,'B10'),
 		( QBTC11,'B11'),
+		( QLUBM3,'L3'),
 		( CUS,'CUSTOM'),
+	
+
 	)
 
 	dataset = forms.ChoiceField(choices=MY_CHOICESDATASET, widget = forms.Select)

@@ -271,7 +271,7 @@ function getStatusUpdates(qId,cache,opt){
 		var isDone='false';
 		var args = '?queryId='+qId+'&cache='+cache+'&opt='+opt;
 
-		if (qId=='BTC10' ||qId=='BTC11') {
+		if (qId=='BTC10' ||qId=='BTC11' || qId=='LUBM3') {
 
 					getQueryResults(args);
 					getQueryTimimgs(args);
