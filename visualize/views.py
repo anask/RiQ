@@ -24,20 +24,25 @@ def getQueryInfo(request):
 	#print ('Getting query info from: /queries/temp.info')
 	#with open('/queries/temp.info') as json_file:
 		json_data = json.load(json_file)
-
+		print ("Data: " +str(json_data))
 	#generate candidates file
 	qId= json_data['name']
-	#o =  'opt' if json_data['opt']=='Enabled' else 'nopt'
-	c =  'warm' if json_data['cache']=='Warm' else 'cold'
-	o = 'opt'
-	if qId == 'CUSTOM':
-		filename = 'temp.q'
+	index =  json_data['index']
+	if index == 'LUBM':
+		index = 'UbaData-1.38B'
+	elif index == 'BTC':
+		index = 'btc-2012-split-clean'
+	o =  'opt' if json_data['opt']=='Enabled' else 'nopt'
+	c =  'none' if json_data['cache']=='Warm' else 'cold'
+	#o = 'opt'
+	#if qId == 'CUSTOM':
+	filename = 'temp.q'+"."+o+"."+c
 
-	elif qId == 'BTC10':
-		filename = '.dbpedia.g.q20.'+o+'.'+c
+	#elif qId == 'BTC10':
+	#	filename = 'dbpedia.g.q20'#+o+'.'+c
 
-	elif qId == 'BTC11':
-		filename = '.dbpedia.g.aux.q3.'+o+'.'+c
+	#elif qId == 'BTC11':
+	#	filename = 'dbpedia.g.aux.q3'#+o+'.'+c
 
 
 	#############     generate candidates file    #############
@@ -65,16 +70,15 @@ def getQueryInfo(request):
 	candidatelog.close()
 	candidatelogindecimal.close()
 	###########################################################
-
-	bgpfile = DIR+'query.btc-2012-split-clean'+ filename +'.filter.1.log'
+	bgpfile = DIR+'query.'+str(index)+'.'+ filename +'.filter.1.log'
 	print 'LOG FILE: '+bgpfile
 	print 'LOG FILE FOUND: '+str(os.path.exists(bgpfile))
 	################## generate non candidate log #############
 	# create visualize non-candidate graph data
 	bStartRead = 0
 	b = open(bgpfile,'r')
-	#print 'Create Vis ncgd at: '+head+'/output/visualizenoncandidatedata.log'
-	print 'Create Vis ncgd at: /output/visualizenoncandidatedata.log'
+	print 'Create Vis ncgd at: '+head+'/output/visualizenoncandidatedata.log'
+	#print 'Create Vis ncgd at: /output/visualizenoncandidatedata.log'
 	v = open(head+'/output/visualizenoncandidatedata.log', 'w')
 	#v = open('/output/visualizenoncandidatedata.log', 'w')
 	for line in b:
@@ -171,6 +175,102 @@ WHERE {
 }
 """
 
+	elif info['name']=='LUBM1':
+
+		query['query']="""PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>   
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#> 
+
+SELECT ?professor1 ?univ1 ?univ5 ?univ2 ?name1 ?Email1 ?phone1 ?ResearchInt1 ?course1 ?publication1 ?professor2 ?univ4 ?name2 ?Email2 ?phone2 ?ResearchInt2 WHERE
+{
+    ?professor1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>  <file:///home/vsfgd/datasets/lubm/univ-bench.owl#FullProfessor> .
+    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> <http://www.University584.edu> .
+    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#mastersDegreeFrom> <http://www.University584.edu> .
+    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#doctoralDegreeFrom> <http://www.University429.edu> .
+    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#worksFor> ?univ2 .
+    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#name> ?name1 .
+    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#emailAddress> ?Email1 .
+    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#telephone> ?phone1 .
+    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#researchInterest> ?ResearchInt1 .
+    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#teacherOf> ?course1 .
+    ?publication1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?professor1 .
+
+    ?professor2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>  <file:///home/vsfgd/datasets/lubm/univ-bench.owl#AssociateProfessor> .
+    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> <http://www.University584.edu> .
+    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#mastersDegreeFrom> <http://www.University584.edu> .
+    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#doctoralDegreeFrom> <http://www.University9999.edu> .
+    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#worksFor> ?univ2 .
+    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#name> ?name2 .
+    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#emailAddress> ?Email2 .
+    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#telephone> ?phone2 .
+    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#researchInterest> ?ResearchInt2 .
+    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#teacherOf> ?course2 .
+    ?publication2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?professor2 .
+}
+""" 
+	elif info['name']=='LUBM2':
+
+		query['query']="""REFIX ub: <file:///home/vsfgd/datasets/lubm/univ-bench.owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT ?professor ?course ?email ?phone ?research ?udergradUnv ?msUnv ?phdUnv ?student1name ?student2name ?student1 ?student2 ?publication
+WHERE
+{
+        graph ?g{
+   ?student1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#advisor> ?professor .
+   ?student1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#name> ?student1name .
+   ?student1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#UndergraduateStudent> .
+
+   ?student2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#advisor> ?professor .
+   ?student2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#name> ?student2name .
+   ?student2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#GraduateStudent> .
+
+   ?professor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#FullProfessor> .
+   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#name> "FullProfessor7" .
+   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#teacherOf> ?course.
+   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> ?undergradUnv  .
+   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#mastersDegreeFrom> ?msUnv .
+   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#doctoralDegreeFrom> ?phdUnv .
+   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#worksFor> <http://www.Department17.University1001.edu> .
+   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#emailAddress> ?email .
+   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#telephone> ?phone .
+   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#researchInterest> ?research .
+
+   ?publication <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?professor .
+   ?publication <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?student2 .
+}
+}"""
+
+	elif info['name']=='LUBM3':
+		query['query']="""PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX ub: <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>  
+SELECT *
+WHERE {
+graph ?g {
+        ?student1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> ?undergradUni .    
+        ?student1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#memberOf> ?dept .   
+        ?student2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> ?undergradUni .    
+        ?student1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#advisor> ?professor .
+        ?publication <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?student1 .   
+        ?publication <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?student2 . 
+        ?publication <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?professor. 
+        ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#name>                    "AssociateProfessor5" .
+        ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#telephone>               ?tpnu . 
+        ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#emailAddress>            ?emAddr . 
+        ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> ?bsdg . 
+        ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#teacherOf>               ?course . 
+        ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#worksFor>                ?dept . 
+        ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#researchInterest>        ?researchInt .
+        ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#mastersDegreeFrom>       ?msdg .
+        ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#doctoralDegreeFrom>      ?phddg .
+        ?student1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#GraduateStudent> .   
+        ?dept <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#Department> .   
+        ?dept <file:///home/vsfgd/datasets/lubm/univ-bench.owl#subOrganizationOf> <http://www.University10.edu> .    
+        ?student2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#GraduateStudent> . 
+        ?undergradUni <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#University> .    
+        ?publication <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#Publication> .   
+        ?student2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#memberOf> ?dept .   
+	} 
+}"""
+
 	return HttpResponse(json.dumps(query), content_type="application/json")
 
 
@@ -196,16 +296,16 @@ def getCandQuery(request):
 	#generate candidates file
 	qId= json_data['name']
 	o =  'opt' if json_data['opt']==u'Enabled' else 'nopt'
-	c =  'warm' if json_data['cache']==u'Warm' else 'cold'
+	c =  'none' if json_data['cache']==u'Warm' else 'cold'
 
-	if qId == 'CUSTOM':
-		filename = 'temp.q'
+	#if qId == 'CUSTOM':
+	filename = 'temp.q.'+o+'.'+c
 
-	elif qId == 'BTC10':
-		filename = 'q20.'+o+'.'+c
+	#elif qId == 'BTC10':
+	#	filename = 'q20.'+o+'.'+c
 
-	elif qId == 'BTC11':
-		filename = 'aux.q3.'+o+'.'+c
+	#elif qId == 'BTC11':
+	#	filename = 'aux.q3.'+o+'.'+c
 
 	DIR  = os.path.join(os.path.abspath(os.pardir))
 	optDir = DIR+'/RIS/indexing/RIS.RUN/log/'
@@ -218,7 +318,7 @@ def getCandQuery(request):
 			optQuery = name
 
 	with open(optQuery) as f:
-		query['query']=f.read()
+		query['query']= f.read()
 
 	return HttpResponse(json.dumps(query), content_type="application/json")
 
@@ -315,7 +415,7 @@ def getParseTree(request):
 
 		# open visualize non-candidate graph data
 		expression=''
-		v = open('output/visualizenoncandidatedata.log')
+		v = open(head+'/output/visualizenoncandidatedata.log')
 		for line in v:
 		   print line
 		   expression = line
@@ -328,6 +428,7 @@ def getParseTree(request):
 		expression, nodeMap = parseExpression(expression)
 
 		tree = toTree(expression)
+		print ('Tree: '+str(tree))
 		myjson=printTree(tree, tree[''][0], nodeMap, 1, None)
 		data = json.dumps(myjson)
 

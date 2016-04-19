@@ -40,12 +40,16 @@ class ExecuteForm(forms.Form):
 	QBTC10 = 'BTC10'
 	DBPDSB1 = 'DBPD1'
 	DBPDSB2 = 'DBPD2'
+	QLUBM1 = 'LUBM1'
+	QLUBM2 = 'LUBM2'
 	QLUBM3 = 'LUBM3'
 	CUS = 'CUSTOM'
 
 	MY_CHOICESQUERY=(
 		( QBTC10,'B10'),
 		( QBTC11,'B11'),
+		( QLUBM1,'L1'),
+		( QLUBM2,'L2'),
 		( QLUBM3,'L3'),
 		( CUS,'CUSTOM'),
 	

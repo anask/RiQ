@@ -5,6 +5,7 @@ function plotTimings(data){
 	var riq_tf = data['riqf'];
 	var virt_t = data['virt'];
 	var jena_t = data['jena'];
+	var rf_t = data['rf'];
 
     $('#time').highcharts({
         chart: {
@@ -67,20 +68,20 @@ function plotTimings(data){
                 stacking: 'normal'
 
             },
-            column:
-            	{
-				stacking: 'normal',
-				slicedOffset: 0,
-                dataLabels: {
+            column:{
+			stacking: 'normal',
+			slicedOffset: 0,
+                	dataLabels: {
 					verticalAlign: 'top',
 					enabled: true,
+					allowOverlap: true,
 					style: {
 						fontWeight:'normal',
 						textShadow:'none',
-					},
+			    		},
 
 
-                }
+                	}
             }
         },
         legend: {
@@ -118,7 +119,14 @@ function plotTimings(data){
             data: [Number(jena_t)],
 			color: 'green',
             stack:1
-        }]
+        }, {
+            name: 'RF',
+            data: [Number(rf_t)],
+            color:'#EB9100',
+			stack:3
+
+        }
+	]
     });
 
 
@@ -271,7 +279,7 @@ function getStatusUpdates(qId,cache,opt){
 		var isDone='false';
 		var args = '?queryId='+qId+'&cache='+cache+'&opt='+opt;
 
-		if (qId=='BTC10' ||qId=='BTC11' || qId=='LUBM3') {
+		if (qId=='BTC10' ||qId=='BTC11' || qId=='LUBM1'|| qId=='LUBM2'|| qId=='LUBM3') {
 
 					getQueryResults(args);
 					getQueryTimimgs(args);

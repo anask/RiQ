@@ -2,7 +2,7 @@
 {% block scripts %}
 
 		<script type="text/javascript">
-			function setBTCConfig(flag){
+			function setConfig(flag){
 
 				var ds   = document.getElementById("dataset");
 				var l    = document.getElementById("lhslparameter");
@@ -12,30 +12,45 @@
 				var max  = document.getElementById("maximumgraphs");
 				var numg = document.getElementById("graphindex");
 
-				if(flag){
-					ds.getElementsByTagName('option')[0].selected = true;
-				    k.getElementsByTagName('option')[0].selected = true;
-				    l.getElementsByTagName('option')[1].selected = true;
-					max.value = '25000';
-					cap.getElementsByTagName('option')[3].selected = 'selected';
-				    err.getElementsByTagName('option')[1].selected = 'selected';
-				    numg.getElementsByTagName('option')[3].selected = 'selected';
-					l.disabled=true;
-					k.disabled=true;
-					cap.disabled=true;
-					err.disabled=true;
-					max.disabled=true;
-					numg.disabled=true;
+				if(flag != "none"){
+
+					if(flag=='btc'){
+				    	  ds.getElementsByTagName('option')[0].selected = true;
+				    	  k.getElementsByTagName('option')[0].selected = true;
+				    	  l.getElementsByTagName('option')[1].selected = true;
+				    	  max.value = '25000';
+				    	  cap.getElementsByTagName('option')[3].selected = 'selected';
+				  	  err.getElementsByTagName('option')[1].selected = 'selected';
+					  numg.getElementsByTagName('option')[3].selected = 'selected';
+					}
+
+					else if(flag=='lubm'){
+				    	  ds.getElementsByTagName('option')[1].selected = true;
+				    	  k.getElementsByTagName('option')[3].selected = true;
+				    	  l.getElementsByTagName('option')[0].selected = true;
+				    	  max.value = '5000';
+				    	  cap.getElementsByTagName('option')[2].selected = 'selected';
+				  	  err.getElementsByTagName('option')[0].selected = 'selected';
+					  numg.getElementsByTagName('option')[3].selected = 'selected';
+
+					}
+				    l.disabled=true;
+			            k.disabled=true;
+				    cap.disabled=true;
+				    err.disabled=true;
+				    max.disabled=true;
+				    numg.disabled=true;
 
 				}
 				else{
 
+					ds.selectedIndex = -1;
 					k.selectedIndex = -1;
 					l.selectedIndex = -1;
 					cap.selectedIndex = -1;
 					err.selectedIndex = -1;
 					max.value = '';
-					numg.value = ''
+					numg.selectedIndex = -1;
 					l.disabled=false;
 					k.disabled=false;
 					cap.disabled=false;
@@ -46,7 +61,7 @@
 
 			}
 			$(document).ready(function() {
-				setBTCConfig(true);
+				setConfig('none');
 				$('form').bind('submit', function() {
 					$(this).find(':input').removeAttr('disabled');
 				});
@@ -56,10 +71,14 @@
 
 	function getSettings(e)
 	{
+			
 			if(e.value=='BTC')
-				setBTCConfig(true);
+				setConfig('btc');
+			else if(e.value=='LUBM')
+				setConfig('lubm');
 			else
-				setBTCConfig(false);
+				setConfig('none');
+
 
 
 	}
@@ -101,6 +120,7 @@
 			$(document).ready(function() {
 					var jSData = JSON.parse('{{ PVStatus|safe }}');
 					showtables(jSData);
+					setConfig(jSData['Index']);
 					var dountVals = getTimeData(jSData)
 					showdonut(dountVals[0],dountVals[1]);
 

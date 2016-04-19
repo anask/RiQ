@@ -33,6 +33,13 @@ def land(request):
 # 			print form.cleaned_data['bloomerror']
 # 			print form.cleaned_data['graphindex']
 			currentDate = datetime.now()
+			
+			mg = request.POST['maximumgraphs']
+			if  isinstance(mg, int) and mg > 0:
+				form.cleaned_data['maximumgraphs']=mg
+			else:
+				print('MaximumGraphs Error')
+				form.cleaned_data['maximumgraphs']=25000
 
 			indexName = form.cleaned_data['dataset'] + 'K' + form.cleaned_data['lhskparameter'] + 'L' + form.cleaned_data['lhslparameter'] + currentDate.strftime("%Y-%m-%d %H%M%S")
 
@@ -49,8 +56,8 @@ def land(request):
 				ERR    = '0.05'
 
 
-			else:
-				DS     = 'd10-small-sample'
+			elif DsName == 'LUBM':
+				DS     = 'UbaData-1.38B'
 				LSH_K  = form.cleaned_data['lhskparameter']
 				LSH_L  = form.cleaned_data['lhslparameter']
 				MAX_CC = form.cleaned_data['maximumgraphs']
@@ -58,8 +65,8 @@ def land(request):
 				CAP    = form.cleaned_data['bloomcapacity']
 				ERR    = form.cleaned_data['bloomerror']
 
-
-
+			# disable user indexing
+			"""
 			RIQ_CONF =  os.path.join(os.path.abspath(os.pardir),'RIS/indexing/RIS.RUN/riq.conf')
 			print ('Setting Configuration: '+RIQ_CONF)
 			config = ConfigParser.RawConfigParser()
@@ -100,12 +107,17 @@ def land(request):
 
 			# remove riqtemp.conf
 			remove('riqtemp.conf')
+			"""
 			if DsName == 'BTC':
-				pvstatus ='{"PV Index Size":"6.5GB" ,"Avg graph size":"141 quads","Written graphs":"9,596,021","Max graph size":"2,942,127 quads","Total size":" 1,356,032,456 quads","group":{"union_t":22701,"total_t":28506.7,"build_graph_t":12.5072,"pv_lsh_t":2590.33},"split":{"split_t":2045.89},"pv_t":"16700","cbf":{"cbf_t":2475.6}}'
+				pvstatus ='{"Index":"btc","PV Index Size":"6.5GB" ,"Avg graph size":"141 quads","Written graphs":"9,596,021","Max graph size":"2,942,127 quads","Total size":" 1,356,032,456 quads","group":{"union_t":22701,"total_t":27348,"build_graph_t":12.5072,"pv_lsh_t":2590.33},"split":{"split_t":2045.89},"pv_t":"16700","cbf":{"cbf_t":2475.6}}'
+			elif DsName == 'LUBM':
+				pvstatus ='{"Index":"lubm","PV Index Size":"12GB" ,"Avg graph size":"6909 quads","Written graphs":"200,005","Max graph size":"9316 quads","Total size":" 1,382,088,709 quads","group":{"union_t":22701,"total_t":22711,"build_graph_t":12.5072,"pv_lsh_t":2590.33},"split":{"split_t":2045.89},"pv_t":"15249","cbf":{"cbf_t":3402}}'
+	
 
 			else:
-				pvstatus = constructPVs(DATASET_PREFIX_DIR,FILE)
+			#	pvstatus = constructPVs(DATASET_PREFIX_DIR,FILE)
 
+				pvstatus ='{"Index":"none","PV Index Size":"0 GB" ,"Avg graph size":"0 quads","Written graphs":"0","Max graph size":"0 quads","Total size":" 0 quads","group":{"union_t":100,"total_t":100,"build_graph_t":100,"pv_lsh_t":100},"split":{"split_t":100},"pv_t":"100","cbf":{"cbf_t":100}}'
 			return render_to_response('index.html', {'form': form, 'TITLE' : 'Index Construction','IndexName' : indexName, 'PVStatus':pvstatus}, context_instance=RequestContext(request))
 		else:
 			print 'form is invalid'
