@@ -18,7 +18,7 @@ class LinkedForm(forms.Form):
 	QBTC1 = 'F1'
 	QBTC2 = 'F2'
 	QBTC3 = 'F3'
-	QBTC10 = 'BTC10'
+	QBTC8 = 'BTC8'
 	DBPDSB1 = 'DBPD1'
 	DBPDSB2 = 'DBPD2'
 	CUS = 'CUSTOM'

@@ -74,7 +74,7 @@ def land(request):
 		s = open('status/execute', 'w')
 		s.write('Started..\n')
 		s.close()
-		if QueryId in ['BTC10','BTC11','LUBM3'] :
+		if QueryId in ['BTC8','BTC11','LUBM1','LUBM2','LUBM3'] :
 			tools=[True,False,False]
 		else:
 			tools=[True,True,True]
@@ -167,96 +167,109 @@ def getTimings(request):
 			print 'Time is Ready'
                         t = slast_line.rstrip('\n').split(':')[1].split(',')
                         tr= t[0].split('/')
-               		times['riqf'] = tr[1]
-                	times['riq'] =  tr[0]
+               		times['riqf'] = format(float(tr[1]), '.2f')
+                	times['riq'] =  format(float(tr[0]), '.2f')
 	
 			if qId == 'CUSTOM':
 				times['type'] = c
 				times['virt'] = t[2]
 				times['jena'] = t[1]
+				times['rf'] = '0'
 
 
-			elif qId == 'BTC10':
+			elif qId == 'BTC8':
 				if c=='cold':
 					times['type'] = 'cold'
-					if o=='opt':
+					#iif o=='opt':
 						#times['riqf'] = '6.42'
 						#times['riq'] = '16.29'
-						times['virt'] = '39.18'
-						times['jena'] = '3564.4'
-					elif o=='nopt':
+					#elif o=='nopt':
 						#times['riqf'] = '11.83'
 						#times['riq'] = '495.81'
-						times['virt'] = '39.18'
-						times['jena'] = '3564.4'
+
+					times['virt'] = '39.18'
+					times['jena'] = '3564.4'
+					times['rf'] = '0'
 
 				elif c=='warm':
 					times['type'] = 'warm'
-					if o=='opt':
+					#if o=='opt':
 						#times['riq'] = '6.79'
 						#times['riqf'] = '0.66'
-						times['virt'] = '0.16'
-						times['jena'] = '369.81'
-					elif o=='nopt':
+
+					#elif o=='nopt':
 						#times['riq'] = '355.07'
-						#times['riqf'] = '0.95'
-						times['virt'] = '0.16'
-						times['jena'] = '369.81'
+						#times['riqf'] = '0.95'					
+
+					times['virt'] = '0.16'
+					times['jena'] = '369.81'
+					times['rf'] = '0'
+
 			elif qId == 'BTC11':
 				if c=='cold':
 					times['type'] = 'cold'
-					if o=='opt':
+					#if o=='opt':
 						#times['riq'] = '158.18'
 						#times['riqf'] = '5.7'
-						times['virt'] = '237.58'
-						times['jena'] = '2050.62'
-					elif o=='nopt':
+
+					#elif o=='nopt':
 						#times['riq'] = '163.05'
 						#times['riqf'] = '5.45'
-						times['virt'] = '237.58'
-						times['jena'] = '2050.62'
+
+					times['virt'] = '237.58'
+					times['jena'] = '2050.62'
+					times['rf'] = '0'
+
 				elif c=='warm':
 					times['type'] = 'warm'
-					if o=='opt':
+					#if o=='opt':
 						#times['riq'] = '76.68'
 						#times['riqf'] = '0.61'
-						times['virt'] = '120.28'
-						times['jena'] = '2102.06'
-					elif o=='nopt':
+					#elif o=='nopt':
 						#times['riq'] = '90.09'
 						#times['riqf'] = '0.43'
-						times['virt'] = '120.28'
-						times['jena'] = '2102.06'
+					times['virt'] = '120.28'
+					times['jena'] = '2102.06'
+					times['rf'] = '0'
+			elif qId == 'LUBM1':
+				if c=='cold':
+					times['type'] = 'cold'
+					times['virt'] = '136.62'
+					times['jena'] = '233.59'
+					times['rf'] = '14400'
+				elif c=='warm':
+					times['type'] = 'warm'
+					times['virt'] = '77.99'
+					times['jena'] = '2.76'
+					times['rf'] = '14400'
+			elif qId == 'LUBM2':
+				if c=='cold':
+					times['type'] = 'cold'
+					times['virt'] = '55.87'
+					times['jena'] = '520.91'
+					times['rf'] = '14400'
+				elif c=='warm':
+					times['type'] = 'warm'
+					times['virt'] = '0.30'
+					times['jena'] = '5.05'
+					times['rf'] = '14400'
 
 			elif qId == 'LUBM3':
 				if c=='cold':
 					times['type'] = 'cold'
-					if o=='opt':
-						#times['riq'] = '158.18'
-						#times['riqf'] = '5.7'
-						times['virt'] = '119.62'
-						times['jena'] = '523.78'
-					elif o=='nopt':
-						#times['riq'] = '163.05'
-						#times['riqf'] = '5.45'
-						times['virt'] = '119.62'
-						times['jena'] = '523.78'
+					times['virt'] = '119.62'
+					times['jena'] = '523.78'
+					times['rf'] = '14400'
 				elif c=='warm':
 					times['type'] = 'warm'
-					if o=='opt':
-						#times['riq'] = '76.68'
-						#times['riqf'] = '0.61'
-						times['virt'] = '36.58'
-						times['jena'] = '244.82'
-					elif o=='nopt':
-						#times['riq'] = '90.09'
-						#times['riqf'] = '0.43'
-						times['virt'] = '36.58'
-						times['jena'] = '244.82'
+					times['virt'] = '36.58'
+					times['jena'] = '244.82'
+					times['rf'] = '14400'
+
 
                 elif last_line == 'Error':
                         times['riqf'] = '10'
-                        times['riq'] =  '5'
+                        times['riq'] =  '10'
                         times['virt'] = '10'
                         times['jena'] = '10'
         else:
@@ -396,7 +409,7 @@ WHERE {
 }
 """
 
-	elif(queryname == 'btc10'):
+	elif(queryname == 'btc8'):
 		query ="""PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
@@ -416,11 +429,76 @@ WHERE {
 		{
 			?var5 <http://dbpedia.org/property/redirect> ?var6 .
 			?var5 rdfs:label "Brunei"@en .
+			OPTIONAL { ?var6 foaf:depiction ?var8 .}
 			OPTIONAL { ?var6 foaf:homepage ?var10 }
 			OPTIONAL { ?var6 <http://dbpedia.org/ontology/populationTotal> ?var12 }
 			OPTIONAL { ?var6 <http://dbpedia.org/ontology/thumbnail> ?var14 }
 		}
 	}
+}
+"""
+
+	elif(queryname =='lubm1'):
+		query = """PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>   
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#> 
+
+SELECT *  WHERE
+{
+	graph ?g{
+    ?professor1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>  <file:///home/vsfgd/datasets/lubm/univ-bench.owl#FullProfessor> .
+    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> <http://www.University584.edu> .
+    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#mastersDegreeFrom> <http://www.University584.edu> .
+    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#doctoralDegreeFrom> <http://www.University429.edu> .
+    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#worksFor> ?univ2 .
+    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#name> ?name1 .
+    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#emailAddress> ?Email1 .
+    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#telephone> ?phone1 .
+    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#researchInterest> ?ResearchInt1 .
+    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#teacherOf> ?course1 .
+    ?publication1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?professor1 .
+
+    ?professor2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>  <file:///home/vsfgd/datasets/lubm/univ-bench.owl#AssociateProfessor> .
+    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> <http://www.University584.edu> .
+    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#mastersDegreeFrom> <http://www.University584.edu> .
+    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#doctoralDegreeFrom> <http://www.University9999.edu> .
+    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#worksFor> ?univ2 .
+    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#name> ?name2 .
+    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#emailAddress> ?Email2 .
+    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#telephone> ?phone2 .
+    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#researchInterest> ?ResearchInt2 .
+    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#teacherOf> ?course2 .
+    ?publication2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?professor2 .
+}}
+"""
+	elif(queryname =='lubm2'):
+		query = """PREFIX ub: <file:///home/vsfgd/datasets/lubm/univ-bench.owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT *
+WHERE
+{
+	graph ?g{
+   ?student1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#advisor> ?professor .
+   ?student1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#name> ?student1name .
+   ?student1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#UndergraduateStudent> .
+
+   ?student2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#advisor> ?professor .
+   ?student2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#name> ?student2name .
+   ?student2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#GraduateStudent> .
+
+   ?professor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#FullProfessor> .
+   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#name> "FullProfessor7" .
+   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#teacherOf> ?course.
+   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> ?undergradUnv  .
+   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#mastersDegreeFrom> ?msUnv .
+   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#doctoralDegreeFrom> ?phdUnv .
+   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#worksFor> <http://www.Department17.University1001.edu> .
+   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#emailAddress> ?email .
+   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#telephone> ?phone .
+   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#researchInterest> ?research .
+
+   ?publication <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?professor .
+   ?publication <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?student2 .
+}
 }
 """
 	elif(queryname == 'lubm3'):

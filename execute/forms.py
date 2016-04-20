@@ -37,7 +37,7 @@ class ExecuteForm(forms.Form):
 
 	QBTC11 = 'BTC11'
 	QBTC2 = 'BTC2'
-	QBTC10 = 'BTC10'
+	QBTC8 = 'BTC8'
 	DBPDSB1 = 'DBPD1'
 	DBPDSB2 = 'DBPD2'
 	QLUBM1 = 'LUBM1'
@@ -46,7 +46,7 @@ class ExecuteForm(forms.Form):
 	CUS = 'CUSTOM'
 
 	MY_CHOICESQUERY=(
-		( QBTC10,'B10'),
+		( QBTC8,'B8'),
 		( QBTC11,'B11'),
 		( QLUBM1,'L1'),
 		( QLUBM2,'L2'),

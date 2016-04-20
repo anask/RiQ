@@ -6,7 +6,44 @@ function plotTimings(data){
 	var virt_t = data['virt'];
 	var jena_t = data['jena'];
 	var rf_t = data['rf'];
+	
+	riqT  = {
+            name: 'RIQ',
+            data: [Number(riq_t)],
+            color: '#0101DF',
+            stack:0
+        };
+	riqfT =  {
+            name: 'RIQ (filtering)',
+            data: [Number(riq_tf)],
+	    color: '#01A9DB',
+            stack:0
+        };
+	virtT =  {
+            name: 'Virtuoso',
+            data: [Number(virt_t)],
+            color:'red',
+			stack:2
 
+        };
+	jenaT = {
+            name: 'JenaTDB',
+            data: [Number(jena_t)],
+			color: 'green',
+            stack:1
+        };
+
+	rfT ={
+            name: 'RF',
+            data: [Number(rf_t)],
+            color:'#EB9100',
+	    stack:3
+
+        };
+	if (Number(rf_t) != 0)
+		serData = [riqT,riqfT,virtT,jenaT,rfT];
+	else
+		serData = [riqT,riqfT,virtT,jenaT];
     $('#time').highcharts({
         chart: {
 			type: 'column',
@@ -76,7 +113,8 @@ function plotTimings(data){
 					enabled: true,
 					allowOverlap: true,
 					style: {
-						fontWeight:'normal',
+						fontWeight:'bold',
+						color: "#DDDDDD",
 						textShadow:'none',
 			    		},
 
@@ -98,35 +136,7 @@ function plotTimings(data){
         credits: {
             enabled: false
         },
-        series: [{
-            name: 'RIQ',
-            data: [Number(riq_t)],
-            color: '#0101DF',
-            stack:0
-        }, {
-            name: 'RIQ (filtering)',
-            data: [Number(riq_tf)],
-			color: '#01A9DB',
-            stack:0
-        }, {
-            name: 'Virtuoso',
-            data: [Number(virt_t)],
-            color:'red',
-			stack:2
-
-        },{
-            name: 'JenaTDB',
-            data: [Number(jena_t)],
-			color: 'green',
-            stack:1
-        }, {
-            name: 'RF',
-            data: [Number(rf_t)],
-            color:'#EB9100',
-			stack:3
-
-        }
-	]
+        series: serData
     });
 
 
@@ -220,7 +230,9 @@ function getQueryResults(args)
 	success: function(data){
 
                         var rframe = document.getElementById('results');
-                        rframe.innerHTML= data.replace(/</gim,'&lt;').replace(/>/gim,'&gt;');
+			//xml = data.replace(/</gim,'&lt;').replace(/>/gim,'&gt;');
+			var xmlDoc = parseXML(data);
+                        rframe.innerHTML= ConvertToTable(xmlDoc);
 		}});
 
 

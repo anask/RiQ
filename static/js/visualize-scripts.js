@@ -66,7 +66,8 @@ function getCandidateTree(s) {
                       console.log(textStatus);
         	      },
              		 success: function(data) {
-                      renderD3JsonGraph('#parseCandTree',JSON.parse(data));
+				//alert(data);
+                      		renderD3JsonGraph('#parseCandTree',JSON.parse(data));
  		             }
 		      });}
 		});

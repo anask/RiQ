@@ -126,14 +126,14 @@ def getQuery(request):
 	if info['name']=='CUSTOM':
 		with open('queries/temp.q') as f:
 			query['query']=f.read()
-	elif info['name']=='BTC10':
+	elif info['name']=='BTC8':
 			query['query']="""PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
 SELECT *
 WHERE {
-	GRAPH ?g {
+	graph ?g {
 		?var6 a <http://dbpedia.org/ontology/PopulatedPlace> .
 		?var6 <http://dbpedia.org/ontology/abstract> ?var1 .
 		?var6 rdfs:label ?var2 .
@@ -146,6 +146,7 @@ WHERE {
 		{
 			?var5 <http://dbpedia.org/property/redirect> ?var6 .
 			?var5 rdfs:label "Brunei"@en .
+			OPTIONAL { ?var6 foaf:depiction ?var8 }
 			OPTIONAL { ?var6 foaf:homepage ?var10 }
 			OPTIONAL { ?var6 <http://dbpedia.org/ontology/populationTotal> ?var12 }
 			OPTIONAL { ?var6 <http://dbpedia.org/ontology/thumbnail> ?var14 }
@@ -165,7 +166,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT *
 WHERE {
-	GRAPH ?g {
+	graph ?g {
 		?var5 dbpedia-owl:thumbnail ?var4 .
 		?var5 rdf:type dbpedia-owl:Person .
 		?var5 rdfs:label ?var .
@@ -180,8 +181,9 @@ WHERE {
 		query['query']="""PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>   
 PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#> 
 
-SELECT ?professor1 ?univ1 ?univ5 ?univ2 ?name1 ?Email1 ?phone1 ?ResearchInt1 ?course1 ?publication1 ?professor2 ?univ4 ?name2 ?Email2 ?phone2 ?ResearchInt2 WHERE
+SELECT * WHERE
 {
+	graph ?g {
     ?professor1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>  <file:///home/vsfgd/datasets/lubm/univ-bench.owl#FullProfessor> .
     ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> <http://www.University584.edu> .
     ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#mastersDegreeFrom> <http://www.University584.edu> .
@@ -205,13 +207,14 @@ SELECT ?professor1 ?univ1 ?univ5 ?univ2 ?name1 ?Email1 ?phone1 ?ResearchInt1 ?co
     ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#researchInterest> ?ResearchInt2 .
     ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#teacherOf> ?course2 .
     ?publication2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?professor2 .
+	}
 }
 """ 
 	elif info['name']=='LUBM2':
 
 		query['query']="""REFIX ub: <file:///home/vsfgd/datasets/lubm/univ-bench.owl#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-SELECT ?professor ?course ?email ?phone ?research ?udergradUnv ?msUnv ?phdUnv ?student1name ?student2name ?student1 ?student2 ?publication
+SELECT *
 WHERE
 {
         graph ?g{
@@ -316,9 +319,15 @@ def getCandQuery(request):
 	for name in glob.glob(optQuery):
 			print name
 			optQuery = name
-
-	with open(optQuery) as f:
-		query['query']= f.read()
+	try:
+		with open(optQuery) as f:
+			query['query']= f.read()
+			f.close()
+	except IOError:
+		print ("VIS: No candidate query found! returning orignal query.")
+		with open('queries/temp.q') as qfile:
+               		query['query'] = qfile.read()
+			qfile.close()
 
 	return HttpResponse(json.dumps(query), content_type="application/json")
 
@@ -370,8 +379,8 @@ def getQueryTree(request):
 		response = HttpResponse(content_type="image/jpeg")
 		img.save(response, "JPEG")
 		return response
-
-def getOptimizedQueryTree(request):
+# removed
+def getOptimizedQueryTreeRM(request):
 	DIR  = os.path.join(os.path.abspath(os.pardir))
 	imgFlag = 	request.GET['new']
 	candidate = request.GET['cand']
@@ -507,6 +516,7 @@ def toTree(expression):
     return tree
 
 def printTree(tree, node, nodeMap, childIndex, parentNode):
+	#print ('Generating Tree..')
 	jsonstr = '{"name": "%s"' % (nodeMap[node])
 	#print '{"name": "%s"' % (nodeMap[node])
 	#print str(childIndex) + ' childIndex, node: ' + (nodeMap[node])
@@ -535,9 +545,9 @@ def printTree(tree, node, nodeMap, childIndex, parentNode):
 	#print parentNode
 	if parentNode is not None:
 		parentNodeName = nodeMap[parentNode]
-		#print 'parentNodeName: ' + parentNodeName
-		#print 'length of parent node: ' + str(len(tree[parentNode]))
-		#print 'index of node in parent list: ' + str(tree[parentNode].index(node))
+		#print ('parentNodeName: ' + parentNodeName)
+		#print ('length of parent node: ' + str(len(tree[parentNode])))
+		#print ('index of node in parent list: ' + str(tree[parentNode].index(node)))
 		if len(tree[parentNode])-1 > tree[parentNode].index(node):
 			#print '},'
 			jsonstr += '},'
