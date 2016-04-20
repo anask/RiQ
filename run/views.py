@@ -255,18 +255,21 @@ def getQueryResults(filename,tool,cache):
                                         line=f.readline()
                                         while 'WARN' in line:
                                                line=f.readline()
-                                        
-					i=1
+                                        #number of resuts
+					i=0
                                         lines = line
-                                        while line and i < 5000 :
+                                        while line and i < 200 :
                                                 line = f.readline()
                                                 lines = lines + line
-                                        	if filename=='temp.q':
+                                        	if filename=='temp.q' and '/result' in line:
                                                 	i = i + 1
-                                        if i>4998:
-                                                lines = lines + ' Showing first 5000 lines'
+                                        if i > 199:
+	
+                                                lines = lines + ' </results></sparql>'
+                                                #lines = lines + ' <result><binding name="EOF"><literal xml:lang="en">Showing first 200 results </literal></binding></result></results></sparql>'
 		f.close()
 
+		print lines
 		return lines
 	except Exception as E:
 		print 'Results Error:'
