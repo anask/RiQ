@@ -36,6 +36,7 @@ def land(request):
 			queryInfo['name']=QueryId
 			#updateDatasetName(IndexName)
 			selectConfigFile(IndexName)
+			queryInfo['namedgraphs'] = getStoredNumberNamedGraphs(QueryId)
 
 		except Exception,e: 
 			print str(e)
@@ -66,7 +67,6 @@ def land(request):
 			optimizeType = ''
 			queryInfo['opt']='Disabled'
 
-
 		qi = open('queries/temp.info', 'w')
 		qi.write(json.dumps(queryInfo).encode('utf-8'));
 		qi.close()
@@ -93,6 +93,32 @@ def land(request):
 		#start_new_thread(runQuery,(query.encode(sys.stdout.encoding),args,'temp.q','riq')
 
 		return HttpResponse('Query Received!', status=200,content_type='plain/text')
+def getStoredNumberNamedGraphs(qId):
+    return {
+        'BTC1':'1' ,
+        'BTC2':'2' ,
+        'BTC3':'0' ,
+        'BTC4':'2,020' ,
+        'BTC5':'3,691' ,
+        'BTC6':'3,691' ,
+        'BTC7':'6,413' ,
+        'BTC8':'1' ,
+        'BTC9':'25,016',
+        'BTC10':'25,016',
+        'BTC11':'123,171',
+        'LUBM1':'0' ,
+        'LUBM2': '1',
+        'LUBM3':'6' ,
+        'LUBM4': '0',
+        'LUBM5': '21',
+        'LUBM6': '21',
+        'LUBM7': '175,559',
+        'LUBM8': '179,847',
+        'LUBM9': '200,004',
+        'LUBM10':'200,004',
+        'LUBM11':'200,004',
+        'CUSTOM':'N/A',
+    }[qId]
 
 def selectConfigFile(indexName):	
 	if indexName == 'BTC':

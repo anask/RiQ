@@ -171,6 +171,7 @@ function getQueryInfo() {
 			document.getElementById('qIndex').innerHTML = data['index'];
 			document.getElementById('qCache').innerHTML = data['cache'];
 			document.getElementById('qOpt').innerHTML = data['opt'];
+			document.getElementById('qNNG').innerHTML = data['namedgraphs'];
 		}
 	});
 }

@@ -58,8 +58,14 @@ def getQueryInfo(request):
 			print name
 			candidatefile = name
 
+		
+	try:
+		candidatelog = open(candidatefile)
+      	except:
+                print ("VIS: No candidates!.")
 
-	candidatelog = open(candidatefile)
+		return HttpResponse(json.dumps(json_data), content_type="application/json")
+
 	print 'Candidates file opened!'
 	#demodir =  os.path.join(os.path.abspath(os.pardir),'anask/RiQ/')
 	demodir =  os.path.join(os.path.abspath(os.pardir),'RiQ/')
