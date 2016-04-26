@@ -75,7 +75,7 @@ function plotTimings(data){
 						fontWeight:'normal',
 						textShadow:'none',
 					},
-                			color: '#FFFFFF',
+                			color: '#DDDDDD',
                 			align: 'center',
 					verticalAlign:'top',
                 			format: '{point.y:.1f}', // one decimal
@@ -170,7 +170,7 @@ function getQueryTimimgs(qId)
 	},
 	success: function(data) {
 		plotTimings(data);
-		if(qId != 'CUSTOM' && qId != 'F3')
+		if(qId != 'CUSTOM')
                         document.getElementById('note').innerHTML="Note: displaying previously run <br />timings for JenaTDB and Virtuoso.";
 		else
                         document.getElementById('note').innerHTML="Note: Time spent by selected tool(s) <br />at the endpoint";
@@ -196,8 +196,11 @@ function getQueryResults(qId)
  	},
  	success: function(data) {
 
- 		 rframe = $('#results');
- 		rframe.html(data);
+                        var rframe = document.getElementById('results');
+                        var xmlDoc = parseXML(data);
+                        rframe.innerHTML= ConvertToTable(xmlDoc);
+                        xmlDoc = null;
+
  		}});
 
 
@@ -235,6 +238,10 @@ function runRIQ(e)
 		qId = e.options[e.selectedIndex].value;
 	
 	document.getElementById("query-text").value= $('#query').html().replace(/<br\s*[\/]?>|&nbsp;/gi,' ').replace(/&lt;/gi,' <').replace(/&gt;/gi,'> ');
+
+        var format = document.getElementById("outputformat");
+        format.options[3].selected = true;
+        //alert(format);
 
 	var form = document.getElementById("frmRIQ");
 	var formURL = form.action;

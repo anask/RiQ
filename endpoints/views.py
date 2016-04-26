@@ -38,8 +38,6 @@ def land(request):
                                 print 'Issuing Multi-tool Query..'
                                 result = runMultiToolQuery("tempLinked.q",query,'-c cold -O',tools)
                                 print 'Multi-tool Query Finished!'
-				print 'Results: '
-				print result
         except Exception, err:
                         print sys.exc_info()[0]
 

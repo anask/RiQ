@@ -7,6 +7,8 @@ import subprocess
 from subprocess import call
 from PIL import Image
 import glob
+from execute.views import getQueryByName
+
 
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 head, tail = os.path.split(SITE_ROOT)
@@ -126,153 +128,19 @@ def getQuery(request):
 	if info['name']=='CUSTOM':
 		with open('queries/temp.q') as f:
 			query['query']=f.read()
-	elif info['name']=='BTC8':
-			query['query']="""PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+			f.close()
 
-SELECT *
-WHERE {
-	graph ?g {
-		?var6 a <http://dbpedia.org/ontology/PopulatedPlace> .
-		?var6 <http://dbpedia.org/ontology/abstract> ?var1 .
-		?var6 rdfs:label ?var2 .
-		?var6 geo:lat ?var3 .
-		?var6 geo:long ?var4 .
-		{
-			?var6 rdfs:label "Brunei"@en .
-		}
-		UNION
-		{
-			?var5 <http://dbpedia.org/property/redirect> ?var6 .
-			?var5 rdfs:label "Brunei"@en .
-			OPTIONAL { ?var6 foaf:depiction ?var8 }
-			OPTIONAL { ?var6 foaf:homepage ?var10 }
-			OPTIONAL { ?var6 <http://dbpedia.org/ontology/populationTotal> ?var12 }
-			OPTIONAL { ?var6 <http://dbpedia.org/ontology/thumbnail> ?var14 }
-		}
-	}
-}
-"""
-	elif info['name']=='BTC11':
-		query['query']="""PREFIX dc: <http://purl.org/dc/elements/1.1/>
-PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX space: <http://purl.org/net/schemas/space/>
-PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>
-PREFIX dbpedia-prop: <http://dbpedia.org/property/>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        else:
+		dataset=''
+                if 'BTC' in info['name']:
+                        dataset = 'BTC'
+                elif 'LUBM' in info['name']:
+                        dataset = 'LUBM'
 
-SELECT *
-WHERE {
-	graph ?g {
-		?var5 dbpedia-owl:thumbnail ?var4 .
-		?var5 rdf:type dbpedia-owl:Person .
-		?var5 rdfs:label ?var .
-		?var5 foaf:page ?var8 .
-		OPTIONAL { ?var5 foaf:homepage ?var10 . }
-	}
-}
-"""
+                queryname = dataset[0].upper() + info['name'][len(dataset):]
+        	query['query'] = getQueryByName(queryname)
 
-	elif info['name']=='LUBM1':
 
-		query['query']="""PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>   
-PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#> 
-
-SELECT * WHERE
-{
-	graph ?g {
-    ?professor1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>  <file:///home/vsfgd/datasets/lubm/univ-bench.owl#FullProfessor> .
-    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> <http://www.University584.edu> .
-    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#mastersDegreeFrom> <http://www.University584.edu> .
-    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#doctoralDegreeFrom> <http://www.University429.edu> .
-    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#worksFor> ?univ2 .
-    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#name> ?name1 .
-    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#emailAddress> ?Email1 .
-    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#telephone> ?phone1 .
-    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#researchInterest> ?ResearchInt1 .
-    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#teacherOf> ?course1 .
-    ?publication1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?professor1 .
-
-    ?professor2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>  <file:///home/vsfgd/datasets/lubm/univ-bench.owl#AssociateProfessor> .
-    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> <http://www.University584.edu> .
-    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#mastersDegreeFrom> <http://www.University584.edu> .
-    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#doctoralDegreeFrom> <http://www.University9999.edu> .
-    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#worksFor> ?univ2 .
-    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#name> ?name2 .
-    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#emailAddress> ?Email2 .
-    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#telephone> ?phone2 .
-    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#researchInterest> ?ResearchInt2 .
-    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#teacherOf> ?course2 .
-    ?publication2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?professor2 .
-	}
-}
-""" 
-	elif info['name']=='LUBM2':
-
-		query['query']="""REFIX ub: <file:///home/vsfgd/datasets/lubm/univ-bench.owl#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-SELECT *
-WHERE
-{
-        graph ?g{
-   ?student1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#advisor> ?professor .
-   ?student1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#name> ?student1name .
-   ?student1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#UndergraduateStudent> .
-
-   ?student2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#advisor> ?professor .
-   ?student2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#name> ?student2name .
-   ?student2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#GraduateStudent> .
-
-   ?professor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#FullProfessor> .
-   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#name> "FullProfessor7" .
-   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#teacherOf> ?course.
-   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> ?undergradUnv  .
-   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#mastersDegreeFrom> ?msUnv .
-   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#doctoralDegreeFrom> ?phdUnv .
-   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#worksFor> <http://www.Department17.University1001.edu> .
-   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#emailAddress> ?email .
-   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#telephone> ?phone .
-   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#researchInterest> ?research .
-
-   ?publication <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?professor .
-   ?publication <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?student2 .
-}
-}"""
-
-	elif info['name']=='LUBM3':
-		query['query']="""PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
-PREFIX ub: <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>  
-SELECT *
-WHERE {
-graph ?g {
-        ?student1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> ?undergradUni .    
-        ?student1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#memberOf> ?dept .   
-        ?student2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> ?undergradUni .    
-        ?student1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#advisor> ?professor .
-        ?publication <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?student1 .   
-        ?publication <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?student2 . 
-        ?publication <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?professor. 
-        ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#name>                    "AssociateProfessor5" .
-        ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#telephone>               ?tpnu . 
-        ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#emailAddress>            ?emAddr . 
-        ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> ?bsdg . 
-        ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#teacherOf>               ?course . 
-        ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#worksFor>                ?dept . 
-        ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#researchInterest>        ?researchInt .
-        ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#mastersDegreeFrom>       ?msdg .
-        ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#doctoralDegreeFrom>      ?phddg .
-        ?student1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#GraduateStudent> .   
-        ?dept <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#Department> .   
-        ?dept <file:///home/vsfgd/datasets/lubm/univ-bench.owl#subOrganizationOf> <http://www.University10.edu> .    
-        ?student2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#GraduateStudent> . 
-        ?undergradUni <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#University> .    
-        ?publication <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#Publication> .   
-        ?student2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#memberOf> ?dept .   
-	} 
-}"""
 
 	return HttpResponse(json.dumps(query), content_type="application/json")
 

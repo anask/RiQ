@@ -76,12 +76,15 @@ def runMultiToolQuery(filename,query,args,tools):
 			end = time.time()
 			sFile.write('RIQ Finished.\n')
 			if (results1.startswith("error")):
-				sFile.write('Error RIQ\n')
-				sFile.close()
-				return 'error'
+				times[0] ='0/'+str(end-start)
+				#isFile.write('RIQ: '+results1+' ['+str(times[0])+']\n')
+				if 'NoMatch' not in results1:#found a real error
+					print 'Querying RIQ: found an error!'
+					sFile.close()
+					return 'error'
 			if(status=='linked'):
 				times[0] = getRiqTime(filename,args)[0]
-			else:
+			elif times[0] == '-1':
 				rtime = getRiqTime(filename,args)
 				times[0] = str(rtime[0])+'/'+str(rtime[1])
 
@@ -176,13 +179,22 @@ def runQuery(query,args,filename,tool):
  		p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
  		p_stdout = p.stdout.read()
  		p_stderr = p.stderr.read()
- 		print(p_stdout)
+		
+ 		#iprint(p_stdout)
  		if len(p_stderr)>0:
  			print(p_stderr)
 		output = p_stdout.split('\n')
+		e=0
+		print('runQuery output:')
 		for s in output:
+			print s
 			if s.startswith("error"):
-				return s
+				e = 1
+			if e == 1: #what error?
+				if 'pattern: ^candidate GRAPHID:' in s:
+					return 'error:NoMatch'
+		if e==1:
+			return 'error'
 		print 'RIQ Finished'
 	elif tool == 'jena':
 		#cmd = [ DIR+"/RIS/scripts/run_query_all.sh", "/mnt/data2/datasets/btc-2012-split-clean/btc-2012-split-clean.nq.tdb", "queries/"+filename,"tdb"]
@@ -235,6 +247,30 @@ def runQuery(query,args,filename,tool):
 def clearCache():
 	call(["static/scripts/run_clear_cache.sh"])
 
+def getXMLResults(filename,n):
+ 	with open (filename, "r") as f:
+                                        line=f.readline()
+                                        while 'WARN' in line:
+                                               line=f.readline()
+                                        #number of resuts
+					i=0
+                                        lines = line
+                                        while line and i < n :
+                                                line = f.readline()
+                                                lines = lines + line
+                                        	if '/result' in line:
+							#if filename=='temp.q'
+                                                	i = i + 1
+                                        if i > n - 1:
+	
+                                                lines = lines + ' </results></sparql>'
+                                                #lines = lines + ' <result><binding name="EOF"><literal xml:lang="en">Showing first 200 results </literal></binding></result></results></sparql>'
+	f.close()
+
+		#print lines
+	return lines
+
+
 def getQueryResults(filename,tool,cache):
 	print 'Getting Results..'
 	DIR  = os.path.join(os.path.abspath(os.pardir))
@@ -250,27 +286,9 @@ def getQueryResults(filename,tool,cache):
 		for name in glob.glob(file_dir_extension):
 			print 'Found file: '+name
 			rFile = name
+			return getXMLResults(rFile,200)
 
- 		with open (rFile, "r") as f:
-                                        line=f.readline()
-                                        while 'WARN' in line:
-                                               line=f.readline()
-                                        #number of resuts
-					i=0
-                                        lines = line
-                                        while line and i < 200 :
-                                                line = f.readline()
-                                                lines = lines + line
-                                        	if filename=='temp.q' and '/result' in line:
-                                                	i = i + 1
-                                        if i > 199:
-	
-                                                lines = lines + ' </results></sparql>'
-                                                #lines = lines + ' <result><binding name="EOF"><literal xml:lang="en">Showing first 200 results </literal></binding></result></results></sparql>'
-		f.close()
 
-		print lines
-		return lines
 	except Exception as E:
 		print 'Results Error:'
 		print E
@@ -289,18 +307,19 @@ def createQueryFile(queryStr,filename):
         f.close()
 
 def getVars (query):
-	vrs=[]
-	ast = fyzz.parse(query)
-	if ast.selected == ['*']:
-		varNDXs = [i for i in range(len(query)) if query.startswith('?', i)]
-		for v in varNDXs:
-			var = query[v+1:v+2]
-			if var not in vrs:
-				vrs.append(var)
-	else:
-		for v in ast.selected:
-			vrs.append(v.name)
-	return vrs
+        vrs=[]
+        ast = fyzz.parse(query)
+        if ast.selected == ['*']:
+                varNDXs = [word for word in query.split(" ") if word.startswith('?')]
+                for v in varNDXs:
+                        if v.endswith('}') or v.endswith('{') or v .endswith('.'):
+                                v = v[:-1]
+                        if v not in vrs:
+                                vrs.append(v)
+        else:
+                for v in ast.selected:
+                        vrs.append(v.name)
+        return vrs
 
 def getXML(variables):
 	xmlDoc="""<?xml version="1.0"?><sparql xmlns="http://www.w3.org/2005/sparql-results#"><head>"""

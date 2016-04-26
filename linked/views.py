@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
 import requests
-from run.views import createQueryFile
+from run.views import createQueryFile, getXMLResults
 import subprocess
 
 # def land(request):
@@ -31,8 +31,7 @@ def land(request):
 
 	elif request.method == 'POST':
 
-		print request.POST
-		QueryId = 'CUSTOM'
+		#return HttpResponse('Query Received!', status=200,content_type='plain/text')
 		try:
 			format  = request.POST.__getitem__('format')
 			QueryId = request.POST.__getitem__('queries')
@@ -43,7 +42,7 @@ def land(request):
 				return HttpResponse("Form Not Valid!", status=500,content_type='plain/text')
 		tools=''
 
-		if QueryId != 'F1' and  QueryId != 'F2':
+		if QueryId != 'F1' and  QueryId != 'F2' and QueryId != 'F3':
 	
 			if u'riq' in settings:
                 	        tools = '1'
@@ -90,6 +89,8 @@ def executeQuery(query,outputformat):
              print(p_stderr)
        
         print 'Linked Query Finished'
+	#print 'OUTPUT:'
+	#print p_stdout 	
 	xml =  p_stdout.split('<?xml version="1.0"?>')
         if (len(xml)>1):
                         p_stdout='<?xml version="1.0"?>'+xml[1]
@@ -142,7 +143,10 @@ def getTimings(request):
 			elif qid=='F2':     
 				times['virt'] = '237.58'
 				times['jena'] = '2050.62'
-  
+  			elif qid=='F3':     
+				times['virt'] = '6.04'
+				times['jena'] = '23.21'
+ 
         	elif last_line == 'Error':
                 
 			times['riq']  = '5'
@@ -159,7 +163,10 @@ def getTimings(request):
 def getResults(request):
 
 	rf =  os.path.join(os.path.abspath(os.pardir),'RiQ/output/tempLinked.txt')
-        with open (rf, "r") as f:
+	data = getXMLResults(rf,100)
+	return HttpResponse(content=data,content_type='xml; charset=utf-8')
+"""
+	with open (rf, "r") as f:
                         N=10000
                         line = f.readline()
                         i = 0
@@ -170,7 +177,7 @@ def getResults(request):
 			if i > 998:
 				line = line + 'Showing first 10000 lines.' 
 	return HttpResponse(line, content_type="plain/text")
-
+"""
 
 def getQueryList(request):
 	queryname = request.GET['name'].lower()

@@ -476,6 +476,7 @@ div.sliding-content-t-linked:hover{
 margin-top:-425px;
 height:551px;
     overflow-y:auto;
+    overflow-x:auto;
         transition-delay:1s;
  }
 input[type=checkbox]:not(old),

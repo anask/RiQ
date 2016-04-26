@@ -27,7 +27,7 @@ def land(request):
 
 	elif request.method == 'POST':
 
-		print request.POST
+		#print request.POST
 		try:
 			IndexName 	= request.POST.__getitem__('indexname')
 			QueryId	= request.POST.__getitem__('queries')
@@ -74,7 +74,7 @@ def land(request):
 		s = open('status/execute', 'w')
 		s.write('Started..\n')
 		s.close()
-		if QueryId in ['BTC8','BTC11','LUBM1','LUBM2','LUBM3'] :
+		if QueryId[0] in ['B','L']:
 			tools=[True,False,False]
 		else:
 			tools=[True,True,True]
@@ -142,13 +142,220 @@ def updateDatasetName(IndexName):
 
 			remove('riqtemp.conf')
 
+def getStoredTimings(c,qId,times):
+	if c=='warm':
+		if qId == 'BTC1':
+			times['virt'] = '0.13'
+			times['jena'] = '13.15'
+			times['rf'] = '14400'
+		elif qId == 'BTC2':
+			times['virt'] = '4.43'
+			times['jena'] = '20.51'
+			times['rf'] = '14400'
+		elif qId == 'BTC3':
+			times['virt'] = '1.43'
+			times['jena'] = '13.30'
+			times['rf'] = '276.72'
+		elif qId == 'BTC4':
+			times['virt'] = '950.07'
+			times['jena'] = '148.39'
+			times['rf'] = '990.72'
+		elif qId == 'BTC5':
+			times['virt'] = '10.33'
+			times['jena'] = '21.65'
+			times['rf'] = '14400'
+		elif qId == 'BTC6':
+			times['virt'] = '342.79'
+			times['jena'] = '56.59'
+			times['rf'] = '14400'
+		elif qId == 'BTC7':
+			times['virt'] = '2.69'
+			times['jena'] = '17.09'
+			times['rf'] = '387.50'
+		elif qId == 'BTC8':
+			times['virt'] = '0.16'
+			times['jena'] = '369.81'
+			times['rf'] = '0'
+		elif qId == 'BTC9':
+			times['virt'] = '60.42'
+			times['jena'] = '33.36'
+			times['rf'] = '0'
+		elif qId == 'BTC10':
+			times['virt'] = '88.36'
+			times['jena'] = '38.77'
+			times['rf'] = '0'
+		elif qId == 'BTC11':
+			times['virt'] = '120.28'
+			times['jena'] = '2102.06'
+			times['rf'] = '0'
+
+		elif qId == 'LUBM1':
+			times['virt'] = '77.99'
+			times['jena'] = '2.76'
+			times['rf'] = '14400'
+
+		elif qId == 'LUBM2':
+			times['virt'] = '0.30'
+			times['jena'] = '5.05'
+			times['rf'] = '14400'
+
+		elif qId == 'LUBM3':
+			times['virt'] = '36.58'
+			times['jena'] = '244.82'
+			times['rf'] = '14400'
+
+		elif qId == 'LUBM4':
+			times['virt'] = '0.003'
+			times['jena'] = '1.10'
+			times['rf'] = '14400'
+		elif qId == 'LUBM5':
+			times['virt'] = '0.005'
+			times['jena'] = '1.43'
+			times['rf'] = '486.48'
+
+		elif qId == 'LUBM6':
+			times['virt'] = '0.16'
+			times['jena'] = '3.67'
+			times['rf'] = '600'
+
+		elif qId == 'LUBM7':
+			times['virt'] = '43.04'
+			times['jena'] = '2346.31'
+			times['rf'] = '14400'
+		elif qId == 'LUBM8':
+			times['virt'] = '37.43'
+			times['jena'] = '2353.21'
+			times['rf'] = '14400'
+
+		elif qId == 'LUBM9':
+			times['virt'] = '137.42'
+			times['jena'] = '1445.41'
+			times['rf'] = '1219.84'
+
+
+		elif qId == 'LUBM10':
+			times['virt'] = '303.62'
+			times['jena'] = '14400'
+			times['rf'] = '1315.40'
+
+		elif qId == 'LUBM11':
+			times['virt'] = '929.37'
+			times['jena'] = '1511'
+			times['rf'] = '1485'
+
+
+	elif c=='cold':
+		if qId == 'BTC1':
+			times['virt'] = '5.92'
+			times['jena'] = '15.79'
+			times['rf'] = '14400'
+		elif qId == 'BTC2':
+			times['virt'] = '6.04'
+			times['jena'] = '23.21'
+			times['rf'] = '14400'
+		elif qId == 'BTC3':
+			times['virt'] = '4.50'
+			times['jena'] = '16.58'
+			times['rf'] = '296.99'
+		elif qId == 'BTC4':
+			times['virt'] = '965'
+			times['jena'] = '295.77'
+			times['rf'] = '1010.77'
+		elif qId == 'BTC5':
+			times['virt'] = '86.71'
+			times['jena'] = '668.28'
+			times['rf'] = '14400'
+		elif qId == 'BTC6':
+			times['virt'] = '350.19'
+			times['jena'] = '684.97'
+			times['rf'] = '14400'
+		elif qId == 'BTC7':
+			times['virt'] = '81.94'
+			times['jena'] = '803.94'
+			times['rf'] = '405.29'
+		elif qId == 'BTC8':
+			times['virt'] = '39.18'
+			times['jena'] = '3564.4'
+			times['rf'] = '0'
+		elif qId == 'BTC9':
+			times['virt'] = '142.89'
+			times['jena'] = '648.93'
+			times['rf'] = '0'
+		elif qId == 'BTC10':
+			times['virt'] = '165.52'
+			times['jena'] = '663.31'
+			times['rf'] = '0'
+		elif qId == 'BTC11':
+			times['virt'] = '237.58'
+			times['jena'] = '2050.62'
+			times['rf'] = '0'
+
+		elif qId == 'LUBM1':
+			times['virt'] = '136.62'
+			times['jena'] = '233.59'
+			times['rf'] = '14400'
+
+		elif qId == 'LUBM2':
+			times['virt'] = '55.87'
+			times['jena'] = '520.91'
+			times['rf'] = '14400'
+
+		elif qId == 'LUBM3':
+			times['virt'] = '119.62'
+			times['jena'] = '523.78'
+			times['rf'] = '14400'
+
+		elif qId == 'LUBM4':
+			times['virt'] = '13.96'
+			times['jena'] = '4.83'
+			times['rf'] = '14400'
+
+		elif qId == 'LUBM5':
+			times['virt'] = '6.16'
+			times['jena'] = '511.88'
+			times['rf'] = '79.09'
+
+		elif qId == 'LUBM6':
+			times['virt'] = '9.19'
+			times['jena'] = '600'
+			times['rf'] = '79.30'
+
+		elif qId == 'LUBM7':
+			times['virt'] = '2349.70'
+			times['jena'] = '14400'
+			times['rf'] = '0'
+
+
+		elif qId == 'LUBM8':
+			times['virt'] = '2357.7'
+			times['jena'] = '14400'
+			times['rf'] = '0'
+
+
+		elif qId == 'LUBM9':
+			times['virt'] = '1432.42'
+			times['jena'] = '1232.02'
+			times['rf'] = '0'
+
+		elif qId == 'LUBM10':
+			times['virt'] = '14400'
+			times['jena'] = '1327.42'
+			times['rf'] = '0'
+
+		elif qId == 'LUBM11':
+			times['virt'] = '1511'
+			times['jena'] = '1521.32'
+			times['rf'] = '0'
+
 def getTimings(request):
 
 	qId = request.GET['queryId']
 	c = request.GET['cache']
 	o = request.GET['opt']
-	times = {}
+        index = request.GET['index']
 
+	times = {}
+	times['type'] = c
 	print 'Getting timings..'
 	print 'Query: '+qId
 	print 'Cache: '+c
@@ -162,121 +369,47 @@ def getTimings(request):
 		
                 slast_line = lines[-2]
                 last_line = lines[-1].rstrip('\n')
-		
-                if last_line == 'Done':
-			print 'Time is Ready'
-                        t = slast_line.rstrip('\n').split(':')[1].split(',')
-                        tr= t[0].split('/')
-               		times['riqf'] = format(float(tr[1]), '.2f')
-                	times['riq'] =  format(float(tr[0]), '.2f')
+
+		# was there any error?
+		err = False
+		err_l = ''
+		for l in lines:
+    			if 'Error' in l:
+				err = True
+				err_l = l
 	
-			if qId == 'CUSTOM':
-				times['type'] = c
+                if last_line == 'Done':	
+	                t = slast_line.rstrip('\n').split(':')[1].split(',')
+			if qId != 'CUSTOM':
+				if (qId[0].upper() == index[0].upper()):
+					#get stored timings for virt, jena, rf
+					getStoredTimings(c,qId,times)
+				else:
+	                        	times['virt'] = '0'
+                        		times['jena'] = '0'
+                        		times['rf'] = '0'		
+			else:
 				times['virt'] = t[2]
 				times['jena'] = t[1]
 				times['rf'] = '0'
 
-
-			elif qId == 'BTC8':
-				if c=='cold':
-					times['type'] = 'cold'
-					#iif o=='opt':
-						#times['riqf'] = '6.42'
-						#times['riq'] = '16.29'
-					#elif o=='nopt':
-						#times['riqf'] = '11.83'
-						#times['riq'] = '495.81'
-
-					times['virt'] = '39.18'
-					times['jena'] = '3564.4'
-					times['rf'] = '0'
-
-				elif c=='warm':
-					times['type'] = 'warm'
-					#if o=='opt':
-						#times['riq'] = '6.79'
-						#times['riqf'] = '0.66'
-
-					#elif o=='nopt':
-						#times['riq'] = '355.07'
-						#times['riqf'] = '0.95'					
-
-					times['virt'] = '0.16'
-					times['jena'] = '369.81'
-					times['rf'] = '0'
-
-			elif qId == 'BTC11':
-				if c=='cold':
-					times['type'] = 'cold'
-					#if o=='opt':
-						#times['riq'] = '158.18'
-						#times['riqf'] = '5.7'
-
-					#elif o=='nopt':
-						#times['riq'] = '163.05'
-						#times['riqf'] = '5.45'
-
-					times['virt'] = '237.58'
-					times['jena'] = '2050.62'
-					times['rf'] = '0'
-
-				elif c=='warm':
-					times['type'] = 'warm'
-					#if o=='opt':
-						#times['riq'] = '76.68'
-						#times['riqf'] = '0.61'
-					#elif o=='nopt':
-						#times['riq'] = '90.09'
-						#times['riqf'] = '0.43'
-					times['virt'] = '120.28'
-					times['jena'] = '2102.06'
-					times['rf'] = '0'
-			elif qId == 'LUBM1':
-				if c=='cold':
-					times['type'] = 'cold'
-					times['virt'] = '136.62'
-					times['jena'] = '233.59'
-					times['rf'] = '14400'
-				elif c=='warm':
-					times['type'] = 'warm'
-					times['virt'] = '77.99'
-					times['jena'] = '2.76'
-					times['rf'] = '14400'
-			elif qId == 'LUBM2':
-				if c=='cold':
-					times['type'] = 'cold'
-					times['virt'] = '55.87'
-					times['jena'] = '520.91'
-					times['rf'] = '14400'
-				elif c=='warm':
-					times['type'] = 'warm'
-					times['virt'] = '0.30'
-					times['jena'] = '5.05'
-					times['rf'] = '14400'
-
-			elif qId == 'LUBM3':
-				if c=='cold':
-					times['type'] = 'cold'
-					times['virt'] = '119.62'
-					times['jena'] = '523.78'
-					times['rf'] = '14400'
-				elif c=='warm':
-					times['type'] = 'warm'
-					times['virt'] = '36.58'
-					times['jena'] = '244.82'
-					times['rf'] = '14400'
-
+        	        tr= t[0].split('/')
+               		times['riqf'] = format(float(tr[1]), '.2f')
+                	times['riq'] =  format(float(tr[0]), '.2f')
 
                 elif last_line == 'Error':
                         times['riqf'] = '10'
                         times['riq'] =  '10'
                         times['virt'] = '10'
                         times['jena'] = '10'
+                        times['rf'] = '10'
         else:
                         times['riq']  = '15'
                         times['riqf'] = '15'
                         times['virt'] = '15'
                         times['jena'] = '15'
+                        times['rf'] = '15'
+	print 'Returning Times:' 
 	print times
 	return HttpResponse(json.dumps(times), content_type="application/json")
 
@@ -323,14 +456,8 @@ def getQueryGraph(request):
 
 	if (c=='warm'):
 		c='none'	
-	#if qId == 'CUSTOM':
 	filename = 'temp.q'
 
-	#elif qId == 'BTC10':
-	#	filename = 'q20.'+o+'.'+c
-
-	#elif qId == 'BTC11':
-	#	filename = 'aux.q3.'+o+'.'+c
 
 	DIR =  os.path.join(os.path.abspath(os.pardir),'RIS/indexing/RIS.RUN/log/')
         bgpfile = ''
@@ -377,161 +504,34 @@ def getQueryGraph(request):
 
 	return HttpResponse(json.dumps(d3records), content_type="application/json")
 
-
-def getQueryList(request):
-	queryname = request.GET['name'].lower()
-	query = """SELECT *
+def getQueryByName(qname): 
+	if qname != 'CUSTOM':
+		print('Retriving query from file: '+qname+'.q')
+		queryfile =  open("queries/"+qname+'.q', "r")
+		query = queryfile.read()
+		queryfile.close() 
+	else:
+		query = """SELECT *
 WHERE {
-	GRAPH ?g{
+	GRAPH ?g {
 		?s ?p	"Brunei"@en .
 	}
 }
 """
-	if(queryname == 'btc11'):
-		query = """PREFIX dc: <http://purl.org/dc/elements/1.1/>
-PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX space: <http://purl.org/net/schemas/space/>
-PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>
-PREFIX dbpedia-prop: <http://dbpedia.org/property/>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+	return query
 
-SELECT *
-WHERE {
-	GRAPH ?g {
-		?var5 dbpedia-owl:thumbnail ?var4 .
-		?var5 rdf:type dbpedia-owl:Person .
-		?var5 rdfs:label ?var .
-		?var5 foaf:page ?var8 .
-		OPTIONAL { ?var5 foaf:homepage ?var10 . }
-	}
-}
-"""
+def getQueryList(request):
+	queryname = request.GET['name']
+	
+	if queryname != 'CUSTOM':
+		if 'BTC' in queryname:
+			dataset = 'BTC'	
+		elif 'LUBM' in queryname:
+			dataset = 'LUBM'
 
-	elif(queryname == 'btc8'):
-		query ="""PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-
-SELECT *
-WHERE {
-	GRAPH ?g {
-		?var6 a <http://dbpedia.org/ontology/PopulatedPlace> .
-		?var6 <http://dbpedia.org/ontology/abstract> ?var1 .
-		?var6 rdfs:label ?var2 .
-		?var6 geo:lat ?var3 .
-		?var6 geo:long ?var4 .
-		{
-			?var6 rdfs:label "Brunei"@en .
-		}
-		UNION
-		{
-			?var5 <http://dbpedia.org/property/redirect> ?var6 .
-			?var5 rdfs:label "Brunei"@en .
-			OPTIONAL { ?var6 foaf:depiction ?var8 .}
-			OPTIONAL { ?var6 foaf:homepage ?var10 }
-			OPTIONAL { ?var6 <http://dbpedia.org/ontology/populationTotal> ?var12 }
-			OPTIONAL { ?var6 <http://dbpedia.org/ontology/thumbnail> ?var14 }
-		}
-	}
-}
-"""
-
-	elif(queryname =='lubm1'):
-		query = """PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>   
-PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#> 
-
-SELECT *  WHERE
-{
-	graph ?g{
-    ?professor1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>  <file:///home/vsfgd/datasets/lubm/univ-bench.owl#FullProfessor> .
-    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> <http://www.University584.edu> .
-    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#mastersDegreeFrom> <http://www.University584.edu> .
-    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#doctoralDegreeFrom> <http://www.University429.edu> .
-    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#worksFor> ?univ2 .
-    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#name> ?name1 .
-    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#emailAddress> ?Email1 .
-    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#telephone> ?phone1 .
-    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#researchInterest> ?ResearchInt1 .
-    ?professor1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#teacherOf> ?course1 .
-    ?publication1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?professor1 .
-
-    ?professor2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>  <file:///home/vsfgd/datasets/lubm/univ-bench.owl#AssociateProfessor> .
-    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> <http://www.University584.edu> .
-    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#mastersDegreeFrom> <http://www.University584.edu> .
-    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#doctoralDegreeFrom> <http://www.University9999.edu> .
-    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#worksFor> ?univ2 .
-    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#name> ?name2 .
-    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#emailAddress> ?Email2 .
-    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#telephone> ?phone2 .
-    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#researchInterest> ?ResearchInt2 .
-    ?professor2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#teacherOf> ?course2 .
-    ?publication2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?professor2 .
-}}
-"""
-	elif(queryname =='lubm2'):
-		query = """PREFIX ub: <file:///home/vsfgd/datasets/lubm/univ-bench.owl#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-SELECT *
-WHERE
-{
-	graph ?g{
-   ?student1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#advisor> ?professor .
-   ?student1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#name> ?student1name .
-   ?student1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#UndergraduateStudent> .
-
-   ?student2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#advisor> ?professor .
-   ?student2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#name> ?student2name .
-   ?student2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#GraduateStudent> .
-
-   ?professor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#FullProfessor> .
-   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#name> "FullProfessor7" .
-   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#teacherOf> ?course.
-   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> ?undergradUnv  .
-   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#mastersDegreeFrom> ?msUnv .
-   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#doctoralDegreeFrom> ?phdUnv .
-   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#worksFor> <http://www.Department17.University1001.edu> .
-   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#emailAddress> ?email .
-   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#telephone> ?phone .
-   ?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#researchInterest> ?research .
-
-   ?publication <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?professor .
-   ?publication <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?student2 .
-}
-}
-"""
-	elif(queryname == 'lubm3'):
-		query ="""PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
-PREFIX ub: <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>  
-SELECT *
-WHERE {
-graph ?g {
-	?student1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> ?undergradUni .    
-	?student1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#memberOf> ?dept .   
-	?student2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> ?undergradUni .    
-	?student1 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#advisor> ?professor .
-	?publication <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?student1 .   
-	?publication <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?student2 . 
-	?publication <file:///home/vsfgd/datasets/lubm/univ-bench.owl#publicationAuthor> ?professor. 
-	?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#name>                    "AssociateProfessor5" .
-	?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#telephone>               ?tpnu . 
-	?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#emailAddress>            ?emAddr . 
-	?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#undergraduateDegreeFrom> ?bsdg . 
-	?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#teacherOf>               ?course . 
-	?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#worksFor>                ?dept . 
-	?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#researchInterest>        ?researchInt .
-	?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#mastersDegreeFrom>       ?msdg .
-	?professor <file:///home/vsfgd/datasets/lubm/univ-bench.owl#doctoralDegreeFrom>      ?phddg .
-	?student1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#GraduateStudent> .   
-	?dept <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#Department> .   
-	?dept <file:///home/vsfgd/datasets/lubm/univ-bench.owl#subOrganizationOf> <http://www.University10.edu> .    
-	?student2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#GraduateStudent> . 
-	?undergradUni <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#University> .    
-	?publication <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///home/vsfgd/datasets/lubm/univ-bench.owl#Publication> .   
-	?student2 <file:///home/vsfgd/datasets/lubm/univ-bench.owl#memberOf> ?dept .   
-} }
-"""
+		queryname = dataset[0].upper() + queryname[len(dataset):] 
+	
+	query = getQueryByName(queryname)
 
 	return HttpResponse(query,  content_type="text/plain")
 

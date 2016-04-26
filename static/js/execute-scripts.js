@@ -6,7 +6,7 @@ function plotTimings(data){
 	var virt_t = data['virt'];
 	var jena_t = data['jena'];
 	var rf_t = data['rf'];
-	
+
 	riqT  = {
             name: 'RIQ',
             data: [Number(riq_t)],
@@ -40,10 +40,16 @@ function plotTimings(data){
 	    stack:3
 
         };
-	if (Number(rf_t) != 0)
-		serData = [riqT,riqfT,virtT,jenaT,rfT];
-	else
-		serData = [riqT,riqfT,virtT,jenaT];
+	serData = [riqT,riqfT,virtT,jenaT,rfT];
+	var i = 0;
+	while (i<serData.length){
+		if(serData[i].data==0)
+			serData.splice(i,1);
+		else
+			i++;
+	}
+	
+
     $('#time').highcharts({
         chart: {
 			type: 'column',
@@ -160,7 +166,7 @@ function getQueryTimimgs(args)
                 var e = document.getElementById("queryDisplay");
                 var qId = e.options[e.selectedIndex].value;
                 if(qId != 'CUSTOM'){
-                        document.getElementById('note').innerHTML="Note: displaying previously run <br />timings for JenaTDB and Virtuoso. Small timings may not appear on chart.";
+                        document.getElementById('note').innerHTML="Note: displaying previously run <br />timings for JenaTDB, Reified-RDF3X, Virtuoso.";
 		 }
 		 else
                         document.getElementById('note').innerHTML="Small timings may not appear on chart.";
@@ -233,6 +239,7 @@ function getQueryResults(args)
 			//xml = data.replace(/</gim,'&lt;').replace(/>/gim,'&gt;');
 			var xmlDoc = parseXML(data);
                         rframe.innerHTML= ConvertToTable(xmlDoc);
+			xmlDoc = null;
 		}});
 
 
@@ -253,7 +260,7 @@ function showQuery(e)
 		obj.html(obj.html().replace(/\n/g,'&nbsp;<br/>'));
 		obj.html(obj.html().replace(/\t/g,'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'));
 		obj.bind('DOMNodeInserted DOMSubtreeModified DOMNodeRemoved', function(event) {
-		document.getElementById("queryDisplay").selectedIndex = 2;
+		document.getElementById("queryDisplay").selectedIndex = 22;
 
 		});
 	}
@@ -286,13 +293,15 @@ else{
 }
 }
 
-function getStatusUpdates(qId,cache,opt){
+function getStatusUpdates(index,qId,cache,opt){
 
 		var isDone='false';
-		var args = '?queryId='+qId+'&cache='+cache+'&opt='+opt;
+		var args = '?queryId='+qId+'&cache='+cache+'&opt='+opt+'&index='+index;
+		var known = false;
 
-		if (qId=='BTC10' ||qId=='BTC11' || qId=='LUBM1'|| qId=='LUBM2'|| qId=='LUBM3') {
-
+		if (qId=='BTC10' ||qId=='BTC11'||qId=='LUBM1'|| qId=='LUBM2'|| qId=='LUBM3') {
+			
+		
 					getQueryResults(args);
 					getQueryTimimgs(args);
 					getQueryGraph(args);
@@ -327,7 +336,6 @@ function runRIQ(e)
 	displayLoaders(true);
 
 	document.getElementById("query-text").value= $('#query').html().replace(/<br\s*[\/]?>|&nbsp;/gi,' ').replace(/&lt;/gi,' <').replace(/&gt;/gi,'> ');
-
 	var form = document.getElementById("frmRIQ");
 	var formURL = form.action;
 	var postData = $('#frmRIQ').serialize();
@@ -342,6 +350,9 @@ function runRIQ(e)
 		console.log("Execute Form Submitted Successfully");
 
 		console.log(textStatus.responseText);
+		//get index name
+		var ndx = document.getElementById("indexname");
+		ndx = ndx.options[ndx.selectedIndex].value;
 
 		//get query id
 		var e = document.getElementById("queryDisplay");
@@ -367,7 +378,7 @@ function runRIQ(e)
 		}
 
 
-		getStatusUpdates(qId,cache,opt);
+		getStatusUpdates(ndx,qId,cache,opt);
 
 	},
 	error: function(response,n, textStatus, exception) {
