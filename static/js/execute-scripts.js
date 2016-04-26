@@ -247,6 +247,7 @@ function getQueryResults(args)
 
 function showQuery(e)
 {
+
 	var d= "name=" + e.value;
 	var obj = $('#query').unbind();
 
@@ -261,7 +262,6 @@ function showQuery(e)
 		obj.html(obj.html().replace(/\t/g,'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'));
 		obj.bind('DOMNodeInserted DOMSubtreeModified DOMNodeRemoved', function(event) {
 		document.getElementById("queryDisplay").selectedIndex = 22;
-
 		});
 	}
 	});
@@ -320,6 +320,7 @@ function getStatusUpdates(index,qId,cache,opt){
 					getQueryResults(args);
 					getQueryTimimgs(args);
 					getQueryGraph(args);
+					setTimeout(function(){ alertReveal(); }, 3000);
 				}
 				else
 					alert('Query Execution Error');
@@ -391,6 +392,11 @@ function runRIQ(e)
 	}
 	});
 
+}
 
+function alertReveal(){
+                document.getElementById("notify_title").innerHTML='Querying Details';
+                document.getElementById("notify_content").innerHTML="You can navigate to Visualize Query to see more interesting data about the execution";
+		document.getElementById('myModalLink').click();
 
 }
