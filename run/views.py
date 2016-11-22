@@ -143,6 +143,7 @@ def getRiqTime(filename,args):
         file_dir_extension = os.path.join(DIR+"/RIS/indexing/RIS.RUN/log/", '*'+filename+'*.'+opt+'.'+cache+'.all.json')
 	t = '-1'        
 	print 'Matching timing file: '+file_dir_extension
+	rTime = fTime = 1 
         try:
 		jfile= ''
                 for name in glob.glob(file_dir_extension):
@@ -151,10 +152,10 @@ def getRiqTime(filename,args):
 
 		jfile = open(jfile,'r')                        
 		jdata = json.load(jfile)
-		jfile.close()
 		rTime = jdata['refine']['avg_refine_t']
 		fTime = jdata['filter']['avg_filter_t']
 		t = str(round(float(rTime)+float(fTime),3))
+		jfile.close()
       	except Exception as E:
                 print 'Riq Time Error:'
                 print E	
@@ -303,6 +304,8 @@ def XMLBodyResult (variables,values):
 def safe(the_str):
 	if the_str.startswith("<") and the_str.endswith(">"):
 		the_str = the_str[1:-1]
+	elif '^^' in the_str:
+		the_str = the_str.split('^^')[0]
 	return the_str
 
 
