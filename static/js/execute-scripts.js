@@ -1,24 +1,26 @@
 function plotTimings(data){
 
 	var cache = data['type'];
+	cache = cache.charAt(0).toUpperCase() + cache.slice(1);
 	var riq_t = data['riq'];
 	var riq_tf = data['riqf'];
-	var virt_t = data['virt'];
-	var jena_t = data['jena'];
-	var rf_t = data['rf'];
+	var riq = Number(riq_t) + Number (riq_tf)
+	var virt_t = Number(data['virt']).toFixed(1);
+	var jena_t = Number(data['jena']).toFixed(1);
+	var rf_t = Number(data['rf']).toFixed(1);
 
 	riqT  = {
             name: 'RIQ',
-            data: [Number(riq_t)],
+            data: [Number(riq.toFixed(1))],
             color: '#0101DF',
             stack:0
         };
-	riqfT =  {
+	/*riqfT =  {
             name: 'RIQ (filtering)',
             data: [Number(riq_tf)],
 	    color: '#01A9DB',
             stack:0
-        };
+        };*/
 	virtT =  {
             name: 'Virtuoso',
             data: [Number(virt_t)],
@@ -40,7 +42,7 @@ function plotTimings(data){
 	    stack:3
 
         };
-	serData = [riqT,riqfT,virtT,jenaT,rfT];
+	serData = [riqT,virtT,jenaT,rfT];
 	var i = 0;
 	while (i<serData.length){
 		if(serData[i].data==0)
@@ -54,9 +56,10 @@ function plotTimings(data){
         chart: {
 			type: 'column',
 			margin: 0,
-			marginLeft: 8,
+			marginLeft: 65,
+			marginRight: 40,
 			height: 300,
-			width: 265,
+			width: 300,
 			borderWidth:0,
 			marginTop: 60,
 			marginBottom: 80,
@@ -66,11 +69,13 @@ function plotTimings(data){
 
         },
         title: {
-            text: cache+' cache',
-			style: {
+            text: cache+" Cache <br> RIQ's Filtering Time: "+data["riqf"]+"s",
+	    style: {
 						fontSize: "14px",
 						color:"#000"
-					},
+	    },
+	    align: 'center',
+	    x:-14,
         },
         xAxis: {
 			min:0,
@@ -84,12 +89,20 @@ function plotTimings(data){
 
         },
         yAxis: {
-			gridLineWidth:0,
+  		title: {
+                	text: 'Time (seconds)'
+           	 },
+		type: 'logarithmic',
+            	//minorTickInterval: 0.1,
+		/*
+		gridLineWidth:0,
 			min:0,
-			max:100,
+			max:15500,
+		
             labels: {
-				enabled: false
+				enabled: true
             }
+*/
         },
         tooltip: {
             valueSuffix: ' seconds',
@@ -107,20 +120,21 @@ function plotTimings(data){
         plotOptions: {
 
             series: {
-                pointWidth: 45,
+                pointWidth: 30,
                 stacking: 'normal'
 
             },
             column:{
 			stacking: 'normal',
-			slicedOffset: 0,
+			//slicedOffset: 0,
                 	dataLabels: {
-					verticalAlign: 'top',
+					verticalAlign: 'center',
 					enabled: true,
+                     			y: -20,
 					allowOverlap: true,
 					style: {
 						fontWeight:'bold',
-						color: "#DDDDDD",
+						color: "#000000",
 						textShadow:'none',
 			    		},
 
@@ -165,11 +179,12 @@ function getQueryTimimgs(args)
 
                 var e = document.getElementById("queryDisplay");
                 var qId = e.options[e.selectedIndex].value;
+                //document.getElementById('filter_time').innerHTML="RIQ's Filtering Time: "+data['riqf']+'s';
+
                 if(qId != 'CUSTOM'){
-                        document.getElementById('note').innerHTML="Note: displaying previously run <br />timings for JenaTDB, Reified-RDF3X, Virtuoso.";
+                        document.getElementById('note').innerHTML="Note: displaying previously run <br />timings for RIQ's competitors.";
 		 }
-		 else
-                        document.getElementById('note').innerHTML="Small timings may not appear on chart.";
+		 
 
 		}});
 
@@ -261,7 +276,7 @@ function showQuery(e)
 		obj.html(obj.html().replace(/\n/g,'&nbsp;<br/>'));
 		obj.html(obj.html().replace(/\t/g,'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'));
 		obj.bind('DOMNodeInserted DOMSubtreeModified DOMNodeRemoved', function(event) {
-		document.getElementById("queryDisplay").selectedIndex = 22;
+		document.getElementById("queryDisplay").selectedIndex = 19;
 		});
 	}
 	});
@@ -272,6 +287,7 @@ function displayLoaders(show){
         var time = document.getElementById('time');
         var results = document.getElementById('results');
 	var note = document.getElementById('note');
+	var filter_time = document.getElementById('filter_time');
 
 if(show){
 	var ldrImgResults = "<img src='/static/images/ajax-loader-yellow.gif' style='display: block;margin: auto; margin-top:5px;'/>";
@@ -282,13 +298,14 @@ if(show){
 	time.innerHTML=ldrImg2;
 	graph.innerHTML=ldrImg1;
         note.innerHTML="";
-
+	filter_time.innerHTML="";
 }
 else{
         results.innerHTML='';
         time.innerHTML='';
         graph.innerHTML='';
         note.innerHTML='';
+	filter_time.innerHTML="";
 
 }
 }
@@ -394,9 +411,12 @@ function runRIQ(e)
 
 }
 
-function alertReveal(){
+function alertReveal()
+{/*
+	Disable for video
                 document.getElementById("notify_title").innerHTML='Querying Details';
                 document.getElementById("notify_content").innerHTML="You can navigate to Visualize Query to see more interesting data about the execution";
 		document.getElementById('myModalLink').click();
 
+*/
 }

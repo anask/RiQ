@@ -12,7 +12,7 @@
  }
 
  function ConvertToTable(xmlDoc) {
-  var table = '<br><table class="tg">'
+  var table = '<table class="tg">'
    //create table header with variable names
   var vars = xmlDoc.getElementsByTagName('variable');
   var V = [];

@@ -4,7 +4,7 @@ from django.http import HttpResponse
 import requests
 from run.views import createQueryFile, getXMLResults
 import subprocess
-
+from execute.views import selectConfigFile
 # def land(request):
 # 	return render_to_response('linked.html', { 'TITLE': 'Linked Data'})
 
@@ -30,6 +30,7 @@ def land(request):
 		return render_to_response('linked.html', context,context_instance=RequestContext(request))
 
 	elif request.method == 'POST':
+		selectConfigFile('BTC')
 
 		#return HttpResponse('Query Received!', status=200,content_type='plain/text')
 		try:
@@ -41,7 +42,7 @@ def land(request):
 				print "Linked Form Error:", sys.exc_info()[0]
 				return HttpResponse("Form Not Valid!", status=500,content_type='plain/text')
 		tools=''
-
+		print 'Query: '+str(QueryId)
 		if QueryId != 'F1' and  QueryId != 'F2' and QueryId != 'F3':
 	
 			if u'riq' in settings:
@@ -59,7 +60,7 @@ def land(request):
                         	tools = tools + '0'
 		else :
 			tools='100'
-
+		print 'TOOLS STR: '+tools
 		query = query.replace(' <http://134.193.128.32:8080/endpoints/>',' <http://134.193.128.32:8080/endpoints/?tools='+tools+'>')
 		executeQuery(query,format)
 		return HttpResponse('Query Received!', status=200,content_type='plain/text')
@@ -132,7 +133,10 @@ def getTimings(request):
                 last_line = lines[-1]
 
         	if last_line == 'Done':
-			t = slast_line.rstrip('\n').split(':')[1].split(',')
+			try:
+				t = slast_line.rstrip('\n').split(':')[1].split(',')
+			except:
+				t = [0,0,0,0]
 			times['riq']  = t[0]
        			if qid =='CUSTOM':
                         	times['virt'] = t[2]
@@ -181,18 +185,20 @@ def getResults(request):
 
 def getQueryList(request):
 	queryname = request.GET['name'].lower()
-	query = """SELECT * 
+	query = """PREFIX dbp:<http://dbpedia.org/property/>
+PREFIX dbo:<http://dbpedia.org/ontology/>
+SELECT * 
 WHERE {
 	SERVICE <http://134.193.128.32:8080/endpoints/> {
 		GRAPH ?g {
 			?s ?p "Brunei"@en .
-			?s <http://dbpedia.org/property/leaderName> ?leader.
+			?s dbp:leaderName ?leader.
 		}
 	}
  
 	SERVICE <http://dbpedia.org/sparql> {
-		?s <http://dbpedia.org/property/establishedDate> ?est .
-		?s <http://dbpedia.org/ontology/capital> ?cap .
+		?s dbp:establishedDate ?est .
+		?s dbo:capital ?cap .
 	}
 }
 """

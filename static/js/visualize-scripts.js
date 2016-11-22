@@ -1,6 +1,7 @@
 function getCandidateTree(s) {
 
 	var cqTree = document.getElementById('parseCandTree');
+        var cname = document.getElementById("candname")
 	//display loader img
 	cqTree.innerHTML = '<img id="candquerytree" src="/static/images/ajax-loader-blue.gif" style = "display: block;margin: auto; margin-top:80px;"/>'
 	var opt = document.getElementById('qOpt').innerHTML;
@@ -19,7 +20,8 @@ function getCandidateTree(s) {
                 	success: function(data) {
                         	
                         	var x = document.getElementById("cands").selectedIndex;
-                        	cqTree.innerHTML='CANDIDATE '+x;
+                        	cname.innerHTML='CANDIDATE '+x;
+				
 				renderD3JsonGraph('#parseCandTree',JSON.parse(data));
 			
 
@@ -40,6 +42,7 @@ function getCandidateTree(s) {
 			console.log(n);
 			console.log(textStatus);
 			 cqTree.innerHTML='';
+			 cname.innerHTML='';
 
 		},
 		success: function(data) {
@@ -54,7 +57,7 @@ function getCandidateTree(s) {
 
 			cqTree.innerHTML='';
   			var x = document.getElementById("cands").selectedIndex;
-                      	cqTree.innerHTML='CANDIDATE '+x+' <br/>';
+                      	cname.innerHTML='CANDIDATE '+x+' <br/>';
 		        //show cand query parse tree
 	      $.ajax({
         	      url: "/visualize/parse/?cand="+s.value,
@@ -188,8 +191,8 @@ $(document).ready(function() {
 function renderD3JsonGraph(container, data)
 {
 var margin = {top: 40, right: 10, bottom: 10, left: 10},
-                   width = 800,
-                   height = 950;
+                   width = 1400,
+                   height = 1400;
 
                    var i = 0,
                    duration = 750,

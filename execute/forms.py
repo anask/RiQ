@@ -61,9 +61,9 @@ class ExecuteForm(forms.Form):
 	CUS = 'CUSTOM'
 
 	MY_CHOICESQUERY=(
-		( QBTC1,'B1'),
-		( QBTC2,'B2'),
-		( QBTC3,'B3'),
+#		( QBTC1,'B1'),
+#		( QBTC2,'B2'),
+#		( QBTC3,'B3'),
 		( QBTC4,'B4'),
 		( QBTC5,'B5'),
 		( QBTC6,'B6'),
