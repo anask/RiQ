@@ -169,7 +169,7 @@ def runQuery(query,args,filename,tool):
 
 	print 'Running Tool Query via '+tool
 	if tool == 'riq':
-		cmd = [ DIR+"/RIS/indexing/RIS/scripts/run_riq_query.py", "-C", "config-files/riq.conf","-q", "queries/"+filename, "-f" ,"xml"]
+		cmd = [ DIR+"/RIS/indexing/RIS/scripts/run_riq_query.py", "-C", "config-files/riq.conf","-q", "queries/"+filename, "-f" ,"tsv"]
 		if 'cold' in args:
 			for a in args:
 				cmd.append(a)
@@ -247,12 +247,71 @@ def runQuery(query,args,filename,tool):
 def clearCache():
 	call(["static/scripts/run_clear_cache.sh"])
 
+def getXMLResultsFromTSV (filename,n):
+	with open (filename, "r") as f:
+        	line=f.readline()
+                while 'WARN' in line: # skip warnings
+                	line=f.readline()
+
+		tsvVariable = line.strip().split('\t')
+
+		xmlHeader = XMLHeader(tsvVariable)  # convert TSV header to XML header.
+		xmlBody   = XMLBody(f,tsvVariable,n)
+		xmlDoc = '<?xml version="1.0"?> <sparql xmlns="http://www.w3.org/2005/sparql-results#">'+ xmlHeader + xmlBody + '</sparql>'
+                f.close()
+		return xmlDoc
+
+def XMLHeader(variables):
+		xmlHeader = '<head>'
+		for v in variables:
+			xmlHeader += '<variable name="'+v+'"/>'
+		xmlHeader += '</head>'
+		return xmlHeader
+
+
+def XMLBody(infile, variables, limit):
+	xmlBody = '<results>'
+
+	count = 0
+	line = infile.readline()
+
+	while line and count < limit:
+		count += 1
+		values = line.strip().split('\t')
+		xmlBody += XMLBodyResult(variables,values)
+		line = infile.readline()
+
+	if (count == limit):
+		values = ["Only showing first "+str(limit)] * len(variables)
+		xmlBody += XMLBodyResult(variables,values)
+	
+	xmlBody += '</results>'
+
+
+	return xmlBody
+
+def XMLBodyResult (variables,values):
+	if len(values) != len(variables):
+			print ("XMLBodyResult: Severe Parsing Issue!")
+	result = '<result>' 
+	for v in range(len(values)):
+		result += '<binding name="' + variables[v]+'"><val>'+  safe(values[v])  + '</val></binding>'
+
+	result += '</result>'
+	return result
+
+def safe(the_str):
+	if the_str.startswith("<") and the_str.endswith(">"):
+		the_str = the_str[1:-1]
+	return the_str
+
+
 def getXMLResults(filename,n):
  	with open (filename, "r") as f:
                                         line=f.readline()
                                         while 'WARN' in line:
                                                line=f.readline()
-                                        #number of resuts
+                                        #number of results
 					i=0
                                         lines = line
                                         while line and i < n :
@@ -286,7 +345,9 @@ def getQueryResults(filename,tool,cache):
 		for name in glob.glob(file_dir_extension):
 			print 'Found file: '+name
 			rFile = name
-			return getXMLResults(rFile,200)
+
+			#return getXMLResults(rFile,200)
+			return getXMLResultsFromTSV(rFile,200)
 
 
 	except Exception as E:
