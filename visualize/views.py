@@ -7,6 +7,7 @@ import subprocess
 from subprocess import call
 from PIL import Image
 import glob
+import re
 from execute.views import getQueryByName
 
 
@@ -84,17 +85,31 @@ def getQueryInfo(request):
 	################## generate non candidate log #############
 	# create visualize non-candidate graph data
 	bStartRead = 0
+	rStartRead = 0
 	b = open(bgpfile,'r')
 	print 'Create Vis ncgd at: '+head+'/output/visualizenoncandidatedata.log'
 	#print 'Create Vis ncgd at: /output/visualizenoncandidatedata.log'
 	v = open(head+'/output/visualizenoncandidatedata.log', 'w')
 	#v = open('/output/visualizenoncandidatedata.log', 'w')
+	original_tree = ''
+	found_tree = ''
 	for line in b:
-		if line.startswith('eval_tree: 0') == True & bStartRead == 0:
+		if rStartRead == 1:
+			original_tree = line
+			rStartRead = 0
+		if 'parse_tree root data:' in line:
+			rStartRead = 1
+		elif line.startswith('eval_tree: 0') == True and  bStartRead == 0:
 			bStartRead = 1
-		if line.startswith('print_eval_tree:') == True & bStartRead == 1:
-			v.write(line[line.find(': ')+1:])
+
+		if line.startswith('print_eval_tree:') == True and bStartRead == 1:
+			found_tree = line[line.find(': ')+1:]	
+			v.write(found_tree)
 			break
+
+	if bStartRead == 0:
+		v.write('OriginalTree '+original_tree)
+	
 	b.close()
 	v.close()
 	###########################################################
@@ -107,11 +122,11 @@ def getQueryInfo(request):
 	y = open(head+'/output/visualizecandidatedata.log', 'w')
 	#y = open('/output/visualizecandidatedata.log', 'w')
 	for line in b:
-		if line.startswith('eval_tree: 1') == True & bStartRead == 0:
+		if line.startswith('eval_tree: 1') == True and bStartRead == 0:
 			bStartRead = 1
-		if line.startswith('print_eval_tree:') == True & bStartRead == 1:
+		if line.startswith('print_eval_tree:') == True and bStartRead == 1:
 			expression =  line[line.find(': ')+1:]
-		if line.startswith('candidate GRAPHID:') == True & bStartRead == 1:
+		if line.startswith('candidate GRAPHID:') == True and bStartRead == 1:
 			y.write(line)
 			y.write(expression)
 
@@ -306,12 +321,15 @@ def getParseTree(request):
 		v.close
 		print 'Expression Tree: '+expression
 		expression = replaceKeyWords(expression)
-		print expression
+		print 'Replaced Expression Tree: '+expression
+
 		#expression = "( Root( LC ( MC ) ( RC ( RCLC:1 ) ( RCLC:0 ) ) ( ANC ( ANCLC ) ( ANCRC ( ANCRCGC ) ) ) ))"
 		expression, nodeMap = parseExpression(expression)
 
 		tree = toTree(expression)
 		print ('Tree: '+str(tree))
+		#myjson = {}
+		#if len(tree)>0:
 		myjson=printTree(tree, tree[''][0], nodeMap, 1, None)
 		data = json.dumps(myjson)
 
@@ -345,12 +363,15 @@ def getParseTree(request):
 	return HttpResponse(data, content_type="application/json")
 
 def replaceKeyWords(expression):
-		expression = expression.replace(" UNION:0", " :0 (UNION:0)");
-		expression = expression.replace(" UNION:1", " :1 (UNION:1)");
-		expression = expression.replace(" FILTER:0", " :0 (FILTER:0)");
-		expression = expression.replace(" FILTER:1", " :1 (FILTER:1)");
-		expression = expression.replace(" OPTIONAL:0", " :0 (OPTIONAL:0)");
-		expression = expression.replace(" OPTIONAL:1", " :1 (OPTIONAL:1)");
+		expression = expression.replace("OriginalTree ","")	
+		expression = re.sub("[\[].*?[\]]", ":1", expression)
+		expression = expression.replace(" :1", ":1")
+		expression = expression.replace(" UNION:0", " :0 (UNION:0)")
+		expression = expression.replace(" UNION:1", " :1 (UNION:1)")
+		expression = expression.replace(" FILTER:0", " :0 (FILTER:0)")
+		expression = expression.replace(" FILTER:1", " :1 (FILTER:1)")
+		expression = expression.replace(" OPTIONAL:0", " :0 (OPTIONAL:0)")
+		expression = expression.replace(" OPTIONAL:1", " :1 (OPTIONAL:1)")
 		return expression
 
 def parseExpression(expression):

@@ -170,7 +170,7 @@ def runQuery(query,args,filename,tool):
 
 	print 'Running Tool Query via '+tool
 	if tool == 'riq':
-		cmd = [ DIR+"/RIS/indexing/RIS/scripts/run_riq_query.py", "-C", "config-files/riq.conf","-q", "queries/"+filename, "-f" ,"tsv"]
+		cmd = [ DIR+"/RIS/indexing/RIS/scripts/run_riq_query.py", "-C", "config-files/riq.conf","-q", "queries/"+filename, "-f" ,"xml"]
 		if 'cold' in args:
 			for a in args:
 				cmd.append(a)
@@ -349,8 +349,8 @@ def getQueryResults(filename,tool,cache):
 			print 'Found file: '+name
 			rFile = name
 
-			#return getXMLResults(rFile,200)
-			return getXMLResultsFromTSV(rFile,200)
+			return getXMLResults(rFile,200)
+			#return getXMLResultsFromTSV(rFile,200)
 
 
 	except Exception as E:

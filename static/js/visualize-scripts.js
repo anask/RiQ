@@ -18,7 +18,7 @@ function getCandidateTree(s) {
 
                 	},
                 	success: function(data) {
-                        	
+                         	cqTree.innerHTML="";	
                         	var x = document.getElementById("cands").selectedIndex;
                         	cname.innerHTML='CANDIDATE '+x;
 				
