@@ -61,7 +61,7 @@ def land(request):
 		else :
 			tools='100'
 		print 'TOOLS STR: '+tools
-		query = query.replace(' <http://134.193.128.32:8080/endpoints/>',' <http://134.193.128.32:8080/endpoints/?tools='+tools+'>')
+		query = query.replace(' <http://134.193.128.69:8080/endpoints/>',' <http://134.193.128.69:8080/endpoints/?tools='+tools+'>')
 		executeQuery(query,format)
 		return HttpResponse('Query Received!', status=200,content_type='plain/text')
 
@@ -189,7 +189,7 @@ def getQueryList(request):
 PREFIX dbo:<http://dbpedia.org/ontology/>
 SELECT * 
 WHERE {
-	SERVICE <http://134.193.128.32:8080/endpoints/> {
+	SERVICE <http://134.193.128.69:8080/endpoints/> {
 		GRAPH ?g {
 			?s ?p "Brunei"@en .
 			?s dbp:leaderName ?leader.
@@ -210,7 +210,7 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
 SELECT * 
 WHERE {
-	SERVICE <http://134.193.128.32:8080/endpoints/> {
+	SERVICE <http://134.193.128.69:8080/endpoints/> {
 	GRAPH ?g {
 		?var6 a <http://dbpedia.org/ontology/PopulatedPlace> .
 		?var6 <http://dbpedia.org/ontology/abstract> ?var1 .
@@ -246,7 +246,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT * 
 WHERE {
-	SERVICE <http://134.193.128.32:8080/endpoints/> {
+	SERVICE <http://134.193.128.69:8080/endpoints/> {
 	GRAPH ?g {
 		?var5 dbpedia-owl:thumbnail ?var4 .
 		?var5 rdf:type dbpedia-owl:Person .
@@ -262,7 +262,7 @@ WHERE {
 SELECT * 
 WHERE
 { 
-SERVICE <http://134.193.128.32:8080/endpoints/> {
+SERVICE <http://134.193.128.69:8080/endpoints/> {
 
   GRAPH ?g { 
     ?union <http://aims.fao.org/aos/geopolitical.owl#nameShortEN> ?unionShortName . 

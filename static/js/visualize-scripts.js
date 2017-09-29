@@ -15,6 +15,9 @@ function getCandidateTree(s) {
                         	alert('Error: ' + response.responseText);
                         	console.log(n);
                         	console.log(textStatus);
+				cqTree.innerHTML='';
+			 	cname.innerHTML='';
+
 
                 	},
                 	success: function(data) {
