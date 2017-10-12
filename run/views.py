@@ -47,7 +47,7 @@ def stop ():
 def runq(filename):
 		print 'Reading query for virtuoso..'
                 with open ("queries/"+filename, "r") as qFile:
-                     query = qFile.read().replace('\n', ' ')
+                     query = qFile.read().replace('\n', ' ').replace("<div>","").replace("</div>","").strip()
                 qFile.close()
 
                 myParameters = {'query': query, 'format': 'application/sparql-results+xml','timeout':'90000000','debug':'on'}
@@ -95,7 +95,7 @@ def runMultiToolQuery(filename,query,args,tools):
 			sFile.write('Running Query via JenaTDB..\n')
 			sFile.flush()
 			start = time.time()
-			results2 = runQuery(query, args,filename,'jena')
+			results2 = ""#runQuery(query, args,filename,'jena')
 			end = time.time()
 			sFile.write('Jena Finished.\n')
 			times[1] = str(round(end - start,3))
@@ -111,7 +111,7 @@ def runMultiToolQuery(filename,query,args,tools):
                         sFile.write('Running Query via Virtuoso..\n')
                         sFile.flush()
                         start = time.time()
-                        results3 = runQuery(query, args,filename,'virt')
+                        results3 = ""#runQuery(query, args,filename,'virt')
                         end = time.time()
 			print 'Virtuoso: '+results3
                         sFile.write('Virtuoso Finished.\n')
@@ -367,7 +367,7 @@ def getQueryResults(filename,tool,cache):
 
 def createQueryFile(queryStr,filename):
         f = open('queries/'+filename,'w')
-        f.write(queryStr)
+        f.write(queryStr.replace("<div>","").replace("</div>","").strip())
         f.close()
 
 def getVars (query):

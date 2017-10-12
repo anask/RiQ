@@ -8,7 +8,6 @@ function plotTimings(data){
 	var virt_t = Number(data['virt']).toFixed(1);
 	var jena_t = Number(data['jena']).toFixed(1);
 	var rf_t = Number(data['rf']).toFixed(1);
-
 	riqT  = {
             name: 'RIQ',
             data: [Number(riq.toFixed(1))],
@@ -42,7 +41,15 @@ function plotTimings(data){
 	    stack:3
 
         };
-	serData = [riqT,virtT,jenaT,rfT];
+	serData = [riqT];
+        if (Number(virt_t) > 0){
+		serData.push(virtT);
+	} 
+	if (Number(jena_t) > 0){
+		serData.push(jenaT);
+	} 
+	serData.push(rfT);	
+	
 	var i = 0;
 	while (i<serData.length){
 		if(serData[i].data==0)

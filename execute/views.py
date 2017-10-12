@@ -85,6 +85,7 @@ def land(request):
 
 		removePreviousRunFiles('execute')
 		print('Issuing Query..')			
+		tools=[True,False,False]
 		r=runMultiToolQuery('temp.q',query.encode(sys.stdout.encoding),args,tools)
 	
           	s = open('status/execute', 'a')
