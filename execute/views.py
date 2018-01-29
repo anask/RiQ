@@ -185,31 +185,31 @@ def getStoredTimings(c,qId,times):
 			times['rf'] = '276.72'
 		elif qId == 'BTC4':
 			times['virt'] = '950.07'
-			times['jena'] = '148.39'
+			times['jena'] = '351.94'
 			times['rf'] = '990.72'
 		elif qId == 'BTC5':
 			times['virt'] = '10.33'
-			times['jena'] = '21.65'
+			times['jena'] = '22.65'
 			times['rf'] = '14400'
 		elif qId == 'BTC6':
 			times['virt'] = '342.79'
-			times['jena'] = '56.59'
+			times['jena'] = '73.18'
 			times['rf'] = '14400'
 		elif qId == 'BTC7':
 			times['virt'] = '2.69'
-			times['jena'] = '17.09'
+			times['jena'] = '16.87'
 			times['rf'] = '387.50'
 		elif qId == 'BTC8':
 			times['virt'] = '0.16'
-			times['jena'] = '369.81'
+			times['jena'] = '436.68'
 			times['rf'] = '0'
 		elif qId == 'BTC9':
 			times['virt'] = '60.42'
-			times['jena'] = '33.36'
+			times['jena'] = '32.9'
 			times['rf'] = '0'
 		elif qId == 'BTC10':
 			times['virt'] = '88.36'
-			times['jena'] = '38.77'
+			times['jena'] = '39.36'
 			times['rf'] = '0'
 		elif qId == 'BTC11':
 			times['virt'] = '120.28'
@@ -274,7 +274,7 @@ def getStoredTimings(c,qId,times):
 	elif c=='cold':
 		if qId == 'BTC1':
 			times['virt'] = '5.92'
-			times['jena'] = '15.79'
+			times['jena'] = '16.41'
 			times['rf'] = '14400'
 		elif qId == 'BTC2':
 			times['virt'] = '6.04'
@@ -286,35 +286,35 @@ def getStoredTimings(c,qId,times):
 			times['rf'] = '296.99'
 		elif qId == 'BTC4':
 			times['virt'] = '965'
-			times['jena'] = '295.77'
+			times['jena'] = '435.93'
 			times['rf'] = '1010.77'
 		elif qId == 'BTC5':
 			times['virt'] = '86.71'
-			times['jena'] = '668.28'
+			times['jena'] = '716.06'
 			times['rf'] = '14400'
 		elif qId == 'BTC6':
 			times['virt'] = '350.19'
-			times['jena'] = '684.97'
+			times['jena'] = '759.0'
 			times['rf'] = '14400'
 		elif qId == 'BTC7':
 			times['virt'] = '81.94'
-			times['jena'] = '803.94'
+			times['jena'] = '864.51'
 			times['rf'] = '405.29'
 		elif qId == 'BTC8':
 			times['virt'] = '39.18'
-			times['jena'] = '3564.4'
+			times['jena'] = '3607.08'
 			times['rf'] = '0'
 		elif qId == 'BTC9':
 			times['virt'] = '142.89'
-			times['jena'] = '648.93'
+			times['jena'] = '691.34'
 			times['rf'] = '0'
 		elif qId == 'BTC10':
 			times['virt'] = '165.52'
-			times['jena'] = '663.31'
+			times['jena'] = '703.95'
 			times['rf'] = '0'
 		elif qId == 'BTC11':
 			times['virt'] = '237.58'
-			times['jena'] = '2050.62'
+			times['jena'] = '2237.92'
 			times['rf'] = '0'
 
 		elif qId == 'LUBM1':
